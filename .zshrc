@@ -129,6 +129,9 @@ alias tcode="~/Dropbox/dev/./tmux.sh"
 alias tsys="~/./tmux.sh"
 alias truby="~/Dropbox/dev/demo/./tmux.sh"
 
+# git
+alias gs="git status"
+
 # other
 alias rr="ranger"
 alias v="vim"
