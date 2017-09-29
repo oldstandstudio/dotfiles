@@ -126,6 +126,7 @@ alias tk="tmux kill-server"
 alias hello="~/Dropbox/log/./tmux.sh"
 alias tuhsa="~/Dropbox/uhsa/./tmux.sh"
 alias tcode="~/Dropbox/dev/./tmux.sh"
+alias tdot="~/Dropbox/.dotfiles/./tmux.sh"
 alias tsys="~/./tmux.sh"
 alias truby="~/Dropbox/dev/demo/./tmux.sh"
 

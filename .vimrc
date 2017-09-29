@@ -93,9 +93,9 @@ set path+=**
 set wildmenu
 
 " Show linenumbers
-set relativenumber
-set number
 set ruler
+set number
+set relativenumber
 
 " search highlighting
 set hlsearch
@@ -107,7 +107,7 @@ set softtabstop=2
 set smarttab " let's tab key insert 'tab stops', and bksp deletes tabs.
 set shiftround " tab / shifting moves to closest tabstop.
 set autoindent " Match indents on new lines.
-set smartindent " Intellegently dedent / indent new lines based on rules.
+set smartindent " Intelligently indent/un-indent new lines based on rules.
 
 " Always display the status line
 set laststatus=2
@@ -137,13 +137,13 @@ let maplocalleader = ";"
 
 " Plugin settings and mappings
 " Ctrlp-plugin
-nnoremap <leader>t :CtrlPClearCache<bar>CtrlP<cr>
+nnoremap <C-p> :CtrlPClearCache<bar>CtrlP<cr>
 
 let g:ctrlp_show_hidden = 1
 
 " NERDTree
 " Open NERDTree with ctrl+n
-map <leader>n :NERDTreeToggle<CR>
+map <C-n> :NERDTreeToggle<CR>
 nnoremap <silent> - :silent edit <C-R>=empty(expand('%')) ? '.' : expand('%:p:h')<CR><CR>
 
 let g:NERDTreeMinimalUI=1
@@ -279,7 +279,7 @@ autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 " Folds
 set foldmethod=indent
 " toggle a fold.
-nnoremap <s-o> za
+nnoremap <s-o> zA
 " save folds each time you save and exit a file
 au BufWinLeave *.* mkview
 " reload folds when you open a file
