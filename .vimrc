@@ -333,6 +333,9 @@ map <localleader>hh <<
 inoremap <localleader>ll <C-t>
 inoremap <localleader>hh <C-d>
 
+" create vsplit, and then switch to it.
+noremap <leader>v :vsp<CR>
+
 " Faster scrolling
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
