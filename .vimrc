@@ -126,6 +126,10 @@ set noswapfile
 set hidden " allow me to have buffers with unsaved changes.
 set autoread " autoload files
 
+" Natural splits
+set splitbelow
+set splitright
+
 set ignorecase " case insensitive search
 set smartcase " If there are uppercase letters, become case-sensitive.
 set incsearch " live incremental searching
@@ -305,15 +309,16 @@ nnoremap <leader><leader> <C-^>
 nnoremap <leader>q :quit<CR>
 nnoremap <leader>w :write<CR>
 nnoremap <leader>x :xit<CR>
-nnoremap <leader>f :find 
-nnoremap <leader>b :b 
+nnoremap <leader>f :find<space>
+nnoremap <leader>b :b<space>
 nnoremap <leader>e :edit <C-R>=expand('%:p:h') . '/'<CR>
+nnoremap <leader>c :checktime<CR>
 
 " map local leader bindings
-inoremap <localleader>; <C-p>
+"inoremap <localleader>; <C-p>
 inoremap <localleader>i <C-x><C-o>
 inoremap <localleader>p <C-x><C-f>
-nnoremap <localleader>e :e 
+nnoremap <localleader>e :e<space>
 nnoremap <localleader>nh :nohl<CR>
 
 " Better toggling between tabs
@@ -325,16 +330,17 @@ nnoremap <C-H> <C-W><C-H>
 " map escape to pressing jk at the same time
 "inoremap jk <Esc>
 "inoremap kj <Esc>
-inoremap qq <Esc>
-vnoremap qq <Esc>gV
-cnoremap qq <Esc>
+inoremap <localleader>; <Esc>
+vnoremap <localleader>; <Esc>gV
+cnoremap <localleader>; <Esc>
 map <localleader>ll >>
 map <localleader>hh <<
 inoremap <localleader>ll <C-t>
 inoremap <localleader>hh <C-d>
 
-" create vsplit, and then switch to it.
+" create splits
 noremap <leader>v :vsp<CR>
+noremap <leader>h :sp<CR>
 
 " Faster scrolling
 nnoremap <C-e> 3<C-e>
@@ -400,9 +406,8 @@ endif
 
   highlight LineNr       ctermfg=19
 
-hi Visual term=reverse cterm=reverse guibg=Grey
-"hi Cursor term=reverse cterm=reverse guibg=Grey
-"hi iCursor term=reverse cterm=reverse guibg=Gray
+"hi Visual term=reverse cterm=reverse
+hi Visual cterm=bold ctermfg=21
 "hi CursorLine term=bold cterm=reverse
 
 " Vim airline toolbar theme
