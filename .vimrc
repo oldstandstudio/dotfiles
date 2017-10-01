@@ -30,6 +30,13 @@ Plugin 'mattn/emmet-vim'
 " For better html indenting 
 Plugin 'indenthtml.vim'
 
+" for haml, sass, and scss support
+Plugin 'tpope/vim-haml'
+
+" Support for jade syntax highlighting and indenting
+Plugin 'digitaltoad/vim-jade'
+au BufNewFile,BufReadPost *.jade set filetype=pug
+
 " Ruby on Rails Plugins
 Plugin 'tpope/vim-rails'
 
@@ -284,6 +291,8 @@ nnoremap <s-o> zA
 au BufWinLeave *.* mkview
 " reload folds when you open a file
 au BufWinEnter *.* silent loadview
+"highlight Folded ctermbg=grey ctermfg=blue
+"highlight FoldColumn guibg=darkgrey guifg=white
 
 " key bindings
 "inoremap <tab> <C-p>
@@ -331,6 +340,18 @@ nnoremap <C-y> 3<C-y>
 " toggle spell check with
 map <leader>s :setlocal spell! spelllang=en_us<cr>
 
+" rename current file, via Gary Bernhardt
+function! RenameFile()
+  let old_name = expand('%')
+  let new_name = input('New file name: ', expand('%'))
+  if new_name != '' && new_name != old_name
+    exec ':saveas ' . new_name
+    exec ':silent !rm ' . old_name
+    redraw!
+  endif
+endfunction
+map <leader>n :call RenameFile()<cr>
+
 " Poor Woman's Code Snippets
 " HTML
 nnoremap <localleader>h5 :-1read ~/.vim/html/.skeleton.html<CR>4jwf<i
@@ -356,11 +377,42 @@ if filereadable(expand("~/.vimrc_background"))
   source ~/.vimrc_background
 endif
 
+" railcasts theme - terminal improvements
+"set background=dark
+"colorscheme base16-railscasts
+"  highlight clear SignColumn
+"  highlight VertSplit    ctermbg=236
+"  highlight ColorColumn  ctermbg=237
+"  highlight LineNr       ctermbg=236 ctermfg=240
+"  highlight CursorLineNr ctermbg=236 ctermfg=240
+"  highlight CursorLine   ctermbg=236
+"  highlight StatusLineNC ctermbg=238 ctermfg=0
+"  highlight StatusLine   ctermbg=240 ctermfg=12
+"  highlight IncSearch    ctermbg=3   ctermfg=1
+"  highlight Search       ctermbg=1   ctermfg=3
+"  highlight Visual       ctermbg=3   ctermfg=0
+"  highlight Pmenu        ctermbg=240 ctermfg=12
+"  highlight PmenuSel     ctermbg=3   ctermfg=1
+"  highlight SpellBad     ctermbg=0   ctermfg=1
+
+  highlight LineNr       ctermfg=19
+
 hi Visual term=reverse cterm=reverse guibg=Grey
 "hi Cursor term=reverse cterm=reverse guibg=Grey
 "hi iCursor term=reverse cterm=reverse guibg=Gray
-"hi CursorLine term=reverse cterm=reverse 
+"hi CursorLine term=bold cterm=reverse
 
 " Vim airline toolbar theme
-let g:airline_theme='deus'
+"let g:airline_theme='base16'
 let g:airline_section_x = '%{PencilMode()}'
+
+" Highlight status bar while in insert mode
+if version >= 700
+  au InsertEnter * hi StatusLine ctermfg=235 ctermbg=2
+  au InsertLeave * hi StatusLine ctermbg=240 ctermfg=12
+endif
+
+" italic comments
+set t_ZH=[3m   "  character is created by ctrl-v <esc>
+set t_ZR=[23m
+highlight Comment term=italic cterm=italic ctermfg=19

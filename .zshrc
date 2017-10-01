@@ -141,6 +141,9 @@ alias v="vim"
 alias rbt="robotfindskitten"
 alias cl="clear"
 alias x="exit"
+alias frec="ffmpeg -f x11grab -s 1920x1080 -i :0.0 "
+alias swatch="sass --watch scss:css"
+alias jadehtml="jade -w -P "
 
 # color
 alias hl="base16_harmonic16-light"
