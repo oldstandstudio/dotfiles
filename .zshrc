@@ -96,13 +96,14 @@ source $ZSH/oh-my-zsh.sh
 	alias cd="c"
 
 # file management
-alias vrc="vim ~/.vimrc"
-alias zrc="vim ~/.zshrc"
-alias tcf="vim ~/.tmux.conf"
-alias .vrc="vim ~/Dropbox/.dotfiles/.vimrc"
-alias .zrc="vim ~/Dropbox/.dotfiles/.zshrc"
-alias .tcf="vim ~/Dropbox/.dotfiles/.tmux.conf"
+alias vrc="nvim ~/.vimrc"
+alias zrc="nvim ~/.zshrc"
+alias tcf="nvim ~/.tmux.conf"
+alias .vrc="nvim ~/Dropbox/.dotfiles/.vimrc"
+alias .zrc="nvim ~/Dropbox/.dotfiles/.zshrc"
+alias .tcf="nvim ~/Dropbox/.dotfiles/.tmux.conf"
 alias treedir="tree --filelimit=14 --dirsfirst"
+alias init="nvim ~/.config/nvim/init.vim"
 
 #i3
 alias gcf="~/.config"
@@ -138,6 +139,7 @@ alias gs="git status"
 # other
 alias rr="ranger"
 alias v="vim"
+alias n="nvim"
 alias rbt="robotfindskitten"
 alias cl="clear"
 alias x="exit"
@@ -155,7 +157,8 @@ alias light="base16_grayscale-light"
 alias dracula="base16_dracula"
 alias mocha="base16_mocha"
 alias monokai="base16_monokai"
-
+alias iceberg="base16_iceberg"
+alias paraiso="base16_paraiso"
 
 # xbacklight
 alias xbs="xbacklight -set"

@@ -14,6 +14,8 @@ Plugin 'VundleVim/Vundle.vim'
 
 " color themes
 Plugin 'chriskempson/base16-vim'
+Plugin 'flazz/vim-colorschemes'
+Plugin 'cocopon/iceberg.vim'
 
 " Fuzzy finder
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -115,6 +117,7 @@ set smarttab " let's tab key insert 'tab stops', and bksp deletes tabs.
 set shiftround " tab / shifting moves to closest tabstop.
 set autoindent " Match indents on new lines.
 set smartindent " Intelligently indent/un-indent new lines based on rules.
+set linebreak "better file wrapping
 
 " Always display the status line
 set laststatus=2
@@ -139,8 +142,9 @@ set gdefault " use the `g` flag by default.
 " allow the cursor to go anywhere in visual block mode.
 set virtualedit+=block
 
-"set list listchars=tab:»·,trail:· " show extra space characters
-set list listchars=tab:\|\ ,trail:· " show extra space characters
+" list invisable characters
+set list listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:~,eol:¬ " show extra space characters
+set showbreak=—»»
 
 " leader mappings
 let mapleader = "\<Space>"
@@ -313,6 +317,7 @@ nnoremap <leader>f :find<space>
 nnoremap <leader>b :b<space>
 nnoremap <leader>e :edit <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <leader>c :checktime<CR>
+nnoremap <leader>l :ls<CR>
 
 " map local leader bindings
 "inoremap <localleader>; <C-p>
@@ -339,8 +344,14 @@ inoremap <localleader>ll <C-t>
 inoremap <localleader>hh <C-d>
 
 " create splits
+" vertical splits
 noremap <leader>v :vsp<CR>
+noremap <leader>vf :vsp<space>
+noremap <leader>vb :vert sb<space>
+" horizontal splits
 noremap <leader>h :sp<CR>
+noremap <leader>hf :sf<space>
+noremap <leader>hb :sb<space>
 
 " Faster scrolling
 nnoremap <C-e> 3<C-e>
@@ -380,38 +391,44 @@ inoremap <localleader>rh <esc>I<%=  =><esc>F=hi
 " Markdown
 inoremap <localleader>m3 ### <esc>a
 
-" Theme and Styling
+" NeoVim Specific
+map <leader>t :terminal<CR>
+tnoremap <localleader>; <C-\><C-n>
+
+" To simulate |i_CTRL-R| in terminal-mode:
+:tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+
+"To use `Ctrl+{h,j,k,l}` to navigate windows from any mode:
+    :tnoremap <C-h> <C-\><C-N><C-w>h
+    :tnoremap <C-j> <C-\><C-N><C-w>j
+    :tnoremap <C-k> <C-\><C-N><C-w>k
+    :tnoremap <C-l> <C-\><C-N><C-w>l
+    :inoremap <C-h> <C-\><C-N><C-w>h
+    :inoremap <C-j> <C-\><C-N><C-w>j
+    :inoremap <C-k> <C-\><C-N><C-w>k
+    :inoremap <C-l> <C-\><C-N><C-w>l
+
+" Create terminal splits
+noremap <leader>vt :vsp term://zsh<CR>i
+noremap <leader>ht :sp term://zsh<CR>i
+
+"""" Theme and Styling
 if filereadable(expand("~/.vimrc_background"))
   let base16colorspace=256
   source ~/.vimrc_background
 endif
 
-" railcasts theme - terminal improvements
-"set background=dark
-"colorscheme base16-railscasts
-"  highlight clear SignColumn
-"  highlight VertSplit    ctermbg=236
-"  highlight ColorColumn  ctermbg=237
-"  highlight LineNr       ctermbg=236 ctermfg=240
-"  highlight CursorLineNr ctermbg=236 ctermfg=240
-"  highlight CursorLine   ctermbg=236
-"  highlight StatusLineNC ctermbg=238 ctermfg=0
-"  highlight StatusLine   ctermbg=240 ctermfg=12
-"  highlight IncSearch    ctermbg=3   ctermfg=1
-"  highlight Search       ctermbg=1   ctermfg=3
-"  highlight Visual       ctermbg=3   ctermfg=0
-"  highlight Pmenu        ctermbg=240 ctermfg=12
-"  highlight PmenuSel     ctermbg=3   ctermfg=1
-"  highlight SpellBad     ctermbg=0   ctermfg=1
-
-  highlight LineNr       ctermfg=19
-
 "hi Visual term=reverse cterm=reverse
 hi Visual cterm=bold ctermfg=21
-"hi CursorLine term=bold cterm=reverse
+"hi CursorLine term=NONE cterm=reverse
+
+" Only use cursorline for current window
+autocmd WinEnter,FocusGained * setlocal cursorline
+autocmd WinLeave,FocusLost   * setlocal nocursorline
+
 
 " Vim airline toolbar theme
-"let g:airline_theme='base16'
+let g:airline_theme='base16'
 let g:airline_section_x = '%{PencilMode()}'
 
 " Highlight status bar while in insert mode
@@ -423,4 +440,10 @@ endif
 " italic comments
 set t_ZH=[3m   "  character is created by ctrl-v <esc>
 set t_ZR=[23m
-highlight Comment term=italic cterm=italic ctermfg=19
+"highlight Comment term=italic cterm=italic gui=italic ctermfg=19
+
+" For use with iceberg color theme
+"let base16colorspace=256
+"colorscheme iceberg
+"set background="dark"
+highlight Comment term=italic cterm=italic gui=italic ctermfg=08
