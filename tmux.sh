@@ -6,5 +6,4 @@ if tmux has-session -t dot 2> /dev/null; then
 fi
 
 tmux new-session -d -s dot -c ~/Dropbox/.dotfiles -n '·' 'nvim'
-tmux new-window -n '[=]' 'ranger'
 tmux -2 attach-session -d

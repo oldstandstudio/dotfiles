@@ -95,6 +95,17 @@ source $ZSH/oh-my-zsh.sh
 	}
 	alias cd="c"
 
+# Make CTRL-Z toggle suspending things. Thanks to Wincent dotfiles for this little gem
+function fg-bg() {
+	if [[ $#BUFFER -eq 0 ]]; then
+		fg
+	else
+		zle push-input
+	fi
+}
+zle -N fg-bg
+bindkey '^Z' fg-bg
+
 # file management
 alias vrc="nvim ~/.vimrc"
 alias zrc="nvim ~/.zshrc"
@@ -104,6 +115,7 @@ alias .zrc="nvim ~/Dropbox/.dotfiles/.zshrc"
 alias .tcf="nvim ~/Dropbox/.dotfiles/.tmux.conf"
 alias treedir="tree --filelimit=14 --dirsfirst"
 alias init="nvim ~/.config/nvim/init.vim"
+alias .="~/"
 
 #i3
 alias gcf="~/.config"

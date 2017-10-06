@@ -1,7 +1,7 @@
 set nocompatible "sorry vi
 filetype off "needed by vundle
 
-" Plugins
+" Plugins {{{
 "Vundle
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -20,11 +20,17 @@ Plugin 'cocopon/iceberg.vim'
 " Fuzzy finder
 Plugin 'ctrlpvim/ctrlp.vim'
 
+" Ag - Silver Searcher
+Plugin 'rking/ag.vim'
+
 " Nerdtree
 Plugin 'scrooloose/nerdtree'
 
 " Vim Vinegar
 Plugin 'tpope/vim-vinegar'
+
+" for super undo tree
+Plugin 'sjl/gundo.vim'
 
 " Emmet for Vim
 Plugin 'mattn/emmet-vim'
@@ -90,16 +96,19 @@ filetype plugin indent on    " required
 
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
+" }}}
 
-" Set all the things!
+" Set all the things! {{{
 filetype plugin indent on
 syntax on
 set syntax=whitespace "don't even know if I need this. I'll google/search vim help regarding it at some point
 set encoding=utf8
+set lazyredraw          " redraw only when we need to.
 
 " for tab completion and whole system searches using vim's built in search
 set path+=**
 set wildmenu
+set wildmode=full
 
 " Show linenumbers
 set ruler
@@ -118,9 +127,11 @@ set shiftround " tab / shifting moves to closest tabstop.
 set autoindent " Match indents on new lines.
 set smartindent " Intelligently indent/un-indent new lines based on rules.
 set linebreak "better file wrapping
+set textwidth=80 "hardwrap at 80 columns
 
 " Always display the status line
 set laststatus=2
+set showcmd
 
 set nobackup
 set nowritebackup
@@ -146,15 +157,29 @@ set virtualedit+=block
 set list listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:~,eol:¬ " show extra space characters
 set showbreak=—»»
 
+if has('linebreak')
+	let &showbreak='—»» '
+	set breakindent
+	if exists('&breakindentopt')
+		set breakindentopt=shift:2
+	endif
+endif
+" }}}
+
 " leader mappings
 let mapleader = "\<Space>"
 let maplocalleader = ";"
 
 " Plugin settings and mappings
 " Ctrlp-plugin
-nnoremap <C-p> :CtrlPClearCache<bar>CtrlP<cr>
-
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlPMixed'
+nnoremap <leader>l :CtrlPBuffer<CR>
+"nnoremap <leader>k :CtrlPClearCache<CR>
 let g:ctrlp_show_hidden = 1
+
+" CtrlP intagration with Ag
+let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 
 " NERDTree
 " Open NERDTree with ctrl+n
@@ -180,6 +205,9 @@ let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
 let g:netrw_banner=0 "disable banner
 let g:netrw_altv=1   "open splits on right
 let g:netrw_liststyle=3 "tree view
+
+" Gundo mappings /needs vim to be compiled with python
+"nnoremap <leader>g :GundoToggle<CR>
 
 "Syntastic checkers
 set statusline+=%#warningmsg#
@@ -284,7 +312,7 @@ set complete+=kspell
 " Vim-Test Configuration
 let test#strategy = "vimux"
 
-" Native vim power!
+" Native vim power! Folds and OmniComplete Settings
 " OmniComplete
 set omnifunc=syntaxcomplete#Complete
 autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete#Complete
@@ -292,9 +320,13 @@ autocmd FileType css,scss setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 
 " Folds
-set foldmethod=indent
+set foldenable
+autocmd FileType html,jade,ruby,eruby,css,scss,sass,js set foldmethod=indent
+set foldlevelstart=99   " open folds by default
+set foldnestmax=10	"max number of nested folds
+
 " toggle a fold.
-nnoremap <s-o> zA
+nnoremap <s-o> za
 " save folds each time you save and exit a file
 au BufWinLeave *.* mkview
 " reload folds when you open a file
@@ -303,10 +335,15 @@ au BufWinEnter *.* silent loadview
 "highlight FoldColumn guibg=darkgrey guifg=white
 
 " key bindings
+" @@ remapped to enter key while in normal buffer. Thanks to wincent aka Greg Hurrel for this one.
+nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
+
 "inoremap <tab> <C-p>
-map <S-t> %
-map <S-e> $
-map <S-b> 0
+"inoremap <s-tab> <C-p>
+map Q %
+map E $
+map B 0
+map K k
 
 " map leader bindings
 nnoremap <leader><leader> <C-^>
@@ -317,7 +354,10 @@ nnoremap <leader>f :find<space>
 nnoremap <leader>b :b<space>
 nnoremap <leader>e :edit <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <leader>c :checktime<CR>
-nnoremap <leader>l :ls<CR>
+"nnoremap <leader>l :ls<CR>
+nnoremap <leader>` :!<space>
+nnoremap <leader>a :Ag!<space>
+
 
 " map local leader bindings
 "inoremap <localleader>; <C-p>
@@ -325,8 +365,13 @@ inoremap <localleader>i <C-x><C-o>
 inoremap <localleader>p <C-x><C-f>
 nnoremap <localleader>e :e<space>
 nnoremap <localleader>nh :nohl<CR>
+map <localleader>ll >>
+map <localleader>hh <<
+inoremap <localleader>ll <C-t>
+inoremap <localleader>hh <C-d>
+nnoremap <localleader>sr :%s/
 
-" Better toggling between tabs
+" Better toggling between splits
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
@@ -338,10 +383,6 @@ nnoremap <C-H> <C-W><C-H>
 inoremap <localleader>; <Esc>
 vnoremap <localleader>; <Esc>gV
 cnoremap <localleader>; <Esc>
-map <localleader>ll >>
-map <localleader>hh <<
-inoremap <localleader>ll <C-t>
-inoremap <localleader>hh <C-d>
 
 " create splits
 " vertical splits
@@ -370,7 +411,7 @@ function! RenameFile()
     redraw!
   endif
 endfunction
-map <leader>n :call RenameFile()<cr>
+map <leader>r :call RenameFile()<cr>
 
 " Poor Woman's Code Snippets
 " HTML
@@ -394,6 +435,8 @@ inoremap <localleader>m3 ### <esc>a
 " NeoVim Specific
 map <leader>t :terminal<CR>
 tnoremap <localleader>; <C-\><C-n>
+"To map <Esc> to exit terminal-mode:
+tnoremap <Esc> <C-\><C-n>
 
 " To simulate |i_CTRL-R| in terminal-mode:
 :tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
@@ -419,22 +462,21 @@ if filereadable(expand("~/.vimrc_background"))
 endif
 
 "hi Visual term=reverse cterm=reverse
-hi Visual cterm=bold ctermfg=21
+"hi Visual cterm=bold ctermfg=21
 "hi CursorLine term=NONE cterm=reverse
 
 " Only use cursorline for current window
 autocmd WinEnter,FocusGained * setlocal cursorline
 autocmd WinLeave,FocusLost   * setlocal nocursorline
 
-
 " Vim airline toolbar theme
-let g:airline_theme='base16'
+let g:airline_theme='minimalist'
 let g:airline_section_x = '%{PencilMode()}'
 
 " Highlight status bar while in insert mode
 if version >= 700
-  au InsertEnter * hi StatusLine ctermfg=235 ctermbg=2
-  au InsertLeave * hi StatusLine ctermbg=240 ctermfg=12
+  au InsertEnter * hi StatusLine ctermfg=235 ctermbg=10
+  au InsertLeave * hi StatusLine ctermbg=240 ctermfg=08
 endif
 
 " italic comments
@@ -443,7 +485,10 @@ set t_ZR=[23m
 "highlight Comment term=italic cterm=italic gui=italic ctermfg=19
 
 " For use with iceberg color theme
-"let base16colorspace=256
 "colorscheme iceberg
 "set background="dark"
 highlight Comment term=italic cterm=italic gui=italic ctermfg=08
+
+"if has('termguicolors')
+"	set termguicolors
+"endif
