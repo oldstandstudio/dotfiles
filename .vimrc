@@ -47,12 +47,17 @@ au BufNewFile,BufReadPost *.jade set filetype=pug
 
 " Ruby on Rails Plugins
 Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-rbenv'
 
 " You Complete Me, Vim
 "Plugin 'Valloric/YouCompleteMe'
 
 " Syntastic
 Plugin 'vim-syntastic/syntastic'
+
+" Git for vim
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-git'
 
 " Markdown / Writting
 Plugin 'reedes/vim-pencil'
@@ -74,10 +79,6 @@ Plugin 'wincent/terminus'
 
 " Synchronized toggle key mappings
 Plugin 'tpope/vim-unimpaired'
-
-" Vim statusbar
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
 
 " Keep Plugin commands between vundle#begin/end.
 " All of your Plugins must be added before the following line
@@ -326,7 +327,8 @@ set foldlevelstart=99   " open folds by default
 set foldnestmax=10	"max number of nested folds
 
 " toggle a fold.
-nnoremap <s-o> za
+nnoremap s za
+nnoremap S zA
 " save folds each time you save and exit a file
 au BufWinLeave *.* mkview
 " reload folds when you open a file
@@ -334,12 +336,13 @@ au BufWinEnter *.* silent loadview
 "highlight Folded ctermbg=grey ctermfg=blue
 "highlight FoldColumn guibg=darkgrey guifg=white
 
+
 " key bindings
 " @@ remapped to enter key while in normal buffer. Thanks to wincent aka Greg Hurrel for this one.
 nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
 
 "inoremap <tab> <C-p>
-"inoremap <s-tab> <C-p>
+map <s-tab> zM
 map Q %
 map E $
 map B 0
@@ -370,6 +373,9 @@ map <localleader>hh <<
 inoremap <localleader>ll <C-t>
 inoremap <localleader>hh <C-d>
 nnoremap <localleader>sr :%s/
+nnoremap <localleader>mn :w!<bar>mks ~/.vim/sessions/
+nnoremap <localleader>ms :mks!<bar>wqa!<CR>
+nnoremap <localleader>mo :source ~/.vim/sessions/
 
 " Better toggling between splits
 nnoremap <C-J> <C-W><C-J>
@@ -413,6 +419,8 @@ function! RenameFile()
 endfunction
 map <leader>r :call RenameFile()<cr>
 
+
+
 " Poor Woman's Code Snippets
 " HTML
 nnoremap <localleader>h5 :-1read ~/.vim/html/.skeleton.html<CR>4jwf<i
@@ -452,8 +460,10 @@ tnoremap <Esc> <C-\><C-n>
     :inoremap <C-l> <C-\><C-N><C-w>l
 
 " Create terminal splits
+
 noremap <leader>vt :vsp term://zsh<CR>i
 noremap <leader>ht :sp term://zsh<CR>i
+
 
 """" Theme and Styling
 if filereadable(expand("~/.vimrc_background"))
@@ -463,21 +473,11 @@ endif
 
 "hi Visual term=reverse cterm=reverse
 "hi Visual cterm=bold ctermfg=21
-"hi CursorLine term=NONE cterm=reverse
 
 " Only use cursorline for current window
 autocmd WinEnter,FocusGained * setlocal cursorline
 autocmd WinLeave,FocusLost   * setlocal nocursorline
 
-" Vim airline toolbar theme
-let g:airline_theme='minimalist'
-let g:airline_section_x = '%{PencilMode()}'
-
-" Highlight status bar while in insert mode
-if version >= 700
-  au InsertEnter * hi StatusLine ctermfg=235 ctermbg=10
-  au InsertLeave * hi StatusLine ctermbg=240 ctermfg=08
-endif
 
 " italic comments
 set t_ZH=[3m   "  character is created by ctrl-v <esc>
@@ -492,3 +492,163 @@ highlight Comment term=italic cterm=italic gui=italic ctermfg=08
 "if has('termguicolors')
 "	set termguicolors
 "endif
+
+" Statusline
+" based on https://github.com/fatih/dotfiles/blob/master/vimrc
+
+hi! StatusLine ctermfg=00 ctermbg=14
+
+let s:modes = {
+      \ 'n': 'N', 
+      \ 'i': 'I', 
+      \ 'R': 'R', 
+      \ 'v': 'V', 
+      \ 'V': 'VL', 
+      \ "\<C-v>": 'VB',
+      \ 'c': 'C',
+      \ 's': 'select', 
+      \ 'S': 's-line', 
+      \ "\<C-s>": 's-block', 
+      \ 't': 'T'
+      \}
+
+let s:prev_mode = ""
+function! StatusLineMode()
+  let cur_mode = get(s:modes, mode(), '')
+
+  " do not update higlight if the mode is the same
+  if cur_mode == s:prev_mode
+    return cur_mode
+  endif
+
+  if cur_mode == "N"
+    exe 'hi! myModeColor cterm=bold ctermbg=20 ctermfg=00'
+		exe 'hi! myInfoColor ctermbg=00 ctermfg=20'
+		exe 'hi! myStatsColor ctermbg=00 ctermfg=20'
+  elseif cur_mode == "I"
+    exe 'hi! myModeColor cterm=bold ctermbg=10 ctermfg=00'
+		exe 'hi! myInfoColor ctermbg=00 ctermfg=10'
+		exe 'hi! myStatsColor ctermbg=00 ctermfg=10'
+  elseif cur_mode == "R"
+    exe 'hi! myModeColor cterm=bold ctermbg=12 ctermfg=00'
+		exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
+		exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
+  elseif cur_mode == "T"
+    exe 'hi! myModeColor cterm=bold ctermbg=15 ctermfg=00'
+		exe 'hi! myInfoColor ctermbg=00 ctermfg=15'
+		exe 'hi! myStatsColor ctermbg=00 ctermfg=15'
+  elseif cur_mode == "V" || cur_mode == "VL" || cur_mode == "VB"
+    exe 'hi! myModeColor cterm=bold ctermbg=18 ctermfg=00'
+		exe 'hi! myInfoColor ctermbg=00 ctermfg=18'
+		exe 'hi! myStatsColor ctermbg=00 ctermfg=18'
+  endif
+
+  let s:prev_mode = cur_mode
+  return cur_mode
+endfunction
+
+function! StatusLineFiletype()
+  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no file') : ''
+endfunction
+
+function! StatusLinePercent()
+  return (100 * line('.') / line('$')) . '%'
+endfunction
+
+function! StatusLineLeftInfo()
+ let branch = fugitive#head()
+ let filename = '' != expand('%:t') ? expand('%:t') : '{no name}'
+ if branch !=# ''
+   return printf("\ %s\/%s", branch, filename)
+ endif
+ return filename
+endfunction
+
+function! Rbenv()
+	return system("rbenv version | awk '{printf $1}'")
+endfunction
+
+" More colors
+exe 'hi! myFileColor cterm=italic ctermbg=00 ctermfg=08'
+exe 'hi! myBufferColor ctermbg=00 ctermfg=08'
+exe 'hi! myGlyphsColor ctermbg=00 ctermfg=08'
+
+" start building our statusline
+set statusline=
+
+" mode with custom colors
+set statusline+=%#myModeColor#\ 
+set statusline+=%{StatusLineMode()}\ 
+set statusline+=%*
+
+"set statusline+=%#myGlyphsColor#
+"set statusline+=\ —»»
+"set statusline+=%*
+
+" left information bar (after mode)
+set statusline+=%#myInfoColor#
+set statusline+=\ %{StatusLineLeftInfo()}\ %r
+set statusline+=%*
+
+" filetype
+"set statusline+=%#myFileColor#
+"set statusline+=\ \[%{StatusLineFiletype()}%R\]
+"set statusline+=\ %*
+
+" right section seperator
+set statusline+=%=
+
+" percentage, line number and column number
+set statusline+=%#myStatsColor#
+set statusline+=ℓ\ %l/%L\ 𝕔\ %v
+"set statusline+=\ %{StatusLinePercent()}
+set statusline+=\ %*
+
+" filetype and current register
+set statusline+=%#myStatsColor#
+set statusline+=\"%{v:register}
+"set statusline+=\ \»
+"set statusline+=\ %{StatusLineFiletype()}\ \»
+"set statusline+=\ ⟢\ %{Rbenv()} "get the rbenv version
+set statusline+=\ %*
+
+" buffers
+set statusline+=%#myModeColor#
+set statusline+=\ %M%n\             "buffer number
+set statusline+=%*
+
+"hi CursorLine term=bold cterm=reverse
+"hi CursorColumn term=NONE cterm=reverse
+
+" Dim inactive windows using 'colorcolumn' setting
+" This tends to slow down redrawing, but is very useful.
+" Based on https://groups.google.com/d/msg/vim_use/IJU-Vk-QLJE/xz4hjPjCRBUJ
+" XXX: this will only work with lines containing text (i.e. not '~')
+" from 
+if exists('+colorcolumn')
+  function! s:DimInactiveWindows()
+    for i in range(1, tabpagewinnr(tabpagenr(), '$'))
+      let l:range = ""
+      if i != winnr()
+        if &wrap
+         " HACK: when wrapping lines is enabled, we use the maximum number
+         " of columns getting highlighted. This might get calculated by
+         " looking for the longest visible line and using a multiple of
+         " winwidth().
+         let l:width=256 " max
+        else
+         let l:width=winwidth(i)
+        endif
+        let l:range = join(range(1, l:width), ',')
+      endif
+      call setwinvar(i, '&colorcolumn', l:range)
+    endfor
+  endfunction
+  augroup DimInactiveWindows
+    au!
+    au WinEnter * call s:DimInactiveWindows()
+    au WinEnter * set cursorline
+    au WinLeave * set nocursorline
+  augroup END
+endif
+
