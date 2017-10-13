@@ -16,6 +16,10 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'chriskempson/base16-vim'
 Plugin 'flazz/vim-colorschemes'
 Plugin 'cocopon/iceberg.vim'
+Plugin 'reedes/vim-colors-pencil'
+Plugin 'NLKNguyen/papercolor-theme'
+Plugin 'junegunn/seoul256.vim'
+Plugin 'morhetz/gruvbox'
 
 " Fuzzy finder
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -49,15 +53,13 @@ au BufNewFile,BufReadPost *.jade set filetype=pug
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-rbenv'
 
-" You Complete Me, Vim
-"Plugin 'Valloric/YouCompleteMe'
-
 " Syntastic
 Plugin 'vim-syntastic/syntastic'
 
 " Git for vim
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-git'
+Plugin 'airblade/vim-gitgutter'
 
 " Markdown / Writting
 Plugin 'reedes/vim-pencil'
@@ -220,6 +222,10 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
+" Vim-Test Configuration
+let test#strategy = "vimux"
+
+
 "Goyo&Limelight
 " Start distraction-free mode with ctrl+g
 map <C-g> :Goyo<CR>
@@ -249,8 +255,8 @@ autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
 "Limelight settings for unsupported themes
 " Color name (:help cterm-colors) or ANSI code
-let g:limelight_conceal_ctermfg = 'darkgray'
-let g:limelight_conceal_ctermfg = 8
+let g:limelight_conceal_ctermfg = 'lightgray'
+let g:limelight_conceal_ctermfg = 248
 
 " Default: 0.5
 let g:limelight_default_coefficient = 0.5
@@ -279,10 +285,8 @@ augroup markdown
      au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
 augroup END
 
-let g:pencil#wrapModeDefault = 'soft'   " default is 'hard'
 let g:languagetool_jar  = '/opt/languagetool/languagetool-commandline.jar'
-"
-nnoremap <leader>p :TogglePencil<CR>
+
 " Vim-pencil Configuration
 augroup pencil
     autocmd!
@@ -290,7 +294,10 @@ augroup pencil
     autocmd FileType text         call pencil#init()
 augroup END
 
+let g:pencil#wrapModeDefault = 'soft'   " default is 'hard'
 let g:pencil#joinspaces = 1
+let g:pencil#conceallevel = 3     " 0=disable, 1=one char, 2=hide char, 3=hide all (def)
+let g:pencil#concealcursor = 'nc'  " n=normal, v=visual, i=insert, c=command (def)
 
 "Wordy
 let g:wordy#ring = [
@@ -303,15 +310,6 @@ let g:wordy#ring = [
   \ 'adjectives',
   \ 'adverbs',
   \ ]
-
-noremap <silent> <leader>y :<C-u>NextWordy<cr>
-noremap <silent> <leader>Y :NoWordy<cr>
-
-" Dictionary Completion
-set complete+=kspell
-
-" Vim-Test Configuration
-let test#strategy = "vimux"
 
 " Native vim power! Folds and OmniComplete Settings
 " OmniComplete
@@ -336,6 +334,8 @@ au BufWinEnter *.* silent loadview
 "highlight Folded ctermbg=grey ctermfg=blue
 "highlight FoldColumn guibg=darkgrey guifg=white
 
+" Dictionary Completion
+set complete+=kspell
 
 " key bindings
 " @@ remapped to enter key while in normal buffer. Thanks to wincent aka Greg Hurrel for this one.
@@ -360,6 +360,24 @@ nnoremap <leader>c :checktime<CR>
 "nnoremap <leader>l :ls<CR>
 nnoremap <leader>` :!<space>
 nnoremap <leader>a :Ag!<space>
+noremap <silent> <leader>y :<C-u>NextWordy<cr>
+noremap <silent> <leader>Y :NoWordy<cr>
+"nnoremap <leader>p :TogglePencil<CR>
+nnoremap <leader>tg :colorscheme gruvbox <bar> :set background=dark<CR>
+nnoremap <leader>ti :colorscheme iceberg <bar> :set background=dark<CR>
+
+" create splits
+" vertical splits
+noremap <leader>v :vsp<CR>
+noremap <leader>vf :vsp<space>
+noremap <leader>vb :vert sb<space>
+" horizontal splits
+noremap <leader>h :sp<CR>
+noremap <leader>hf :sf<space>
+noremap <leader>hb :sb<space>
+
+" toggle spell check with
+map <leader>s :setlocal spell! spelllang=en_us<cr>
 
 
 " map local leader bindings
@@ -374,8 +392,15 @@ inoremap <localleader>ll <C-t>
 inoremap <localleader>hh <C-d>
 nnoremap <localleader>sr :%s/
 nnoremap <localleader>mn :w!<bar>mks ~/.vim/sessions/
-nnoremap <localleader>ms :mks!<bar>wqa!<CR>
+nnoremap <localleader>mw :mks!<bar>wqa!<CR>
 nnoremap <localleader>mo :source ~/.vim/sessions/
+
+" map escape to pressing ;; at the same time
+"inoremap jk <Esc>
+"inoremap kj <Esc>
+inoremap <localleader>; <Esc>
+vnoremap <localleader>; <Esc>gV
+cnoremap <localleader>; <Esc>
 
 " Better toggling between splits
 nnoremap <C-J> <C-W><C-J>
@@ -383,29 +408,9 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
-" map escape to pressing jk at the same time
-"inoremap jk <Esc>
-"inoremap kj <Esc>
-inoremap <localleader>; <Esc>
-vnoremap <localleader>; <Esc>gV
-cnoremap <localleader>; <Esc>
-
-" create splits
-" vertical splits
-noremap <leader>v :vsp<CR>
-noremap <leader>vf :vsp<space>
-noremap <leader>vb :vert sb<space>
-" horizontal splits
-noremap <leader>h :sp<CR>
-noremap <leader>hf :sf<space>
-noremap <leader>hb :sb<space>
-
 " Faster scrolling
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
-
-" toggle spell check with
-map <leader>s :setlocal spell! spelllang=en_us<cr>
 
 " rename current file, via Gary Bernhardt
 function! RenameFile()
@@ -418,7 +423,6 @@ function! RenameFile()
   endif
 endfunction
 map <leader>r :call RenameFile()<cr>
-
 
 
 " Poor Woman's Code Snippets
@@ -441,7 +445,6 @@ inoremap <localleader>rh <esc>I<%=  =><esc>F=hi
 inoremap <localleader>m3 ### <esc>a
 
 " NeoVim Specific
-map <leader>t :terminal<CR>
 tnoremap <localleader>; <C-\><C-n>
 "To map <Esc> to exit terminal-mode:
 tnoremap <Esc> <C-\><C-n>
@@ -465,19 +468,17 @@ noremap <leader>vt :vsp term://zsh<CR>i
 noremap <leader>ht :sp term://zsh<CR>i
 
 
-"""" Theme and Styling
+" Theme and Styling
+
+" Base16
 if filereadable(expand("~/.vimrc_background"))
   let base16colorspace=256
   source ~/.vimrc_background
 endif
 
-"hi Visual term=reverse cterm=reverse
-"hi Visual cterm=bold ctermfg=21
-
 " Only use cursorline for current window
 autocmd WinEnter,FocusGained * setlocal cursorline
 autocmd WinLeave,FocusLost   * setlocal nocursorline
-
 
 " italic comments
 set t_ZH=[3m   "  character is created by ctrl-v <esc>
@@ -581,13 +582,9 @@ set statusline+=%#myModeColor#\
 set statusline+=%{StatusLineMode()}\ 
 set statusline+=%*
 
-"set statusline+=%#myGlyphsColor#
-"set statusline+=\ —»»
-"set statusline+=%*
-
 " left information bar (after mode)
 set statusline+=%#myInfoColor#
-set statusline+=\ %{StatusLineLeftInfo()}\ %r
+set statusline+=\ %{StatusLineLeftInfo()}\ %r\ %{PencilMode()}\ 
 set statusline+=%*
 
 " filetype
@@ -600,15 +597,13 @@ set statusline+=%=
 
 " percentage, line number and column number
 set statusline+=%#myStatsColor#
-set statusline+=ℓ\ %l/%L\ 𝕔\ %v
+set statusline+=\ ℓ\ %l/%L\ 𝕔\ %v
 "set statusline+=\ %{StatusLinePercent()}
 set statusline+=\ %*
 
 " filetype and current register
 set statusline+=%#myStatsColor#
 set statusline+=\"%{v:register}
-"set statusline+=\ \»
-"set statusline+=\ %{StatusLineFiletype()}\ \»
 "set statusline+=\ ⟢\ %{Rbenv()} "get the rbenv version
 set statusline+=\ %*
 
@@ -617,9 +612,7 @@ set statusline+=%#myModeColor#
 set statusline+=\ %M%n\             "buffer number
 set statusline+=%*
 
-"hi CursorLine term=bold cterm=reverse
-"hi CursorColumn term=NONE cterm=reverse
-
+" Focus
 " Dim inactive windows using 'colorcolumn' setting
 " This tends to slow down redrawing, but is very useful.
 " Based on https://groups.google.com/d/msg/vim_use/IJU-Vk-QLJE/xz4hjPjCRBUJ
@@ -652,3 +645,51 @@ if exists('+colorcolumn')
   augroup END
 endif
 
+" Writing Themes and styling
+
+" Various Color theme settings
+let g:PaperColor_termguicolors=256
+
+let g:seoul256_termguicolors=256
+" seoul256 (dark):
+"   Range:   233 (darkest) ~ 239 (lightest)
+"   Default: 237
+let g:seoul256_background = 234
+" seoul256 (light):
+"   Range:   252 (darkest) ~ 256 (lightest)
+"   Default: 253
+let g:seoul256_background = 254
+
+let g:gruvbox_termguicolors=256
+let g:gruvbox_italic=1
+" gruvbox dark:
+"  Range: 234 (hardest) ~ 236 (softest)
+"  Default: 235
+let g:gruvbox_background = 236
+" gruvbox light:
+"  Range: 228 (softest) ~ 230 (hardest)
+"  Default: 229
+let g:gruvbox_background = 230
+
+" md file settings
+autocmd FileType md,mkd,markdown set showbreak=
+autocmd FileType md,mkd,markdown colorscheme gruvbox
+autocmd FileType md,mkd,markdown set background=light
+
+" pencil color theme settings
+let g:pencil_higher_contrast_ui = 1   " 0=low (def), 1=high
+let g:pencil_neutral_headings = 0   " 0=blue (def), 1=normal
+let g:pencil_neutral_code_bg = 0   " 0=gray (def), 1=normal
+let g:pencil_gutter_color = 1      " 0=mono (def), 1=color
+let g:pencil_spell_undercurl = 1       " 0=underline, 1=undercurl (def)
+let g:pencil_terminal_italics = 1
+let g:pencil_termguicolors=256
+
+
+autocmd FileType md,mkd,markdown set statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
+
+autocmd Filetype md,mkd,markdown hi cursorline cterm=reverse
+
+"hi CursorLine term=bold cterm=reverse
+"hi CursorColumn term=NONE cterm=reverse
+hi Visual term=reverse cterm=reverse

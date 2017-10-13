@@ -5,5 +5,6 @@ if tmux has-session -t dot 2> /dev/null; then
 	exit
 fi
 
-tmux new-session -d -s dot -c ~/Dropbox/.dotfiles -n '·' 'nvim'
+tmux new-session -d -s dot -c ~/Dropbox/.dotfiles -n '·~·'
+tmux send-keys 'nvim' C-m
 tmux -2 attach-session -d
