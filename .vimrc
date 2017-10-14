@@ -16,8 +16,6 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'chriskempson/base16-vim'
 Plugin 'flazz/vim-colorschemes'
 Plugin 'cocopon/iceberg.vim'
-Plugin 'reedes/vim-colors-pencil'
-Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'junegunn/seoul256.vim'
 Plugin 'morhetz/gruvbox'
 
@@ -63,11 +61,13 @@ Plugin 'airblade/vim-gitgutter'
 
 " Markdown / Writting
 Plugin 'reedes/vim-pencil'
-Plugin 'tpope/vim-markdown'
-Plugin 'jtratner/vim-flavored-markdown'
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
+"Plugin 'jtratner/vim-flavored-markdown'
 Plugin 'reedes/vim-wordy'
 "Plugin 'dpelle/vim-LanguageTool'
 "Plugin 'rhysd/vim-grammarous'
+au BufNewFile,BufReadPost *.md set filetype=markdown
 
 " Distraction-free writing
 Plugin 'junegunn/goyo.vim'
@@ -225,7 +225,6 @@ let g:syntastic_check_on_wq = 0
 " Vim-Test Configuration
 let test#strategy = "vimux"
 
-
 "Goyo&Limelight
 " Start distraction-free mode with ctrl+g
 map <C-g> :Goyo<CR>
@@ -262,7 +261,7 @@ let g:limelight_conceal_ctermfg = 248
 let g:limelight_default_coefficient = 0.5
 
 " Number of preceding/following paragraphs to include (default: 0)
-let g:limelight_paragraph_span = 0
+let g:limelight_paragraph_span = 2
 
 " Beginning/end of paragraph
 "   When there's no empty line between the paragraphs
@@ -279,12 +278,6 @@ autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
 
 " Settings for Writting
-" Markdown Syntax Support
-augroup markdown
-     au!
-     au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
-augroup END
-
 let g:languagetool_jar  = '/opt/languagetool/languagetool-commandline.jar'
 
 " Vim-pencil Configuration
@@ -296,7 +289,7 @@ augroup END
 
 let g:pencil#wrapModeDefault = 'soft'   " default is 'hard'
 let g:pencil#joinspaces = 1
-let g:pencil#conceallevel = 3     " 0=disable, 1=one char, 2=hide char, 3=hide all (def)
+let g:pencil#conceallevel = 2     " 0=disable, 1=one char, 2=hide char, 3=hide all (def)
 let g:pencil#concealcursor = 'nc'  " n=normal, v=visual, i=insert, c=command (def)
 
 "Wordy
@@ -337,6 +330,9 @@ au BufWinEnter *.* silent loadview
 " Dictionary Completion
 set complete+=kspell
 
+" Thesaurus
+"set+=thesaurus
+
 " key bindings
 " @@ remapped to enter key while in normal buffer. Thanks to wincent aka Greg Hurrel for this one.
 nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
@@ -371,15 +367,16 @@ nnoremap <leader>ti :colorscheme iceberg <bar> :set background=dark<CR>
 noremap <leader>v :vsp<CR>
 noremap <leader>vf :vsp<space>
 noremap <leader>vb :vert sb<space>
+noremap <leader>ve :vsp<space>
 " horizontal splits
 noremap <leader>h :sp<CR>
 noremap <leader>hf :sf<space>
 noremap <leader>hb :sb<space>
+noremap <leader>he :sp<space>
 
 " toggle spell check with
 map <leader>s :setlocal spell! spelllang=en_us<cr>
-
-
+map <localleader>ss z=
 " map local leader bindings
 "inoremap <localleader>; <C-p>
 inoremap <localleader>i <C-x><C-o>
@@ -391,9 +388,25 @@ map <localleader>hh <<
 inoremap <localleader>ll <C-t>
 inoremap <localleader>hh <C-d>
 nnoremap <localleader>sr :%s/
-nnoremap <localleader>mn :w!<bar>mks ~/.vim/sessions/
-nnoremap <localleader>mw :mks!<bar>wqa!<CR>
-nnoremap <localleader>mo :source ~/.vim/sessions/
+nnoremap <localleader>sn :w!<bar>mks ~/.vim/sessions/
+nnoremap <localleader>sw :mks!<bar>wqa!<CR>
+nnoremap <localleader>so :source ~/.vim/sessions/
+nnoremap <localleader>mt :Toc<CR>
+nnoremap <localleader>mfb :find <C-R>=expand('%:p:h') . '/'<CR>blueprint.md<CR>
+nnoremap <localleader>meb :e <C-R>=expand('%:p:h') . '/'<CR>blueprint.md<CR>
+nnoremap <localleader>mwi bi*<esc>ea*<esc>
+nnoremap <localleader>mwb bi**<esc>ea**<esc>
+nnoremap <localleader>mws bi~~<esc>ea~~<esc>
+nnoremap <localleader>mli I*<esc>A*<esc>
+nnoremap <localleader>mlb I**<esc>A**<esc>
+nnoremap <localleader>mls I~~<esc>A~~<esc>
+nnoremap <localleader>msi (i*<esc>)hi*<esc>
+nnoremap <localleader>msb (i**<esc>)hi**<esc>
+nnoremap <localleader>mss (i~~<esc>)hi~~<esc>
+nnoremap <localleader>mpi {ji*<esc>}kA*<esc>
+nnoremap <localleader>mpb {ji**<esc>}kA**<esc>
+nnoremap <localleader>mps {ji~~<esc>}kA~~<esc>
+nnoremap <localleader>gg Vgq
 
 " map escape to pressing ;; at the same time
 "inoremap jk <Esc>
@@ -423,7 +436,6 @@ function! RenameFile()
   endif
 endfunction
 map <leader>r :call RenameFile()<cr>
-
 
 " Poor Woman's Code Snippets
 " HTML
@@ -466,7 +478,6 @@ tnoremap <Esc> <C-\><C-n>
 
 noremap <leader>vt :vsp term://zsh<CR>i
 noremap <leader>ht :sp term://zsh<CR>i
-
 
 " Theme and Styling
 
@@ -612,44 +623,42 @@ set statusline+=%#myModeColor#
 set statusline+=\ %M%n\             "buffer number
 set statusline+=%*
 
-" Focus
-" Dim inactive windows using 'colorcolumn' setting
-" This tends to slow down redrawing, but is very useful.
-" Based on https://groups.google.com/d/msg/vim_use/IJU-Vk-QLJE/xz4hjPjCRBUJ
-" XXX: this will only work with lines containing text (i.e. not '~')
-" from 
-if exists('+colorcolumn')
-  function! s:DimInactiveWindows()
-    for i in range(1, tabpagewinnr(tabpagenr(), '$'))
-      let l:range = ""
-      if i != winnr()
-        if &wrap
-         " HACK: when wrapping lines is enabled, we use the maximum number
-         " of columns getting highlighted. This might get calculated by
-         " looking for the longest visible line and using a multiple of
-         " winwidth().
-         let l:width=256 " max
-        else
-         let l:width=winwidth(i)
-        endif
-        let l:range = join(range(1, l:width), ',')
-      endif
-      call setwinvar(i, '&colorcolumn', l:range)
-    endfor
-  endfunction
-  augroup DimInactiveWindows
-    au!
-    au WinEnter * call s:DimInactiveWindows()
-    au WinEnter * set cursorline
-    au WinLeave * set nocursorline
-  augroup END
-endif
+"" Focus
+"" Dim inactive windows using 'colorcolumn' setting
+"" This tends to slow down redrawing, but is very useful.
+"" Based on https://groups.google.com/d/msg/vim_use/IJU-Vk-QLJE/xz4hjPjCRBUJ
+"" XXX: this will only work with lines containing text (i.e. not '~')
+"" from 
+"if exists('+colorcolumn')
+"  function! s:DimInactiveWindows()
+"    for i in range(1, tabpagewinnr(tabpagenr(), '$'))
+"      let l:range = ""
+"      if i != winnr()
+"        if &wrap
+"         " HACK: when wrapping lines is enabled, we use the maximum number
+"         " of columns getting highlighted. This might get calculated by
+"         " looking for the longest visible line and using a multiple of
+"         " winwidth().
+"         let l:width=256 " max
+"        else
+"         let l:width=winwidth(i)
+"        endif
+"        let l:range = join(range(1, l:width), ',')
+"      endif
+"      call setwinvar(i, '&colorcolumn', l:range)
+"    endfor
+"  endfunction
+"  augroup DimInactiveWindows
+"    au!
+"    au WinEnter * call s:DimInactiveWindows()
+"    au WinEnter * set cursorline
+"    au WinLeave * set nocursorline
+"  augroup END
+"endif
 
 " Writing Themes and styling
-
-" Various Color theme settings
-let g:PaperColor_termguicolors=256
-
+" Color theme settings
+" seoul256
 let g:seoul256_termguicolors=256
 " seoul256 (dark):
 "   Range:   233 (darkest) ~ 239 (lightest)
@@ -659,7 +668,7 @@ let g:seoul256_background = 234
 "   Range:   252 (darkest) ~ 256 (lightest)
 "   Default: 253
 let g:seoul256_background = 254
-
+" gruvbox
 let g:gruvbox_termguicolors=256
 let g:gruvbox_italic=1
 " gruvbox dark:
@@ -670,26 +679,36 @@ let g:gruvbox_background = 236
 "  Range: 228 (softest) ~ 230 (hardest)
 "  Default: 229
 let g:gruvbox_background = 230
+" Markdown functions and autocmds
+" turn-on distraction free writing mode for markdown files
+au BufNewFile,BufRead *.{md,mdown,mkd,mkdn,markdown,mdwn,ghmarkdown} call DistractionFreeWriting()
 
-" md file settings
-autocmd FileType md,mkd,markdown set showbreak=
-autocmd FileType md,mkd,markdown colorscheme gruvbox
-autocmd FileType md,mkd,markdown set background=light
+function! DistractionFreeWriting()
+    colorscheme gruvbox
+		"Change theme depending on the time of day
+		let hr = (strftime('%H'))
+		if hr >= 19
+		set background=dark
+		elseif hr >= 6
+		set background=light
+		elseif hr >= 0
+		set background=dark
+		endif
+		set filetype=markdown
+		set textwidth=80
+		set showbreak=
+		set statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
+		set conceallevel=2
+		set spell
+		let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+		let g:vim_markdown_folding_disabled = 1
+		set foldmethod=manual
+		set nonumber
+		set norelativenumber
+		Goyo
+endfunction
 
-" pencil color theme settings
-let g:pencil_higher_contrast_ui = 1   " 0=low (def), 1=high
-let g:pencil_neutral_headings = 0   " 0=blue (def), 1=normal
-let g:pencil_neutral_code_bg = 0   " 0=gray (def), 1=normal
-let g:pencil_gutter_color = 1      " 0=mono (def), 1=color
-let g:pencil_spell_undercurl = 1       " 0=underline, 1=undercurl (def)
-let g:pencil_terminal_italics = 1
-let g:pencil_termguicolors=256
-
-
-autocmd FileType md,mkd,markdown set statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
-
-autocmd Filetype md,mkd,markdown hi cursorline cterm=reverse
-
+" reversed highlights
 "hi CursorLine term=bold cterm=reverse
 "hi CursorColumn term=NONE cterm=reverse
-hi Visual term=reverse cterm=reverse
+"hi Visual term=reverse cterm=reverse
