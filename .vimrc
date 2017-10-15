@@ -219,6 +219,7 @@ function! s:goyo_enter()
 	set noshowmode
 	set noshowcmd
 	set scrolloff=999
+	set nocursorline
 	Limelight
 	" ...
 endfunction
@@ -229,6 +230,7 @@ function! s:goyo_leave()
 	set showmode
 	set showcmd
 	set scrolloff=5
+	set nocursorline
 	Limelight!
 	" ...
 endfunction
@@ -238,24 +240,24 @@ autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
 "Limelight settings for unsupported themes
 " Color name (:help cterm-colors) or ANSI code
-let g:limelight_conceal_ctermfg = 'lightgray'
-let g:limelight_conceal_ctermfg = 248
+"let g:limelight_conceal_ctermfg = 'lightgray'
+"let g:limelight_conceal_ctermfg = 248
 
 " Default: 0.5
-let g:limelight_default_coefficient = 0.5
+"let g:limelight_default_coefficient = 0.5
 
 " Number of preceding/following paragraphs to include (default: 0)
-let g:limelight_paragraph_span = 1
+"let g:limelight_paragraph_span = 1
 
 " Beginning/end of paragraph
 "   When there's no empty line between the paragraphs
 "   and each paragraph starts with indentation
-let g:limelight_bop = '^\s'
-let g:limelight_eop = '\ze\n^\s'
+"let g:limelight_bop = '^\s'
+"let g:limelight_eop = '\ze\n^\s'
 
 " Highlighting priority (default: 10)
 "   Set it to -1 not to overrule hlsearch
-let g:limelight_priority = 10
+"let g:limelight_priority = 10
 
 " Limelight and Goyo integration
 autocmd! User GoyoEnter Limelight
@@ -683,7 +685,7 @@ set statusline+=%*
 " Writing Themes and styling {{{
 " Color theme settings {{{
 " seoul256 {{{
-let g:seoul256_termguicolors=256
+let g:seoul256_srgb = 1
 " seoul256 (dark):
 "   Range:   233 (darkest) ~ 239 (lightest)
 "   Default: 237
@@ -738,6 +740,7 @@ function! DistractionFreeWriting()
 		set foldmethod=manual
 		set nonumber
 		set norelativenumber
+		setlocal nocursorline
 		Goyo
 endfunction
 "}}}
