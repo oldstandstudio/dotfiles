@@ -360,6 +360,8 @@ nnoremap <leader>ti :colorscheme iceberg <bar> :set background=dark<CR>
 nnoremap <leader>tz :colorscheme zenburn <bar> :set background=dark<CR>
 nnoremap <leader>tsd :colorscheme seoul256 <bar> :set background=dark<CR>
 nnoremap <leader>tsi :colorscheme seoul256 <bar> :set background=light<CR>
+nnoremap <leader>o :Limelight<CR>
+nnoremap <leader>O :Limelight!<CR>
 
 " create splits
 " vertical splits
