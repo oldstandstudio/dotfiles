@@ -14,10 +14,12 @@ Plugin 'VundleVim/Vundle.vim'
 
 " color themes
 Plugin 'chriskempson/base16-vim'
-Plugin 'flazz/vim-colorschemes'
 Plugin 'cocopon/iceberg.vim'
 Plugin 'junegunn/seoul256.vim'
 Plugin 'morhetz/gruvbox'
+Plugin 'cocopon/colorswatch.vim'
+"Plugin 'cocopon/shadeline.vim'
+Plugin 'jnurmine/Zenburn'
 
 " Fuzzy finder
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -25,14 +27,9 @@ Plugin 'ctrlpvim/ctrlp.vim'
 " Ag - Silver Searcher
 Plugin 'rking/ag.vim'
 
-" Nerdtree
-Plugin 'scrooloose/nerdtree'
-
-" Vim Vinegar
+" File Managers
 Plugin 'tpope/vim-vinegar'
-
-" for super undo tree
-Plugin 'sjl/gundo.vim'
+Plugin 'cocopon/vaffle.vim'
 
 " Emmet for Vim
 Plugin 'mattn/emmet-vim'
@@ -61,20 +58,16 @@ Plugin 'airblade/vim-gitgutter'
 
 " Markdown / Writting
 Plugin 'reedes/vim-pencil'
-Plugin 'godlygeek/tabular'
-Plugin 'plasticboy/vim-markdown'
-"Plugin 'jtratner/vim-flavored-markdown'
+Plugin 'tpope/vim-markdown'
 Plugin 'reedes/vim-wordy'
 "Plugin 'dpelle/vim-LanguageTool'
 "Plugin 'rhysd/vim-grammarous'
-au BufNewFile,BufReadPost *.md set filetype=markdown
+autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
 " Distraction-free writing
 Plugin 'junegunn/goyo.vim'
 Plugin 'junegunn/limelight.vim'
-
-" tmux
-Plugin 'benmills/vimux'
+Plugin 'thinca/vim-zenspace'
 
 " better terminal integration
 Plugin 'wincent/terminus'
@@ -100,7 +93,6 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 " }}}
-
 " Set all the things! {{{
 filetype plugin indent on
 syntax on
@@ -168,13 +160,12 @@ if has('linebreak')
 	endif
 endif
 " }}}
-
-" leader mappings
+" leader mappings {{{
 let mapleader = "\<Space>"
 let maplocalleader = ";"
-
-" Plugin settings and mappings
-" Ctrlp-plugin
+"}}}
+" Plugin settings and mappings {{{
+" Ctrlp-plugin {{{
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlPMixed'
 nnoremap <leader>l :CtrlPBuffer<CR>
@@ -183,36 +174,31 @@ let g:ctrlp_show_hidden = 1
 
 " CtrlP intagration with Ag
 let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+"}}}
 
-" NERDTree
-" Open NERDTree with ctrl+n
-map <C-n> :NERDTreeToggle<CR>
-nnoremap <silent> - :silent edit <C-R>=empty(expand('%')) ? '.' : expand('%:p:h')<CR><CR>
+" Vaffle Mappings & Settings {{{
+function! s:customize_vaffle_mappings() abort
+    " Customize key mappings here
+    "nmap <leader>; <Plug>(vaffle-open-selected)
+    "nmap N        <Plug>(vaffle-new-file)
+  endfunction
 
-let g:NERDTreeMinimalUI=1
+  augroup vimrc_vaffle
+    autocmd!
+    autocmd FileType vaffle call s:customize_vaffle_mappings()
+augroup END
+"}}}
 
-" NERDTree arrow symbols
-let g:NERDTreeDirArrowExpandable = '▸'
-let g:NERDTreeDirArrowCollapsible = '▾'
-
-" Show hidden files in NERDTree
-let NERDTreeShowHidden=1
-
-" Let <leader><leader> work within NERDTree
-let g:NERDTreeCreatePrefix='silent keepalt keepjumps'
-
-" Vinegar Mappings
+" Vinegar Mappings {{{
 "nnoremap - :Explore<CR>
 let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
 
 let g:netrw_banner=0 "disable banner
 let g:netrw_altv=1   "open splits on right
 let g:netrw_liststyle=3 "tree view
+"}}}
 
-" Gundo mappings /needs vim to be compiled with python
-"nnoremap <leader>g :GundoToggle<CR>
-
-"Syntastic checkers
+"Syntastic checkers {{{
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
@@ -221,11 +207,9 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+"}}}
 
-" Vim-Test Configuration
-let test#strategy = "vimux"
-
-"Goyo&Limelight
+"Goyo&Limelight {{{
 " Start distraction-free mode with ctrl+g
 map <C-g> :Goyo<CR>
 
@@ -261,7 +245,7 @@ let g:limelight_conceal_ctermfg = 248
 let g:limelight_default_coefficient = 0.5
 
 " Number of preceding/following paragraphs to include (default: 0)
-let g:limelight_paragraph_span = 2
+let g:limelight_paragraph_span = 1
 
 " Beginning/end of paragraph
 "   When there's no empty line between the paragraphs
@@ -276,11 +260,12 @@ let g:limelight_priority = 10
 " Limelight and Goyo integration
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
+"}}}
 
-" Settings for Writting
+" Settings for Writting {{{
 let g:languagetool_jar  = '/opt/languagetool/languagetool-commandline.jar'
 
-" Vim-pencil Configuration
+" Vim-pencil Configuration {{{
 augroup pencil
     autocmd!
     autocmd FileType markdown,mkd,.md call pencil#init()
@@ -291,8 +276,9 @@ let g:pencil#wrapModeDefault = 'soft'   " default is 'hard'
 let g:pencil#joinspaces = 1
 let g:pencil#conceallevel = 2     " 0=disable, 1=one char, 2=hide char, 3=hide all (def)
 let g:pencil#concealcursor = 'nc'  " n=normal, v=visual, i=insert, c=command (def)
+"}}}
 
-"Wordy
+"Wordy {{{
 let g:wordy#ring = [
   \ 'weak',
   \ ['being', 'passive-voice', ],
@@ -303,15 +289,19 @@ let g:wordy#ring = [
   \ 'adjectives',
   \ 'adverbs',
   \ ]
+"}}}
 
-" Native vim power! Folds and OmniComplete Settings
-" OmniComplete
+	"}}}
+"}}}
+" Native vim power! Folds and OmniComplete Settings {{{
+" OmniComplete {{{
 set omnifunc=syntaxcomplete#Complete
 autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete#Complete
 autocmd FileType css,scss setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+"}}}
 
-" Folds
+" Folds {{{
 set foldenable
 autocmd FileType html,jade,ruby,eruby,css,scss,sass,js set foldmethod=indent
 set foldlevelstart=99   " open folds by default
@@ -326,14 +316,17 @@ au BufWinLeave *.* mkview
 au BufWinEnter *.* silent loadview
 "highlight Folded ctermbg=grey ctermfg=blue
 "highlight FoldColumn guibg=darkgrey guifg=white
+"}}}
 
-" Dictionary Completion
+" Dictionary Completion {{{
 set complete+=kspell
+"}}}
 
-" Thesaurus
+" Thesaurus {{{
 "set+=thesaurus
-
-" key bindings
+"}}}
+"}}}
+" key bindings {{{
 " @@ remapped to enter key while in normal buffer. Thanks to wincent aka Greg Hurrel for this one.
 nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
 
@@ -344,7 +337,7 @@ map E $
 map B 0
 map K k
 
-" map leader bindings
+" map leader bindings {{{
 nnoremap <leader><leader> <C-^>
 nnoremap <leader>q :quit<CR>
 nnoremap <leader>w :write<CR>
@@ -359,8 +352,12 @@ nnoremap <leader>a :Ag!<space>
 noremap <silent> <leader>y :<C-u>NextWordy<cr>
 noremap <silent> <leader>Y :NoWordy<cr>
 "nnoremap <leader>p :TogglePencil<CR>
-nnoremap <leader>tg :colorscheme gruvbox <bar> :set background=dark<CR>
+nnoremap <leader>tgd :colorscheme gruvbox <bar> :set background=dark<CR>
+nnoremap <leader>tgl :colorscheme gruvbox <bar> :set background=light<CR>
 nnoremap <leader>ti :colorscheme iceberg <bar> :set background=dark<CR>
+nnoremap <leader>tz :colorscheme zenburn <bar> :set background=dark<CR>
+nnoremap <leader>tsd :colorscheme seoul256 <bar> :set background=dark<CR>
+nnoremap <leader>tsi :colorscheme seoul256 <bar> :set background=light<CR>
 
 " create splits
 " vertical splits
@@ -377,7 +374,8 @@ noremap <leader>he :sp<space>
 " toggle spell check with
 map <leader>s :setlocal spell! spelllang=en_us<cr>
 map <localleader>ss z=
-" map local leader bindings
+" }}}
+" map local leader bindings {{{
 "inoremap <localleader>; <C-p>
 inoremap <localleader>i <C-x><C-o>
 inoremap <localleader>p <C-x><C-f>
@@ -407,25 +405,29 @@ nnoremap <localleader>mpi {ji*<esc>}kA*<esc>
 nnoremap <localleader>mpb {ji**<esc>}kA**<esc>
 nnoremap <localleader>mps {ji~~<esc>}kA~~<esc>
 nnoremap <localleader>gg Vgq
+"}}}
 
-" map escape to pressing ;; at the same time
+" map escape to pressing ;; at the same time {{{
 "inoremap jk <Esc>
 "inoremap kj <Esc>
 inoremap <localleader>; <Esc>
 vnoremap <localleader>; <Esc>gV
 cnoremap <localleader>; <Esc>
+"}}}
 
-" Better toggling between splits
+" Better toggling between splits {{{
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
+"}}}
 
-" Faster scrolling
+" Faster scrolling {{{
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
+"}}}
 
-" rename current file, via Gary Bernhardt
+" rename current file, via Gary Bernhardt {{{
 function! RenameFile()
   let old_name = expand('%')
   let new_name = input('New file name: ', expand('%'))
@@ -436,27 +438,32 @@ function! RenameFile()
   endif
 endfunction
 map <leader>r :call RenameFile()<cr>
-
-" Poor Woman's Code Snippets
-" HTML
+"}}}
+"}}}
+" Poor Woman's Code Snippets {{{
+" HTML {{{
 nnoremap <localleader>h5 :-1read ~/.vim/html/.skeleton.html<CR>4jwf<i
 inoremap <localleader>hid <esc>I<div id="<esc>A"><enter><enter></div><esc>kI<tab><tab>
 inoremap <localleader>hcl <esc>I<div class="<esc>A"><enter><enter></div><esc>kI<tab><tab>
 inoremap <localleader>h. class=""<esc>i
 inoremap <localleader>h' id=""<esc>i
+"}}}
 
-" CSS
+" CSS {{{
 inoremap <localleader>cid <esc>I#<esc>A {<enter><enter>}<esc>kI<tab>
 inoremap <localleader>ccl <esc>I.<esc>A {<enter><enter>}<esc>kI<tab>
+"}}}
 
-" Ruby
+" Ruby {{{
 inoremap <localleader>df <esc>Idef <esc>A<enter><enter>end<esc>kI<tab>
 inoremap <localleader>rh <esc>I<%=  =><esc>F=hi
+"}}}
 
-" Markdown
+" Markdown {{{
 inoremap <localleader>m3 ### <esc>a
-
-" NeoVim Specific
+"}}}
+"}}}
+" NeoVim Specific {{{
 tnoremap <localleader>; <C-\><C-n>
 "To map <Esc> to exit terminal-mode:
 tnoremap <Esc> <C-\><C-n>
@@ -478,25 +485,28 @@ tnoremap <Esc> <C-\><C-n>
 
 noremap <leader>vt :vsp term://zsh<CR>i
 noremap <leader>ht :sp term://zsh<CR>i
+"}}}
+" Theme and Styling {{{
 
-" Theme and Styling
-
-" Base16
+" Base16 {{{
 if filereadable(expand("~/.vimrc_background"))
   let base16colorspace=256
   source ~/.vimrc_background
 endif
+" }}}
 
-" Only use cursorline for current window
+" Only use cursorline for current window {{{
 autocmd WinEnter,FocusGained * setlocal cursorline
 autocmd WinLeave,FocusLost   * setlocal nocursorline
+" }}}
 
-" italic comments
+" italic comments {{{
 set t_ZH=[3m   "  character is created by ctrl-v <esc>
 set t_ZR=[23m
 "highlight Comment term=italic cterm=italic gui=italic ctermfg=19
+" }}}
 
-" For use with iceberg color theme
+" For use with iceberg color theme {{{
 "colorscheme iceberg
 "set background="dark"
 highlight Comment term=italic cterm=italic gui=italic ctermfg=08
@@ -504,8 +514,9 @@ highlight Comment term=italic cterm=italic gui=italic ctermfg=08
 "if has('termguicolors')
 "	set termguicolors
 "endif
+" }}}
 
-" Statusline
+" Statusline {{{
 " based on https://github.com/fatih/dotfiles/blob/master/vimrc
 
 hi! StatusLine ctermfg=00 ctermbg=14
@@ -622,8 +633,20 @@ set statusline+=\ %*
 set statusline+=%#myModeColor#
 set statusline+=\ %M%n\             "buffer number
 set statusline+=%*
+"}}}
 
-"" Focus
+" Shadeline Statusline {{{
+"let g:shadeline = {}
+" let g:shadeline.active = {
+"       \   'left':  ['fname', 'flags'],
+"       \   'right': ['ruler']
+"       \ }
+" let g:shadeline.inactive = {
+"       \   'left':  ['fname', 'flags']
+"       \ }
+"}}}
+
+"" Focus {{{
 "" Dim inactive windows using 'colorcolumn' setting
 "" This tends to slow down redrawing, but is very useful.
 "" Based on https://groups.google.com/d/msg/vim_use/IJU-Vk-QLJE/xz4hjPjCRBUJ
@@ -655,20 +678,22 @@ set statusline+=%*
 "    au WinLeave * set nocursorline
 "  augroup END
 "endif
+" }}}
 
-" Writing Themes and styling
-" Color theme settings
-" seoul256
+" Writing Themes and styling {{{
+" Color theme settings {{{
+" seoul256 {{{
 let g:seoul256_termguicolors=256
 " seoul256 (dark):
 "   Range:   233 (darkest) ~ 239 (lightest)
 "   Default: 237
-let g:seoul256_background = 234
+"let g:seoul256_background = 234
 " seoul256 (light):
 "   Range:   252 (darkest) ~ 256 (lightest)
 "   Default: 253
-let g:seoul256_background = 254
-" gruvbox
+"let g:seoul256_light_background = 253
+"}}}
+" gruvbox {{{
 let g:gruvbox_termguicolors=256
 let g:gruvbox_italic=1
 " gruvbox dark:
@@ -679,36 +704,48 @@ let g:gruvbox_background = 236
 "  Range: 228 (softest) ~ 230 (hardest)
 "  Default: 229
 let g:gruvbox_background = 230
-" Markdown functions and autocmds
+"}}}
+" zenburn color settings {{{
+let g:zenburn_terminalcolors=256
+"		}}}
+" }}}
+" Markdown functions and autocmds {{{
 " turn-on distraction free writing mode for markdown files
 au BufNewFile,BufRead *.{md,mdown,mkd,mkdn,markdown,mdwn,ghmarkdown} call DistractionFreeWriting()
 
 function! DistractionFreeWriting()
-    colorscheme gruvbox
+    colorscheme seoul256
 		"Change theme depending on the time of day
 		let hr = (strftime('%H'))
 		if hr >= 19
+    "colorscheme seoul256
 		set background=dark
 		elseif hr >= 6
+    "colorscheme seoul256-light
 		set background=light
 		elseif hr >= 0
+    "colorscheme seoul256
 		set background=dark
 		endif
 		set filetype=markdown
 		set textwidth=80
 		set showbreak=
 		set statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
-		set conceallevel=2
+		set conceallevel=3
 		set spell
 		let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
-		let g:vim_markdown_folding_disabled = 1
+		let g:markdown_fenced_languages = ['html', 'bash=sh']
 		set foldmethod=manual
 		set nonumber
 		set norelativenumber
 		Goyo
 endfunction
+"}}}
+" }}}
 
-" reversed highlights
+" reversed highlights {{{
 "hi CursorLine term=bold cterm=reverse
 "hi CursorColumn term=NONE cterm=reverse
 "hi Visual term=reverse cterm=reverse
+" }}}
+"  }}}
