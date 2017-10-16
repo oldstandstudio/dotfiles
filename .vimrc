@@ -20,6 +20,7 @@ Plugin 'morhetz/gruvbox'
 Plugin 'cocopon/colorswatch.vim'
 "Plugin 'cocopon/shadeline.vim'
 Plugin 'jnurmine/Zenburn'
+Plugin 'ajh17/Spacegray.vim'
 
 " Fuzzy finder
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -71,6 +72,8 @@ Plugin 'thinca/vim-zenspace'
 
 " better terminal integration
 Plugin 'wincent/terminus'
+"Plugin 'christoomey/vim-tmux-navigator' "having issues w/tmux and neovim
+Plugin 'christoomey/vim-tmux-runner'
 
 " Synchronized toggle key mappings
 Plugin 'tpope/vim-unimpaired'
@@ -168,7 +171,7 @@ let maplocalleader = ";"
 " Ctrlp-plugin {{{
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlPMixed'
-nnoremap <leader>l :CtrlPBuffer<CR>
+nnoremap <leader>p :CtrlPBuffer<CR>
 "nnoremap <leader>k :CtrlPClearCache<CR>
 let g:ctrlp_show_hidden = 1
 
@@ -220,6 +223,8 @@ function! s:goyo_enter()
 	set noshowcmd
 	set scrolloff=999
 	set nocursorline
+	set textwidth=80
+	set showbreak=
 	Limelight
 	" ...
 endfunction
@@ -231,12 +236,34 @@ function! s:goyo_leave()
 	set showcmd
 	set scrolloff=5
 	set nocursorline
+	set textwidth=80
+	set showbreak=
 	Limelight!
 	" ...
 endfunction
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
+" with :q and :q! quit Goyo and the buffer
+function! g:GoyoBefore()
+  let b:quitting = 0
+  let b:quitting_bang = 0
+  autocmd QuitPre <buffer> let b:quitting = 1
+  cabbrev <buffer> q! let b:quitting_bang = 1 <bar> q!
+endfunction
+
+function! g:GoyoAfter()
+  " Quit Vim if this is the only remaining buffer
+  if b:quitting && len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) == 1
+    if b:quitting_bang
+      qa!
+    else
+      qa
+    endif
+  endif
+endfunction
+
+let g:goyo_callbacks = [function('g:GoyoBefore'), function('g:GoyoAfter')]
 
 "Limelight settings for unsupported themes
 " Color name (:help cterm-colors) or ANSI code
@@ -294,7 +321,22 @@ let g:wordy#ring = [
 "}}}
 
 	"}}}
+	
+	" Vim-Tmux Runner/Navigator {{{
+	" Vim Tmux Runner {{{
+	nnoremap <leader>to :VtrOpenRunner<CR>
+	nnoremap <leader>tr :VtrSendLinesToRunner<CR>
+	"}}}
+	"Vim Tmux Navigator {{{
+	"let g:tmux_navigator_no_mappings = 1 
+"nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
+"nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
+"nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+"nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
+"nnoremap <silent> <C-f> :TmuxNavigatePrevious<cr>
+	"}}}
 "}}}
+"  }}}
 " Native vim power! Folds and OmniComplete Settings {{{
 " OmniComplete {{{
 set omnifunc=syntaxcomplete#Complete
@@ -334,10 +376,10 @@ nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
 
 "inoremap <tab> <C-p>
 map <s-tab> zM
-map Q %
+map Q @q
 map E $
 map B 0
-map K k
+map K zt
 
 " map leader bindings {{{
 nnoremap <leader><leader> <C-^>
@@ -351,64 +393,60 @@ nnoremap <leader>c :checktime<CR>
 "nnoremap <leader>l :ls<CR>
 nnoremap <leader>` :!<space>
 nnoremap <leader>a :Ag!<space>
-noremap <silent> <leader>y :<C-u>NextWordy<cr>
-noremap <silent> <leader>Y :NoWordy<cr>
-"nnoremap <leader>p :TogglePencil<CR>
-nnoremap <leader>tgd :colorscheme gruvbox <bar> :set background=dark<CR>
-nnoremap <leader>tgl :colorscheme gruvbox <bar> :set background=light<CR>
-nnoremap <leader>ti :colorscheme iceberg <bar> :set background=dark<CR>
-nnoremap <leader>tz :colorscheme zenburn <bar> :set background=dark<CR>
-nnoremap <leader>tsd :colorscheme seoul256 <bar> :set background=dark<CR>
-nnoremap <leader>tsi :colorscheme seoul256 <bar> :set background=light<CR>
 nnoremap <leader>o :Limelight<CR>
 nnoremap <leader>O :Limelight!<CR>
 
 " create splits
 " vertical splits
-noremap <leader>v :vsp<CR>
+noremap <leader>vv :vsp<CR>
 noremap <leader>vf :vsp<space>
 noremap <leader>vb :vert sb<space>
 noremap <leader>ve :vsp<space>
 " horizontal splits
-noremap <leader>h :sp<CR>
+noremap <leader>hh :sp<CR>
 noremap <leader>hf :sf<space>
 noremap <leader>hb :sb<space>
 noremap <leader>he :sp<space>
 
 " toggle spell check with
 map <leader>s :setlocal spell! spelllang=en_us<cr>
-map <localleader>ss z=
 " }}}
 " map local leader bindings {{{
 "inoremap <localleader>; <C-p>
-inoremap <localleader>i <C-x><C-o>
-inoremap <localleader>p <C-x><C-f>
+inoremap <localleader>o <C-x><C-o>
+inoremap <localleader>p <C-p>
+inoremap <localleader>a <C-x><C-l>
+inoremap <localleader>f <C-x><C-f>
+inoremap <localleader>u <C-w>
 nnoremap <localleader>e :e<space>
 nnoremap <localleader>nh :nohl<CR>
-map <localleader>ll >>
-map <localleader>hh <<
-inoremap <localleader>ll <C-t>
-inoremap <localleader>hh <C-d>
+map <localleader>l >>
+map <localleader>h <<
+inoremap <localleader>l <C-t>
+inoremap <localleader>h <C-d>
 nnoremap <localleader>sr :%s/
-nnoremap <localleader>sn :w!<bar>mks ~/.vim/sessions/
-nnoremap <localleader>sw :mks!<bar>wqa!<CR>
-nnoremap <localleader>so :source ~/.vim/sessions/
-nnoremap <localleader>mt :Toc<CR>
-nnoremap <localleader>mfb :find <C-R>=expand('%:p:h') . '/'<CR>blueprint.md<CR>
-nnoremap <localleader>meb :e <C-R>=expand('%:p:h') . '/'<CR>blueprint.md<CR>
-nnoremap <localleader>mwi bi*<esc>ea*<esc>
-nnoremap <localleader>mwb bi**<esc>ea**<esc>
-nnoremap <localleader>mws bi~~<esc>ea~~<esc>
-nnoremap <localleader>mli I*<esc>A*<esc>
-nnoremap <localleader>mlb I**<esc>A**<esc>
-nnoremap <localleader>mls I~~<esc>A~~<esc>
-nnoremap <localleader>msi (i*<esc>)hi*<esc>
-nnoremap <localleader>msb (i**<esc>)hi**<esc>
-nnoremap <localleader>mss (i~~<esc>)hi~~<esc>
-nnoremap <localleader>mpi {ji*<esc>}kA*<esc>
-nnoremap <localleader>mpb {ji**<esc>}kA**<esc>
-nnoremap <localleader>mps {ji~~<esc>}kA~~<esc>
-nnoremap <localleader>gg Vgq
+
+function! FixLastSpellingError()
+  normal! mm[s1z=`m"
+endfunction
+
+nnoremap <localleader>ss :call FixLastSpellingError()<cr>
+nnoremap <localleader>sf Vgq
+nnoremap <localleader>sz z=
+noremap <silent> <localleader>sw :<C-u>NextWordy<cr>
+noremap <silent> <localleader>SW :NoWordy<cr>
+nnoremap <localleader>sp :TogglePencil<CR>
+nnoremap <localleader>wn :w!<bar>mks ~/.vim/sessions/
+nnoremap <localleader>ww :mks!<bar>wqa!<CR>
+nnoremap <localleader>wo :source ~/.vim/sessions/
+
+"change themes {{{
+nnoremap <localleader>tgd :colorscheme gruvbox <bar> :set background=dark<CR>
+nnoremap <localleader>tgl :colorscheme gruvbox <bar> :set background=light<CR>
+nnoremap <localleader>ti :colorscheme iceberg <bar> :set background=dark<CR>
+nnoremap <localleader>tz :colorscheme zenburn <bar> :set background=dark<CR>
+nnoremap <localleader>ts :colorscheme spacegray <bar> :set background=dark<CR>
+	"}}}
 "}}}
 
 " map escape to pressing ;; at the same time {{{
@@ -446,25 +484,51 @@ map <leader>r :call RenameFile()<cr>
 "}}}
 " Poor Woman's Code Snippets {{{
 " HTML {{{
-nnoremap <localleader>h5 :-1read ~/.vim/html/.skeleton.html<CR>4jwf<i
-inoremap <localleader>hid <esc>I<div id="<esc>A"><enter><enter></div><esc>kI<tab><tab>
-inoremap <localleader>hcl <esc>I<div class="<esc>A"><enter><enter></div><esc>kI<tab><tab>
-inoremap <localleader>h. class=""<esc>i
-inoremap <localleader>h' id=""<esc>i
+nnoremap <localleader>ih5 :-1read ~/Dropbox/.dotfiles/vim/html/.skeleton.html<CR>4jwf<i
 "}}}
 
 " CSS {{{
-inoremap <localleader>cid <esc>I#<esc>A {<enter><enter>}<esc>kI<tab>
-inoremap <localleader>ccl <esc>I.<esc>A {<enter><enter>}<esc>kI<tab>
+"inoremap <localleader>icid <esc>I#<esc>A {<enter><enter>}<esc>kI<tab>
+"inoremap <localleader>iccl <esc>I.<esc>A {<enter><enter>}<esc>kI<tab>
 "}}}
 
 " Ruby {{{
-inoremap <localleader>df <esc>Idef <esc>A<enter><enter>end<esc>kI<tab>
-inoremap <localleader>rh <esc>I<%=  =><esc>F=hi
+inoremap <localleader>rdf <esc>Idef <esc>A<enter><enter>end<esc>kI<tab>
+inoremap <localleader>rh <ekc>I<%=  =><esc>F=hi
 "}}}
 
 " Markdown {{{
-inoremap <localleader>m3 ### <esc>a
+function! UnderlineHeading(level)
+  if a:level == 1
+    normal! yypVr=
+  elseif a:level == 2
+    normal! yypVr-
+  elseif a:level == 3
+    normal! I### 
+	else
+		normal! I* * *
+  endif
+endfunction
+
+nnoremap <localleader>m1 :call UnderlineHeading(1)<CR>
+nnoremap <localleader>m2 :call UnderlineHeading(2)<CR>
+nnoremap <localleader>m3 :call UnderlineHeading(3)<CR>
+nnoremap <localleader>m` :call UnderlineHeading(4)<CR>
+inoremap <localleader>m` * * *
+
+" nnoremap <localleader>mt :Toc<CR>
+nnoremap <localleader>mfb :find <C-R>=expand('%:p:h') . '/'<CR>blueprint.md<CR>
+nnoremap <localleader>meb :e <C-R>=expand('%:p:h') . '/'<CR>blueprint.md<CR>
+
+"nnoremap <localleader>mwi ciw**<esc>P
+"nnoremap <localleader>mwb ciw****<esc>hP
+"nnoremap <localleader>mwf ciw******<esc>hhP
+"nnoremap <localleader>mws ciw~~~~<esc>hP
+"nnoremap <localleader>m'i ca"**<esc>P
+"nnoremap <localleader>m'b ca"****<esc>hP
+"nnoremap <localleader>m'f ca"******<esc>hhP
+"nnoremap <localleader>m's ca"~~~~<esc>hP
+
 "}}}
 "}}}
 " NeoVim Specific {{{
