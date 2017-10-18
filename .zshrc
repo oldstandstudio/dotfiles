@@ -171,6 +171,7 @@ alias mocha="base16_mocha"
 alias monokai="base16_monokai"
 alias iceberg="base16_iceberg"
 alias paraiso="base16_paraiso"
+alias seoul="base16_seoul256-dark"
 
 # xbacklight
 alias xbs="xbacklight -set"

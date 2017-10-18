@@ -2,100 +2,86 @@ set nocompatible "sorry vi
 filetype off "needed by vundle
 
 " Plugins {{{
-"Vundle
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
-
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
+" Using Vim-Plug
+" Specify a directory for plugins
+" - For Neovim: ~/.local/share/nvim/plugged
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
 
 " color themes
-Plugin 'chriskempson/base16-vim'
-Plugin 'cocopon/iceberg.vim'
-Plugin 'junegunn/seoul256.vim'
-Plugin 'morhetz/gruvbox'
-Plugin 'cocopon/colorswatch.vim'
-"Plugin 'cocopon/shadeline.vim'
-Plugin 'jnurmine/Zenburn'
-Plugin 'ajh17/Spacegray.vim'
+Plug 'chriskempson/base16-vim'
+Plug 'cocopon/iceberg.vim'
+Plug 'junegunn/seoul256.vim'
+Plug 'morhetz/gruvbox'
+Plug 'cocopon/colorswatch.vim'
+"Plug 'cocopon/shadeline.vim'
+Plug 'ajh17/Spacegray.vim'
 
 " Fuzzy finder
-Plugin 'ctrlpvim/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 
 " Ag - Silver Searcher
-Plugin 'rking/ag.vim'
+Plug 'rking/ag.vim'
 
 " File Managers
-Plugin 'tpope/vim-vinegar'
-Plugin 'cocopon/vaffle.vim'
+Plug 'tpope/vim-vinegar'
+Plug 'cocopon/vaffle.vim'
 
 " Emmet for Vim
-Plugin 'mattn/emmet-vim'
+Plug 'mattn/emmet-vim'
 
 " For better html indenting 
-Plugin 'indenthtml.vim'
+"Plug 'indenthtml.vim'
+Plug 'tpope/vim-sleuth'
 
 " for haml, sass, and scss support
-Plugin 'tpope/vim-haml'
+Plug 'tpope/vim-haml', { 'for': ['haml', 'sass', 'scss'] }
 
 " Support for jade syntax highlighting and indenting
-Plugin 'digitaltoad/vim-jade'
+Plug 'digitaltoad/vim-jade', { 'for': ['jade', 'pug'] }
 au BufNewFile,BufReadPost *.jade set filetype=pug
 
+Plug 'dNitro/vim-pug-complete', { 'for': ['pug', 'jade'] }
+
 " Ruby on Rails Plugins
-Plugin 'tpope/vim-rails'
-Plugin 'tpope/vim-rbenv'
+Plug 'tpope/vim-rails', { 'for': ['ruby', 'rails'] }
+Plug 'tpope/vim-rbenv'
 
 " Syntastic
-Plugin 'vim-syntastic/syntastic'
+Plug 'vim-syntastic/syntastic'
 
 " Git for vim
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-git'
-Plugin 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-git'
+Plug 'airblade/vim-gitgutter'
 
 " Markdown / Writting
-Plugin 'reedes/vim-pencil'
-Plugin 'tpope/vim-markdown'
-Plugin 'reedes/vim-wordy'
-"Plugin 'dpelle/vim-LanguageTool'
-"Plugin 'rhysd/vim-grammarous'
+Plug 'reedes/vim-pencil'
+Plug 'tpope/vim-markdown'
+Plug 'reedes/vim-wordy'
+Plug 'beloglazov/vim-online-thesaurus'
+"Plug 'dpelle/vim-LanguageTool'
+"Plug 'rhysd/vim-grammarous'
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
 " Distraction-free writing
-Plugin 'junegunn/goyo.vim'
-Plugin 'junegunn/limelight.vim'
-Plugin 'thinca/vim-zenspace'
+Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
+"autocmd! User goyo.vim echom 'Goyo is now loaded!'<CR>
+
+Plug 'junegunn/limelight.vim', { 'for': 'markdown' }
+Plug 'thinca/vim-zenspace'
 
 " better terminal integration
-Plugin 'wincent/terminus'
+Plug 'wincent/terminus'
 "Plugin 'christoomey/vim-tmux-navigator' "having issues w/tmux and neovim
-Plugin 'christoomey/vim-tmux-runner'
+Plug 'christoomey/vim-tmux-runner'
 
 " Synchronized toggle key mappings
-Plugin 'tpope/vim-unimpaired'
+Plug 'tpope/vim-unimpaired'
 
-" Keep Plugin commands between vundle#begin/end.
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just
-" :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to
-" auto-approve removal
-
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
-" }}}
+" Initialize plugin system
+call plug#end()
+"}}}
 " Set all the things! {{{
 filetype plugin indent on
 syntax on
@@ -126,6 +112,7 @@ set autoindent " Match indents on new lines.
 set smartindent " Intelligently indent/un-indent new lines based on rules.
 set linebreak "better file wrapping
 set textwidth=80 "hardwrap at 80 columns
+set colorcolumn=80
 
 " Always display the status line
 set laststatus=2
@@ -153,6 +140,7 @@ set virtualedit+=block
 
 " list invisable characters
 set list listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:~,eol:¬ " show extra space characters
+"set list listchars=tab:\¦\ ,trail:·,extends:>,precedes:<,nbsp:~,eol:¬ " show extra space characters
 set showbreak=—»»
 
 if has('linebreak')
@@ -212,38 +200,54 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 "}}}
 
+" Fugitive mappings {{{
+nnoremap <leader>gd :Gdiff<cr>
+nnoremap <leader>gs :Gstatus<cr>
+nnoremap <leader>gw :Gwrite<cr>
+nnoremap <leader>ga :Gadd<cr>
+nnoremap <leader>gb :Gblame<cr>
+nnoremap <leader>gt :Gcheckout<cr>
+nnoremap <leader>gc :Gcommit<cr>
+nnoremap <leader>gp :Gpush<cr>
+nnoremap <leader>gm :Gmove<cr>
+nnoremap <leader>gr :Gremove<cr>
+"  }}}
+
 "Goyo&Limelight {{{
 " Start distraction-free mode with ctrl+g
 map <C-g> :Goyo<CR>
 
-function! s:goyo_enter()
+function! s:GoyoEnter()
 	silent !tmux set status off
   silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+	" set linespace=7
+	set textwidth=80
+	set statusline=%M
+	hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE
+	set showbreak=
+	set colorcolumn=80
 	set noshowmode
 	set noshowcmd
 	set scrolloff=999
-	set nocursorline
-	set textwidth=80
-	set showbreak=
 	Limelight
+	"GitGutterEnable
 	" ...
 endfunction
 
-function! s:goyo_leave()
+function! s:GoyoLeave()
 	silent !tmux set status on
 	silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+	set statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
 	set showmode
 	set showcmd
 	set scrolloff=5
-	set nocursorline
-	set textwidth=80
-	set showbreak=
 	Limelight!
 	" ...
 endfunction
 
-autocmd! User GoyoEnter nested call <SID>goyo_enter()
-autocmd! User GoyoLeave nested call <SID>goyo_leave()
+autocmd! User GoyoEnter nested call <SID>GoyoEnter()
+autocmd! User GoyoLeave nested call <SID>GoyoLeave()
+
 " with :q and :q! quit Goyo and the buffer
 function! g:GoyoBefore()
   let b:quitting = 0
@@ -294,6 +298,13 @@ autocmd! User GoyoLeave Limelight!
 " Settings for Writting {{{
 let g:languagetool_jar  = '/opt/languagetool/languagetool-commandline.jar'
 
+" Online-thesaurus {{{
+" disable default keybinding
+let g:online_thesaurus_map_keys = 0
+" map my own
+nnoremap <localleader>st :OnlineThesaurusCurrentWord<CR>
+" }}}
+
 " Vim-pencil Configuration {{{
 augroup pencil
     autocmd!
@@ -321,7 +332,7 @@ let g:wordy#ring = [
 "}}}
 
 	"}}}
-	
+
 	" Vim-Tmux Runner/Navigator {{{
 	" Vim Tmux Runner {{{
 	nnoremap <leader>to :VtrOpenRunner<CR>
@@ -341,8 +352,8 @@ let g:wordy#ring = [
 " OmniComplete {{{
 set omnifunc=syntaxcomplete#Complete
 autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete#Complete
-autocmd FileType css,scss setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css,scss,sass setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown,jade,pug setlocal omnifunc=htmlcomplete#CompleteTags
 "}}}
 
 " Folds {{{
@@ -362,6 +373,11 @@ au BufWinEnter *.* silent loadview
 "highlight FoldColumn guibg=darkgrey guifg=white
 "}}}
 
+" Tags {{{
+set tags=./tags,tags;$HOME
+map <leader>` :! ctags -R .<CR>
+"  }}}
+
 " Dictionary Completion {{{
 set complete+=kspell
 "}}}
@@ -373,8 +389,9 @@ set complete+=kspell
 " key bindings {{{
 " @@ remapped to enter key while in normal buffer. Thanks to wincent aka Greg Hurrel for this one.
 nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
+"nnoremap <cr> o<esc>
 
-"inoremap <tab> <C-p>
+map <tab> zR
 map <s-tab> zM
 map Q @q
 map E $
@@ -391,10 +408,9 @@ nnoremap <leader>b :b<space>
 nnoremap <leader>e :edit <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <leader>c :checktime<CR>
 "nnoremap <leader>l :ls<CR>
-nnoremap <leader>` :!<space>
 nnoremap <leader>a :Ag!<space>
-nnoremap <leader>o :Limelight<CR>
-nnoremap <leader>O :Limelight!<CR>
+nnoremap <leader>O :Limelight<CR>
+nnoremap <leader>o :Limelight!<CR>
 
 " create splits
 " vertical splits
@@ -408,31 +424,37 @@ noremap <leader>hf :sf<space>
 noremap <leader>hb :sb<space>
 noremap <leader>he :sp<space>
 
-" toggle spell check with
-map <leader>s :setlocal spell! spelllang=en_us<cr>
-" }}}
-" map local leader bindings {{{
-"inoremap <localleader>; <C-p>
-inoremap <localleader>o <C-x><C-o>
-inoremap <localleader>p <C-p>
-inoremap <localleader>a <C-x><C-l>
-inoremap <localleader>f <C-x><C-f>
-inoremap <localleader>u <C-w>
-nnoremap <localleader>e :e<space>
-nnoremap <localleader>nh :nohl<CR>
-map <localleader>l >>
-map <localleader>h <<
-inoremap <localleader>l <C-t>
-inoremap <localleader>h <C-d>
-nnoremap <localleader>sr :%s/
-
+" toggle spell check z= with
 function! FixLastSpellingError()
   normal! mm[s1z=`m"
 endfunction
 
-nnoremap <localleader>ss :call FixLastSpellingError()<cr>
-nnoremap <localleader>sf Vgq
-nnoremap <localleader>sz z=
+map <leader>s :call FixLastSpellingError()<cr>
+" }}}
+" map local leader bindings {{{
+"inoremap <localleader>; <C-p>
+inoremap <localleader>c <C-x><C-o>
+inoremap <localleader>t <C-x><C-]>
+inoremap <localleader>a <C-x><C-l>
+inoremap <localleader>d <C-x><C-l>
+inoremap <localleader>f <C-x><C-f>
+inoremap <localleader>u <C-w>
+inoremap <localleader>U <C-u>
+nnoremap <localleader>e :e<space>
+nnoremap <localleader>nh :nohl<CR>
+nnoremap <localleader>l >>
+nnoremap <localleader>h <<
+nnoremap <localleader>k O<esc>
+nnoremap <localleader>j o<esc>
+inoremap <localleader>l <C-t>
+inoremap <localleader>h <C-d>
+vnoremap <localleader>l >gv
+vnoremap <localleader>h <gv
+nnoremap <localleader>sr :%s/
+nnoremap <localleader>ss :setlocal spell! spelllang=en_us<cr>
+nnoremap <localleader>sg Vgq
+nnoremap <localleader>sf z=
+nnoremap <localleader>sa zg
 noremap <silent> <localleader>sw :<C-u>NextWordy<cr>
 noremap <silent> <localleader>SW :NoWordy<cr>
 nnoremap <localleader>sp :TogglePencil<CR>
@@ -440,13 +462,6 @@ nnoremap <localleader>wn :w!<bar>mks ~/.vim/sessions/
 nnoremap <localleader>ww :mks!<bar>wqa!<CR>
 nnoremap <localleader>wo :source ~/.vim/sessions/
 
-"change themes {{{
-nnoremap <localleader>tgd :colorscheme gruvbox <bar> :set background=dark<CR>
-nnoremap <localleader>tgl :colorscheme gruvbox <bar> :set background=light<CR>
-nnoremap <localleader>ti :colorscheme iceberg <bar> :set background=dark<CR>
-nnoremap <localleader>tz :colorscheme zenburn <bar> :set background=dark<CR>
-nnoremap <localleader>ts :colorscheme spacegray <bar> :set background=dark<CR>
-	"}}}
 "}}}
 
 " map escape to pressing ;; at the same time {{{
@@ -498,37 +513,17 @@ inoremap <localleader>rh <ekc>I<%=  =><esc>F=hi
 "}}}
 
 " Markdown {{{
-function! UnderlineHeading(level)
-  if a:level == 1
-    normal! yypVr=
-  elseif a:level == 2
-    normal! yypVr-
-  elseif a:level == 3
-    normal! I### 
-	else
-		normal! I* * *
-  endif
-endfunction
-
-nnoremap <localleader>m1 :call UnderlineHeading(1)<CR>
-nnoremap <localleader>m2 :call UnderlineHeading(2)<CR>
-nnoremap <localleader>m3 :call UnderlineHeading(3)<CR>
-nnoremap <localleader>m` :call UnderlineHeading(4)<CR>
-inoremap <localleader>m` * * *
 
 " nnoremap <localleader>mt :Toc<CR>
-nnoremap <localleader>mfb :find <C-R>=expand('%:p:h') . '/'<CR>blueprint.md<CR>
-nnoremap <localleader>meb :e <C-R>=expand('%:p:h') . '/'<CR>blueprint.md<CR>
 
-"nnoremap <localleader>mwi ciw**<esc>P
-"nnoremap <localleader>mwb ciw****<esc>hP
-"nnoremap <localleader>mwf ciw******<esc>hhP
-"nnoremap <localleader>mws ciw~~~~<esc>hP
-"nnoremap <localleader>m'i ca"**<esc>P
-"nnoremap <localleader>m'b ca"****<esc>hP
-"nnoremap <localleader>m'f ca"******<esc>hhP
-"nnoremap <localleader>m's ca"~~~~<esc>hP
-
+"		au Filetype markdown nnoremap <localleader>I ciw**<esc>P
+"		au Filetype markdown nnoremap <localleader>B ciw****<esc>hP
+"		au Filetype markdown nnoremap <localleader>mwf ciw******<esc>hhP
+"		au Filetype markdown nnoremap <localleader>mws ciw~~~~<esc>hP
+"		au Filetype markdown nnoremap <localleader>m'i ca"**<esc>P
+"		au Filetype markdown nnoremap <localleader>m'b ca"****<esc>hP
+"		au Filetype markdown nnoremap <localleader>m'f ca"******<esc>hhP
+"		au Filetype markdown nnoremap <localleader>m's ca"~~~~<esc>hP
 "}}}
 "}}}
 " NeoVim Specific {{{
@@ -556,11 +551,44 @@ noremap <leader>ht :sp term://zsh<CR>i
 "}}}
 " Theme and Styling {{{
 
+" Color theme settings {{{
+" seoul256 {{{
+let g:seoul256_srgb = 1
+" seoul256 (dark):
+"   Range:   233 (darkest) ~ 239 (lightest)
+"   Default: 237
+"let g:seoul256_background = 234
+" seoul256 (light):
+"   Range:   252 (darkest) ~ 256 (lightest)
+"   Default: 253
+"let g:seoul256_light_background = 253
+"}}}
+" gruvbox {{{
+let g:gruvbox_termguicolors=256
+let g:gruvbox_italic=1
+" gruvbox dark:
+"  Range: 234 (hardest) ~ 236 (softest)
+"  Default: 235
+let g:gruvbox_background = 236
+" gruvbox light:
+"  Range: 228 (softest) ~ 230 (hardest)
+"  Default: 229
+let g:gruvbox_background = 230
+"}}}
+" zenburn color settings {{{
+let g:zenburn_terminalcolors=256
+"		}}}
+" }}}
+
 " Base16 {{{
 if filereadable(expand("~/.vimrc_background"))
   let base16colorspace=256
   source ~/.vimrc_background
 endif
+
+"if has('termguicolors')
+"	set termguicolors
+"endif
 " }}}
 
 " Only use cursorline for current window {{{
@@ -578,10 +606,6 @@ set t_ZR=[23m
 "colorscheme iceberg
 "set background="dark"
 highlight Comment term=italic cterm=italic gui=italic ctermfg=08
-
-"if has('termguicolors')
-"	set termguicolors
-"endif
 " }}}
 
 " Statusline {{{
@@ -749,37 +773,33 @@ set statusline+=%*
 " }}}
 
 " Writing Themes and styling {{{
-" Color theme settings {{{
-" seoul256 {{{
-let g:seoul256_srgb = 1
-" seoul256 (dark):
-"   Range:   233 (darkest) ~ 239 (lightest)
-"   Default: 237
-"let g:seoul256_background = 234
-" seoul256 (light):
-"   Range:   252 (darkest) ~ 256 (lightest)
-"   Default: 253
-"let g:seoul256_light_background = 253
-"}}}
-" gruvbox {{{
-let g:gruvbox_termguicolors=256
-let g:gruvbox_italic=1
-" gruvbox dark:
-"  Range: 234 (hardest) ~ 236 (softest)
-"  Default: 235
-let g:gruvbox_background = 236
-" gruvbox light:
-"  Range: 228 (softest) ~ 230 (hardest)
-"  Default: 229
-let g:gruvbox_background = 230
-"}}}
-" zenburn color settings {{{
-let g:zenburn_terminalcolors=256
-"		}}}
-" }}}
 " Markdown functions and autocmds {{{
 " turn-on distraction free writing mode for markdown files
-au BufNewFile,BufRead *.{md,mdown,mkd,mkdn,markdown,mdwn,ghmarkdown} call DistractionFreeWriting()
+
+
+function! MarkdownFolds()
+  let thisline = getline(v:lnum)
+	if match(thisline, '^######') >= 0
+    return ">6"
+	elseif match(thisline, '^#####') >= 0
+    return ">5"
+	elseif match(thisline, '^####') >= 0
+    return ">4"
+  elseif match(thisline, '^###') >= 0
+    return ">3"
+  elseif match(thisline, '^##') >= 0
+    return ">2"
+  elseif match(thisline, '^#') >= 0
+    return ">1"
+  else
+    return "="
+  endif
+endfunction
+
+function! MarkdownFoldText()
+  let foldsize = (v:foldend-v:foldstart)
+  return getline(v:foldstart).' ('.foldsize.' lines)'
+endfunction
 
 function! DistractionFreeWriting()
     colorscheme seoul256
@@ -787,31 +807,65 @@ function! DistractionFreeWriting()
 		let hr = (strftime('%H'))
 		if hr >= 19
     "colorscheme seoul256
-		set background=dark
+		setlocal background=dark
 		elseif hr >= 6
     "colorscheme seoul256-light
-		set background=light
+		setlocal background=light
 		elseif hr >= 0
     "colorscheme seoul256
-		set background=dark
+		setlocal background=dark
 		endif
-		set filetype=markdown
-		set textwidth=80
-		set showbreak=
-		set statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
-		set conceallevel=3
-		set spell
+		setlocal filetype=markdown
+		setlocal textwidth=80
+		setlocal showbreak=
+		setlocal statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
+		setlocal conceallevel=2
+		setlocal spell
 		let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 		let g:markdown_fenced_languages = ['html', 'bash=sh']
-		set foldmethod=manual
-		set nonumber
-		set norelativenumber
+		setlocal nonumber
+		setlocal norelativenumber
 		setlocal nocursorline
-		Goyo
+		setlocal colorcolumn=80
+		setlocal foldmethod=expr
+		setlocal foldexpr=MarkdownFolds()
+		setlocal foldtext=MarkdownFoldText()
+		"setlocal foldtext=getline(v:foldstart).'\ \ \ /'.v:foldlevel.'...'.(v:foldend-v:foldstart)
+		setlocal foldlevel=1
+		setlocal foldcolumn=4
+		setlocal cpo+=J
+		Goyo 85
 endfunction
+
+augroup ft_markdown
+    au!
+    au BufNewFile,BufRead *.md setlocal filetype=markdown
+		au BufNewFile,BufRead *.md call DistractionFreeWriting()
+		autocmd WinEnter,FocusGained * setlocal nocursorline
+		autocmd WinLeave,FocusLost   * setlocal nocursorline
+    " Use <localleader>1/2/3 to add headings.
+		au Filetype markdown nnoremap <buffer> <localleader>; :Goyo 85<cr>:setlocal statusline=%M<CR>:hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE<CR>
+		":GitGutterEnable<CR>
+    au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
+    au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>
+    au Filetype markdown nnoremap <buffer> <localleader>3 I###<space><esc>
+    au Filetype markdown nnoremap <buffer> <localleader>4 I####<space><esc>
+    au Filetype markdown nnoremap <buffer> <localleader>5 I#####<space><esc>
+    au Filetype markdown nnoremap <buffer> <localleader>6 I######<space><esc>
+		au Filetype markdown nnoremap <buffer> <localleader>` I*<space>*<space>*<space><esc>
+		au Filetype markdown inoremap <buffer> <localleader>` * * *
+augroup END
+
 "}}}
 " }}}
 
+" Colorcolumn settings {{{
+if exists('+colorcolumn')
+  set colorcolumn=80
+else
+  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+endif
+" }}}
 " reversed highlights {{{
 "hi CursorLine term=bold cterm=reverse
 "hi CursorColumn term=NONE cterm=reverse
