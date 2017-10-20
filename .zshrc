@@ -95,6 +95,14 @@ source $ZSH/oh-my-zsh.sh
 	}
 	alias cd="c"
 
+# LS -A
+	function ctrl_a() {
+		BUFFER="ls -A"
+		zle accept-line
+	}
+	zle -N ctrl_a
+bindkey "^a" ctrl_a
+
 # Make CTRL-Z toggle suspending things. Thanks to Wincent dotfiles for this little gem
 function fg-bg() {
 	if [[ $#BUFFER -eq 0 ]]; then
@@ -106,7 +114,7 @@ function fg-bg() {
 zle -N fg-bg
 bindkey '^Z' fg-bg
 
-# git (from https://github.com/Parth/dotfiles/blob/master/zsh/keybindings.sh)
+# git (git_prepare() from https://github.com/Parth/dotfiles/blob/master/zsh/keybindings.sh)
 	function git_prepare() {
 		if [ -n "$BUFFER" ];
 			then
@@ -122,6 +130,56 @@ bindkey '^Z' fg-bg
 	}
 	zle -N git_prepare
 bindkey "^g" git_prepare
+
+	function git_pull() {
+		if [ -z "$BUFFER" ];
+			then
+				BUFFER="git pull"
+		fi
+				
+		zle accept-line
+	}
+	zle -N git_pull
+bindkey "^p" git_pull
+
+	function git_log() {
+		if [ -z "$BUFFER" ];
+			then
+				BUFFER="git log --oneline"
+		fi
+				
+		zle accept-line
+	}
+	zle -N git_log
+bindkey "^o" git_log
+
+	function git_status() {
+		if [ -z "$BUFFER" ];
+			then
+				BUFFER="git status"
+		fi
+				
+		zle accept-line
+	}
+	zle -N git_status
+bindkey "^s" git_status
+
+# up -- Doesn't seem to work within tmux
+	function up_widget() {
+		BUFFER="cd .."
+		zle accept-line
+	}
+	zle -N up_widget
+	bindkey "^k" up_widget
+
+# home
+	function goto_home() { 
+		BUFFER="cd ~/"$BUFFER
+		zle end-of-line
+		zle accept-line
+	}
+	zle -N goto_home
+bindkey "^h" goto_home
 
 # file management
 alias vrc="nvim ~/.vimrc"
