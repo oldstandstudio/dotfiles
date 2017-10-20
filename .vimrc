@@ -31,6 +31,7 @@ Plug 'cocopon/vaffle.vim'
 Plug 'mattn/emmet-vim'
 
 " For better html indenting 
+Plug 'othree/html5.vim'
 "Plug 'indenthtml.vim'
 Plug 'tpope/vim-sleuth'
 
