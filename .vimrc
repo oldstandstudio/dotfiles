@@ -217,12 +217,12 @@ nnoremap <leader>gr :Gremove<cr>
 " Start distraction-free mode with ctrl+g
 map <C-g> :Goyo<CR>
 
-function! s:GoyoEnter()
+function! s:goyo_enter()
 	silent !tmux set status off
   silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
 	" set linespace=7
 	set textwidth=80
-	set statusline=%M
+	set statusline=%M%=%{WordCount()}
 	hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE
 	set showbreak=
 	set colorcolumn=80
@@ -234,19 +234,21 @@ function! s:GoyoEnter()
 	" ...
 endfunction
 
-function! s:GoyoLeave()
+function! s:goyo_leave()
 	silent !tmux set status on
 	silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
 	set statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
 	set showmode
 	set showcmd
 	set scrolloff=5
+	set textwidth=80
+	set colorcolumn=80
 	Limelight!
 	" ...
 endfunction
 
-autocmd! User GoyoEnter nested call <SID>GoyoEnter()
-autocmd! User GoyoLeave nested call <SID>GoyoLeave()
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
+autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
 " with :q and :q! quit Goyo and the buffer
 function! g:GoyoBefore()
@@ -268,6 +270,8 @@ function! g:GoyoAfter()
 endfunction
 
 let g:goyo_callbacks = [function('g:GoyoBefore'), function('g:GoyoAfter')]
+let g:goyo_width = 85
+"let g:goyo_linenr=1
 
 "Limelight settings for unsupported themes
 " Color name (:help cterm-colors) or ANSI code
@@ -291,7 +295,7 @@ let g:goyo_callbacks = [function('g:GoyoBefore'), function('g:GoyoAfter')]
 "let g:limelight_priority = 10
 
 " Limelight and Goyo integration
-autocmd! User GoyoEnter Limelight
+autocmd! User GoyoEnter Limelight0.7
 autocmd! User GoyoLeave Limelight!
 "}}}
 
@@ -409,8 +413,10 @@ nnoremap <leader>e :edit <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <leader>c :checktime<CR>
 "nnoremap <leader>l :ls<CR>
 nnoremap <leader>a :Ag!<space>
-nnoremap <leader>O :Limelight<CR>
+nnoremap <leader>O :Limelight0.7<CR>
 nnoremap <leader>o :Limelight!<CR>
+nnoremap <leader>d <PageDown>
+nnoremap <leader>u <PageUp>
 
 " create splits
 " vertical splits
@@ -451,6 +457,7 @@ inoremap <localleader>h <C-d>
 vnoremap <localleader>l >gv
 vnoremap <localleader>h <gv
 nnoremap <localleader>sr :%s/
+vnoremap <localleader>sr :%s/
 nnoremap <localleader>ss :setlocal spell! spelllang=en_us<cr>
 nnoremap <localleader>sg Vgq
 nnoremap <localleader>sf z=
@@ -562,6 +569,21 @@ let g:seoul256_srgb = 1
 "   Range:   252 (darkest) ~ 256 (lightest)
 "   Default: 253
 "let g:seoul256_light_background = 253
+
+"    colorscheme seoul256
+"		"Change theme depending on the time of day
+"		let hr = (strftime('%H'))
+"		if hr >= 20
+"    "colorscheme seoul256
+"		setlocal background=dark
+"		elseif hr >= 6
+"    "colorscheme seoul256-light
+"		setlocal background=light
+"		elseif hr >= 0
+"    "colorscheme seoul256
+"		setlocal background=dark
+"		endif
+
 "}}}
 " gruvbox {{{
 let g:gruvbox_termguicolors=256
@@ -575,9 +597,6 @@ let g:gruvbox_background = 236
 "  Default: 229
 let g:gruvbox_background = 230
 "}}}
-" zenburn color settings {{{
-let g:zenburn_terminalcolors=256
-"		}}}
 " }}}
 
 " Base16 {{{
@@ -599,19 +618,18 @@ autocmd WinLeave,FocusLost   * setlocal nocursorline
 " italic comments {{{
 set t_ZH=[3m   "  character is created by ctrl-v <esc>
 set t_ZR=[23m
-"highlight Comment term=italic cterm=italic gui=italic ctermfg=19
+highlight Comment term=italic cterm=italic gui=italic ctermfg=08
 " }}}
 
 " For use with iceberg color theme {{{
 "colorscheme iceberg
 "set background="dark"
-highlight Comment term=italic cterm=italic gui=italic ctermfg=08
 " }}}
 
 " Statusline {{{
 " based on https://github.com/fatih/dotfiles/blob/master/vimrc
 
-hi! StatusLine ctermfg=00 ctermbg=14
+"hi! StatusLine ctermfg=00 ctermbg=14
 
 let s:modes = {
       \ 'n': 'N', 
@@ -637,25 +655,30 @@ function! StatusLineMode()
   endif
 
   if cur_mode == "N"
-    exe 'hi! myModeColor cterm=bold ctermbg=20 ctermfg=00'
-		exe 'hi! myInfoColor ctermbg=00 ctermfg=20'
-		exe 'hi! myStatsColor ctermbg=00 ctermfg=20'
+    exe 'hi! mymodecolor cterm=bold ctermbg=20 ctermfg=00'
+    exe 'hi! myinfocolor ctermbg=00 ctermfg=20'
+    exe 'hi! mystatscolor ctermbg=00 ctermfg=20'
+    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
   elseif cur_mode == "I"
     exe 'hi! myModeColor cterm=bold ctermbg=10 ctermfg=00'
-		exe 'hi! myInfoColor ctermbg=00 ctermfg=10'
-		exe 'hi! myStatsColor ctermbg=00 ctermfg=10'
+    exe 'hi! myInfoColor ctermbg=00 ctermfg=10'
+    exe 'hi! myStatsColor ctermbg=00 ctermfg=10'
+    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
   elseif cur_mode == "R"
     exe 'hi! myModeColor cterm=bold ctermbg=12 ctermfg=00'
-		exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
-		exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
+    exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
+    exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
+    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
   elseif cur_mode == "T"
     exe 'hi! myModeColor cterm=bold ctermbg=15 ctermfg=00'
-		exe 'hi! myInfoColor ctermbg=00 ctermfg=15'
-		exe 'hi! myStatsColor ctermbg=00 ctermfg=15'
+    exe 'hi! myInfoColor ctermbg=00 ctermfg=15'
+    exe 'hi! myStatsColor ctermbg=00 ctermfg=15'
+    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
   elseif cur_mode == "V" || cur_mode == "VL" || cur_mode == "VB"
     exe 'hi! myModeColor cterm=bold ctermbg=18 ctermfg=00'
-		exe 'hi! myInfoColor ctermbg=00 ctermfg=18'
-		exe 'hi! myStatsColor ctermbg=00 ctermfg=18'
+    exe 'hi! myInfoColor ctermbg=00 ctermfg=18'
+    exe 'hi! myStatsColor ctermbg=00 ctermfg=18'
+    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
   endif
 
   let s:prev_mode = cur_mode
@@ -725,6 +748,7 @@ set statusline+=\ %*
 set statusline+=%#myModeColor#
 set statusline+=\ %M%n\             "buffer number
 set statusline+=%*
+"to show format options use %{&fo}
 "}}}
 
 " Shadeline Statusline {{{
@@ -801,59 +825,95 @@ function! MarkdownFoldText()
   return getline(v:foldstart).' ('.foldsize.' lines)'
 endfunction
 
+let g:word_count="<unknown>"
+set updatetime=1000
+augroup WordCounter
+  au!  CursorHold,CursorHoldI * call UpdateWordCount()
+augroup END
+function WordCount()
+  return g:word_count
+endfunction
+
+function UpdateWordCount()
+ let lnum = 1
+ let n = 0
+ while lnum <= line('$')
+   let n = n + len(split(getline(lnum)))
+   let lnum = lnum + 1
+ endwhile
+ let g:word_count = n
+endfunction
+
 function! DistractionFreeWriting()
-    colorscheme seoul256
-		"Change theme depending on the time of day
-		let hr = (strftime('%H'))
-		if hr >= 19
+  colorscheme seoul256
+    let g:gitgutter_override_sign_column_highlight = 0
+    "Change theme depending on the time of day
+    let hr = (strftime('%H'))
+    if hr >= 19
     "colorscheme seoul256
-		setlocal background=dark
-		elseif hr >= 6
+    setlocal background=dark
+    highlight SignColumn ctermbg=237
+    highlight GitGutterAdd ctermbg=237
+    highlight GitGutterChange ctermbg=237
+    highlight GitGutterDelete ctermbg=237
+    highlight GitGutterChangeDelete ctermbg=237
+    elseif hr >= 6
     "colorscheme seoul256-light
-		setlocal background=light
-		elseif hr >= 0
+    setlocal background=light
+    highlight SignColumn ctermbg=253
+    highlight GitGutterAdd ctermbg=253
+    highlight GitGutterChange ctermbg=253
+    highlight GitGutterDelete ctermbg=253
+    highlight GitGutterChangeDelete ctermbg=253
+    elseif hr >= 0
     "colorscheme seoul256
-		setlocal background=dark
-		endif
-		setlocal filetype=markdown
-		setlocal textwidth=80
-		setlocal showbreak=
-		setlocal statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
-		setlocal conceallevel=2
-		setlocal spell
-		let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
-		let g:markdown_fenced_languages = ['html', 'bash=sh']
-		setlocal nonumber
-		setlocal norelativenumber
-		setlocal nocursorline
-		setlocal colorcolumn=80
-		setlocal foldmethod=expr
-		setlocal foldexpr=MarkdownFolds()
-		setlocal foldtext=MarkdownFoldText()
-		"setlocal foldtext=getline(v:foldstart).'\ \ \ /'.v:foldlevel.'...'.(v:foldend-v:foldstart)
-		setlocal foldlevel=1
-		setlocal foldcolumn=4
-		setlocal cpo+=J
-		Goyo 85
+    setlocal background=dark
+    highlight SignColumn ctermbg=237
+    highlight GitGutterAdd ctermbg=237
+    highlight GitGutterChange ctermbg=237
+    highlight GitGutterDelete ctermbg=237
+    highlight GitGutterChangeDelete ctermbg=237
+    endif
+    setlocal filetype=markdown
+    setlocal textwidth=80
+    setlocal showbreak=
+    setlocal statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ 𝑤\ %{WordCount()}\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
+    setlocal conceallevel=2
+    setlocal spell
+    set spellsuggest=15
+    let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+    let g:markdown_fenced_languages = ['html', 'css', 'bash=sh']
+    setlocal nonumber
+    setlocal norelativenumber
+    setlocal nocursorline
+    setlocal colorcolumn=80
+    setlocal foldmethod=expr
+    setlocal foldexpr=MarkdownFolds()
+    "setlocal foldtext=MarkdownFoldText()
+    setlocal foldtext=getline(v:foldstart).'\ \[\~'.v:foldlevel.'\:\+'.(v:foldend-v:foldstart).'\]'
+    setlocal foldlevel=1
+    setlocal foldcolumn=4
+    setlocal cpo+=J
+    Goyo 85
 endfunction
 
 augroup ft_markdown
     au!
     au BufNewFile,BufRead *.md setlocal filetype=markdown
-		au BufNewFile,BufRead *.md call DistractionFreeWriting()
-		autocmd WinEnter,FocusGained * setlocal nocursorline
-		autocmd WinLeave,FocusLost   * setlocal nocursorline
-    " Use <localleader>1/2/3 to add headings.
-		au Filetype markdown nnoremap <buffer> <localleader>; :Goyo 85<cr>:setlocal statusline=%M<CR>:hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE<CR>
-		":GitGutterEnable<CR>
-    au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
-    au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>
-    au Filetype markdown nnoremap <buffer> <localleader>3 I###<space><esc>
-    au Filetype markdown nnoremap <buffer> <localleader>4 I####<space><esc>
-    au Filetype markdown nnoremap <buffer> <localleader>5 I#####<space><esc>
-    au Filetype markdown nnoremap <buffer> <localleader>6 I######<space><esc>
-		au Filetype markdown nnoremap <buffer> <localleader>` I*<space>*<space>*<space><esc>
-		au Filetype markdown inoremap <buffer> <localleader>` * * *
+  au BufNewFile,BufRead *.md call DistractionFreeWriting()
+  autocmd WinEnter,FocusGained * setlocal nocursorline
+  autocmd WinLeave,FocusLost   * setlocal nocursorline
+  " Use <localleader>1/2/3 to add headings.
+  au Filetype markdown nnoremap <buffer> <localleader>; :Goyo 85<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE<CR>
+  ":GitGutterEnable<CR>
+  au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
+  au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>
+  au Filetype markdown nnoremap <buffer> <localleader>3 I###<space><esc>
+  au Filetype markdown nnoremap <buffer> <localleader>4 I####<space><esc>
+  au Filetype markdown nnoremap <buffer> <localleader>5 I#####<space><esc>
+  au Filetype markdown nnoremap <buffer> <localleader>6 I######<space><esc>
+  au Filetype markdown nnoremap <buffer> <localleader>` I*<space>*<space>*<space><esc>
+  au Filetype markdown inoremap <buffer> <localleader>` * * *
 augroup END
 
 "}}}
@@ -871,4 +931,9 @@ endif
 "hi CursorColumn term=NONE cterm=reverse
 "hi Visual term=reverse cterm=reverse
 " }}}
-"  }}}
+" Neovim-Guicursor {{{
+set guicursor=n:blinkon0
+set guicursor=i-ci-o:ver50-icursor-blinkwait300-blinkon200-blinkoff150
+set guicursor=r-cr:hor20-blinkwait300-blinkon200-blinkoff150
+	"}}}
+"}}}
