@@ -106,6 +106,23 @@ function fg-bg() {
 zle -N fg-bg
 bindkey '^Z' fg-bg
 
+# git (from https://github.com/Parth/dotfiles/blob/master/zsh/keybindings.sh)
+	function git_prepare() {
+		if [ -n "$BUFFER" ];
+			then
+				BUFFER="git add -A; git commit -m \"$BUFFER\" && git push"
+		fi
+
+		if [ -z "$BUFFER" ];
+			then
+				BUFFER="git add -A; git commit -v && git push"
+		fi
+				
+		zle accept-line
+	}
+	zle -N git_prepare
+bindkey "^g" git_prepare
+
 # file management
 alias vrc="nvim ~/.vimrc"
 alias zrc="nvim ~/.zshrc"
