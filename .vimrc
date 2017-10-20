@@ -26,13 +26,13 @@ Plug 'rking/ag.vim'
 " File Managers
 Plug 'tpope/vim-vinegar'
 Plug 'cocopon/vaffle.vim'
+Plug 'sjl/gundo.vim'
 
 " Emmet for Vim
 Plug 'mattn/emmet-vim'
 
 " For better html indenting 
 Plug 'othree/html5.vim'
-"Plug 'indenthtml.vim'
 Plug 'tpope/vim-sleuth'
 
 " for haml, sass, and scss support
@@ -63,6 +63,7 @@ Plug 'reedes/vim-wordy'
 Plug 'beloglazov/vim-online-thesaurus'
 "Plug 'dpelle/vim-LanguageTool'
 "Plug 'rhysd/vim-grammarous'
+Plug 'dbmrq/vim-ditto'
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
 " Distraction-free writing
@@ -80,7 +81,6 @@ Plug 'christoomey/vim-tmux-runner'
 " Synchronized toggle key mappings
 Plug 'tpope/vim-unimpaired'
 
-" Initialize plugin system
 call plug#end()
 "}}}
 " Set all the things! {{{
@@ -189,6 +189,10 @@ let g:netrw_banner=0 "disable banner
 let g:netrw_altv=1   "open splits on right
 let g:netrw_liststyle=3 "tree view
 "}}}
+
+" Gundo Settings {{{
+nnoremap <leader>gg :GundoToggle<CR>
+" }}}
 
 "Syntastic checkers {{{
 set statusline+=%#warningmsg#
@@ -322,6 +326,19 @@ let g:pencil#joinspaces = 1
 let g:pencil#conceallevel = 2     " 0=disable, 1=one char, 2=hide char, 3=hide all (def)
 let g:pencil#concealcursor = 'nc'  " n=normal, v=visual, i=insert, c=command (def)
 "}}}
+
+" Vim Ditto {{{
+au FileType markdown,text,tex DittoOn  " Turn on Ditto's autocmds
+
+nmap <localleader>sd <Plug>ToggleDitto      " Turn it on and off
+
+nmap =d <Plug>DittoNext                " Jump to the next word
+nmap -d <Plug>DittoPrev                " Jump to the previous word
+nmap +d <Plug>DittoGood                " Ignore the word under the cursor
+nmap _d <Plug>DittoBad                 " Stop ignoring the word under the cursor
+nmap ]d <Plug>DittoMore                " Show the next matches
+nmap [d <Plug>DittoLess                " Show the previous matches
+" }}}
 
 "Wordy {{{
 let g:wordy#ring = [
@@ -461,7 +478,7 @@ vnoremap <localleader>h <gv
 nnoremap <localleader>sr :%s/
 vnoremap <localleader>sr :%s/
 nnoremap <localleader>ss :setlocal spell! spelllang=en_us<cr>
-nnoremap <localleader>sg Vgq
+nnoremap <localleader>sq Vgq
 nnoremap <localleader>sf z=
 nnoremap <localleader>sa zg
 noremap <silent> <localleader>sw :<C-u>NextWordy<cr>
