@@ -75,7 +75,6 @@ Plug 'thinca/vim-zenspace'
 
 " better terminal integration
 Plug 'wincent/terminus'
-Plug 'christoomey/vim-tmux-navigator' "having issues w/tmux and neovim
 Plug 'christoomey/vim-tmux-runner'
 
 " Synchronized toggle key mappings
@@ -359,15 +358,6 @@ let g:wordy#ring = [
 	" Vim Tmux Runner {{{
 	nnoremap <leader>to :VtrOpenRunner<CR>
 	nnoremap <leader>tr :VtrSendLinesToRunner<CR>
-	"}}}
-	"Vim Tmux Navigator {{{
-let g:tmux_navigator_no_mappings = 1
-
-nnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
-nnoremap <silent> <c-j> :TmuxNavigateDown<cr>
-nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
-nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
-nnoremap <silent> <c-\> :TmuxNavigatePrevious<cr>	
 	"}}}
 "}}}
 "  }}}
