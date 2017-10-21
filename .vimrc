@@ -225,11 +225,10 @@ function! s:goyo_enter()
 	silent !tmux set status off
   silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
 	" set linespace=7
-	set textwidth=80
-	set statusline=%M%=%{WordCount()}
+	set textwidth=0
+	set statusline=\ \ \ \ %M%=%{WordCount()}\ 
 	hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE
 	set showbreak=
-	set colorcolumn=80
 	set noshowmode
 	set noshowcmd
 	set scrolloff=999
@@ -245,7 +244,7 @@ function! s:goyo_leave()
 	set showmode
 	set showcmd
 	set scrolloff=5
-	set textwidth=80
+	set textwidth=0
 	set colorcolumn=80
 	Limelight!
 	" ...
@@ -274,7 +273,7 @@ function! g:GoyoAfter()
 endfunction
 
 let g:goyo_callbacks = [function('g:GoyoBefore'), function('g:GoyoAfter')]
-let g:goyo_width = 85
+let g:goyo_width = 82
 "let g:goyo_linenr=1
 
 "Limelight settings for unsupported themes
@@ -321,9 +320,9 @@ augroup pencil
 augroup END
 
 let g:pencil#wrapModeDefault = 'soft'   " default is 'hard'
-let g:pencil#joinspaces = 1
-let g:pencil#conceallevel = 2     " 0=disable, 1=one char, 2=hide char, 3=hide all (def)
-let g:pencil#concealcursor = 'nc'  " n=normal, v=visual, i=insert, c=command (def)
+let g:pencil#joinspaces = 1      " 0=one space, 1=two spaces
+let g:pencil#conceallevel = 3     " 0=disable, 1=one char, 2=hide char, 3=hide all (def)
+let g:pencil#concealcursor = 'c'  " n=normal, v=visual, i=insert, c=command (def)
 "}}}
 
 " Vim Ditto {{{
@@ -410,6 +409,7 @@ map Q @q
 map E $
 map B 0
 map K zt
+map `m `mzt
 
 " map leader bindings {{{
 nnoremap <leader><leader> <C-^>
@@ -469,6 +469,7 @@ nnoremap <localleader>sr :%s/
 vnoremap <localleader>sr :%s/
 nnoremap <localleader>ss :setlocal spell! spelllang=en_us<cr>
 nnoremap <localleader>sq Vgq
+nnoremap <localleader>sg Vgqap
 nnoremap <localleader>sf z=
 nnoremap <localleader>sa zg
 noremap <silent> <localleader>sw :<C-u>NextWordy<cr>
@@ -496,8 +497,8 @@ nnoremap <C-H> <C-W><C-H>
 "}}}
 
 " Faster scrolling {{{
-nnoremap <C-e> 3<C-e>
-nnoremap <C-y> 3<C-y>
+"nnoremap <C-e> 3<C-e>
+"nnoremap <C-y> 3<C-y>
 "}}}
 
 " rename current file, via Gary Bernhardt {{{
@@ -884,10 +885,9 @@ function! DistractionFreeWriting()
     highlight GitGutterChangeDelete ctermbg=237
     endif
     setlocal filetype=markdown
-    setlocal textwidth=80
+    setlocal textwidth=0
     setlocal showbreak=
     setlocal statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ 𝑤\ %{WordCount()}\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
-    setlocal conceallevel=2
     setlocal spell
     set spellsuggest=15
     let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
@@ -900,10 +900,10 @@ function! DistractionFreeWriting()
     setlocal foldexpr=MarkdownFolds()
     "setlocal foldtext=MarkdownFoldText()
     setlocal foldtext=getline(v:foldstart).'\ \[\~'.v:foldlevel.'\:\+'.(v:foldend-v:foldstart).'\]'
-    setlocal foldlevel=1
+    setlocal foldlevel=2
     setlocal foldcolumn=4
     setlocal cpo+=J
-    Goyo 85
+    Goyo 82
 endfunction
 
 augroup ft_markdown
@@ -913,7 +913,7 @@ augroup ft_markdown
   autocmd WinEnter,FocusGained * setlocal nocursorline
   autocmd WinLeave,FocusLost   * setlocal nocursorline
   " Use <localleader>1/2/3 to add headings.
-  au Filetype markdown nnoremap <buffer> <localleader>; :Goyo 85<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE<CR>
+  au Filetype markdown nnoremap <buffer> <localleader>; :Goyo 82<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE<CR>
   ":GitGutterEnable<CR>
   au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
   au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>

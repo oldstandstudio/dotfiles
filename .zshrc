@@ -7,7 +7,7 @@
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-#ZSH_THEME="dracula"
+#ZSH_THEME="excid3"
 
 BASE16_SHELL=$HOME/.config/base16-shell/
 [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
@@ -91,17 +91,17 @@ source $ZSH/oh-my-zsh.sh
 	# custom cd
 	c() {
 		cd $1;
-		ls;
+		ls -A;
 	}
 	alias cd="c"
 
 # LS -A
-	function ctrl_a() {
+	function ctrl_l() {
 		BUFFER="ls -A"
 		zle accept-line
 	}
-	zle -N ctrl_a
-bindkey "^a" ctrl_a
+	zle -N ctrl_l
+bindkey "^a" ctrl_l
 
 # Make CTRL-Z toggle suspending things. Thanks to Wincent dotfiles for this little gem
 function fg-bg() {
@@ -140,7 +140,7 @@ bindkey "^g" git_prepare
 		zle accept-line
 	}
 	zle -N git_pull
-bindkey "^p" git_pull
+bindkey "^y" git_pull
 
 	function git_log() {
 		if [ -z "$BUFFER" ];
@@ -181,6 +181,46 @@ bindkey "^s" git_status
 	zle -N goto_home
 bindkey "^h" goto_home
 
+# Sudo
+	function add_sudo() {
+		BUFFER="sudo "$BUFFER
+		zle end-of-line
+	}
+	zle -N add_sudo
+bindkey "^x" add_sudo
+
+# go to dotfiles
+	function elite_ninja() {
+		BUFFER="iceberg && cd ~/Dropbox/.dotfiles && ./tmux.sh"
+		zle accept-line
+	}
+	zle -N elite_ninja
+bindkey "^e" elite_ninja
+
+# go to dev folder
+	function code_dojo() {
+		BUFFER="iceberg && cd ~/Dropbox/dev && ./tmux.sh"
+		zle accept-line
+	}
+	zle -N code_dojo
+bindkey "^p" code_dojo
+
+# uhsa
+	function tree_house() {
+		BUFFER="seoul && cd ~/uhsa && ./tmux.sh"
+		zle accept-line
+	}
+	zle -N tree_house
+bindkey "^t" tree_house
+
+# logs
+	function log_cabin() {
+		BUFFER="seoul && cd ~/log && ./tmux.sh"
+		zle accept-line
+	}
+	zle -N log_cabin
+bindkey "^l" log_cabin
+
 # file management
 alias vrc="nvim ~/.vimrc"
 alias zrc="nvim ~/.zshrc"
@@ -188,20 +228,18 @@ alias tcf="nvim ~/.tmux.conf"
 alias .vrc="nvim ~/Dropbox/.dotfiles/.vimrc"
 alias .zrc="nvim ~/Dropbox/.dotfiles/.zshrc"
 alias .tcf="nvim ~/Dropbox/.dotfiles/.tmux.conf"
-alias treedir="tree --filelimit=14 --dirsfirst"
 alias init="nvim ~/.config/nvim/init.vim"
-alias .="~/"
 
 #i3
-alias gcf="~/.config"
-alias gi3="~/.config/i3"
+alias gcf="cd ~/.config"
+alias gi3="cd ~/.config/i3"
 
 # projects
 alias gd="cd ~/Dropbox"
 alias uhsa="cd ~/uhsa"
 alias dev="cd ~/Dropbox/dev"
-alias glog="cd ~/log"
-alias blog="cd ~/Dropbox/log/blog"
+alias log="cd ~/log"
+alias blog="cd ~/log/blog"
 alias .dot="cd ~/Dropbox/.dotfiles"
 
 # tmux
@@ -213,15 +251,7 @@ alias ta="tmux a"
 alias tt="tmux attach -t"
 alias tk="tmux kill-server"
 alias hello="~/log/./tmux.sh"
-alias tblog="~/Dropbox/log/blog/./tmux.sh"
-alias tuhsa="~/uhsa/./tmux.sh"
-alias tcode="~/Dropbox/dev/./tmux.sh"
-alias tdot="~/Dropbox/.dotfiles/./tmux.sh"
 alias tsys="~/./tmux.sh"
-alias truby="~/Dropbox/dev/demo/./tmux.sh"
-
-# git
-alias gs="git status"
 
 # other
 alias rr="ranger"
@@ -235,25 +265,13 @@ alias swatch="sass --watch scss:css"
 alias jadehtml="jade -w -P "
 
 # color
-alias hl="base16_harmonic16-light"
-alias hd="base16_harmonic16-dark"
-alias tmrwn="base16_tomorrow-night"
-alias zen="base16_zenburn"
 alias dark="base16_grayscale-dark"
 alias light="base16_grayscale-light"
 alias dracula="base16_dracula"
 alias mocha="base16_mocha"
 alias monokai="base16_monokai"
 alias iceberg="base16_iceberg"
-alias paraiso="base16_paraiso"
 alias seoul="base16_seoul256-dark"
-
-# xbacklight
-alias xbs="xbacklight -set"
-alias xb100="xbacklight -set 100"
-alias xb50="xbacklight -set 50"
-alias xb25="xbacklight -set 25"
-alias xbg="xbacklight -get"
 
 # ruby
 export PATH="$HOME/.rbenv/bin:$PATH"
