@@ -95,14 +95,6 @@ source $ZSH/oh-my-zsh.sh
 	}
 	alias cd="c"
 
-# LS -A
-	function ctrl_l() {
-		BUFFER="ls -A"
-		zle accept-line
-	}
-	zle -N ctrl_l
-bindkey "^a" ctrl_l
-
 # Make CTRL-Z toggle suspending things. Thanks to Wincent dotfiles for this little gem
 function fg-bg() {
 	if [[ $#BUFFER -eq 0 ]]; then
@@ -164,7 +156,7 @@ bindkey "^o" git_log
 	zle -N git_status
 bindkey "^s" git_status
 
-# up -- Doesn't seem to work within tmux
+# up one directory
 	function up_widget() {
 		BUFFER="cd .."
 		zle accept-line
@@ -181,13 +173,21 @@ bindkey "^s" git_status
 	zle -N goto_home
 bindkey "^h" goto_home
 
-# Sudo
-	function add_sudo() {
-		BUFFER="sudo "$BUFFER
-		zle end-of-line
+# do a git push and kill tmux-session
+	function nighty_night() {
+		if [ -n "$BUFFER" ];
+			then
+				BUFFER="git add -A; git commit -m \"$BUFFER\" && git push && tmux detach && exit"
+		fi
+
+		if [ -z "$BUFFER" ];
+			then
+				BUFFER="git add -A; git commit -v && git push && tmux detach && exit"
+		fi
+		zle accept-line
 	}
-	zle -N add_sudo
-bindkey "^x" add_sudo
+	zle -N nighty_night
+bindkey "^x" nighty_night
 
 # go to dotfiles
 	function elite_ninja() {
@@ -195,7 +195,7 @@ bindkey "^x" add_sudo
 		zle accept-line
 	}
 	zle -N elite_ninja
-bindkey "^e" elite_ninja
+bindkey "^n" elite_ninja
 
 # go to dev folder
 	function code_dojo() {
@@ -241,6 +241,7 @@ alias dev="cd ~/Dropbox/dev"
 alias log="cd ~/log"
 alias blog="cd ~/log/blog"
 alias .dot="cd ~/Dropbox/.dotfiles"
+alias anim="cd ~/Dropbox/animation"
 
 # tmux
 alias t="./tmux.sh"
@@ -254,9 +255,9 @@ alias hello="~/log/./tmux.sh"
 alias tsys="~/./tmux.sh"
 
 # other
-alias rr="ranger"
 alias v="vim"
 alias n="nvim"
+alias lua="lua5.3"
 alias rbt="robotfindskitten"
 alias cl="clear"
 alias x="exit"

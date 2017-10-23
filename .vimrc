@@ -44,9 +44,15 @@ au BufNewFile,BufReadPost *.jade set filetype=pug
 
 Plug 'dNitro/vim-pug-complete', { 'for': ['pug', 'jade'] }
 
+" Javascript and jQuery
+Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
+
 " Ruby on Rails Plugins
 Plug 'tpope/vim-rails', { 'for': ['ruby', 'rails'] }
 Plug 'tpope/vim-rbenv'
+
+" Lua & Love2d
+Plug 'sheerun/vim-polyglot', { 'for': ['lua'] }
 
 " Syntastic
 Plug 'vim-syntastic/syntastic'
@@ -326,7 +332,7 @@ let g:pencil#concealcursor = 'c'  " n=normal, v=visual, i=insert, c=command (def
 "}}}
 
 " Vim Ditto {{{
-au FileType markdown,text,tex DittoOn  " Turn on Ditto's autocmds
+"au FileType markdown,text,tex DittoOn  " Turn on Ditto's autocmds
 
 nmap <localleader>sd <Plug>ToggleDitto      " Turn it on and off
 
@@ -366,6 +372,7 @@ set omnifunc=syntaxcomplete#Complete
 autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete#Complete
 autocmd FileType css,scss,sass setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown,jade,pug setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript,jquery setlocal omnifunc=javascriptcomplete#CompleteJS
 "}}}
 
 " Folds {{{
@@ -410,6 +417,8 @@ map E $
 map B 0
 map K zt
 map `m `mzt
+cnoremap <C-a> <home>
+cnoremap <C-e> <end>
 
 " map leader bindings {{{
 nnoremap <leader><leader> <C-^>
@@ -420,12 +429,15 @@ nnoremap <leader>f :find<space>
 nnoremap <leader>b :b<space>
 nnoremap <leader>e :edit <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <leader>c :checktime<CR>
-"nnoremap <leader>l :ls<CR>
+nnoremap <leader>y :echo expand('%:p')<CR>
+nnoremap <leader>yf :let @" = expand('%:p')<CR>
+nnoremap <leader>yc :let @" = expand('%')<CR>
 nnoremap <leader>a :Ag!<space>
 nnoremap <leader>O :Limelight0.7<CR>
 nnoremap <leader>o :Limelight!<CR>
 nnoremap <leader>d <PageDown>
 nnoremap <leader>u <PageUp>
+nnoremap <leader>l :!love<CR>
 
 " create splits
 " vertical splits
@@ -469,7 +481,7 @@ nnoremap <localleader>sr :%s/
 vnoremap <localleader>sr :%s/
 nnoremap <localleader>ss :setlocal spell! spelllang=en_us<cr>
 nnoremap <localleader>sq Vgq
-nnoremap <localleader>sg Vgqap
+nnoremap <localleader>sg gqap
 nnoremap <localleader>sf z=
 nnoremap <localleader>sa zg
 noremap <silent> <localleader>sw :<C-u>NextWordy<cr>
@@ -666,8 +678,8 @@ function! StatusLineMode()
 
   if cur_mode == "N"
     exe 'hi! mymodecolor cterm=bold ctermbg=20 ctermfg=00'
-    exe 'hi! myinfocolor ctermbg=00 ctermfg=20'
-    exe 'hi! mystatscolor ctermbg=00 ctermfg=20'
+    exe 'hi! myinfocolor cterm=italic ctermbg=00 ctermfg=20'
+    exe 'hi! mystatscolor cterm=italic ctermbg=00 ctermfg=20'
     exe 'hi! StatusLine ctermfg=00 ctermbg=08'
   elseif cur_mode == "I"
     exe 'hi! myModeColor cterm=bold ctermbg=10 ctermfg=00'
