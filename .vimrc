@@ -19,9 +19,11 @@ Plug 'ajh17/Spacegray.vim'
 
 " Fuzzy finder
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 
 " Ag - Silver Searcher
-Plug 'rking/ag.vim'
+"Plug 'rking/ag.vim'
 
 " File Managers
 Plug 'tpope/vim-vinegar'
@@ -162,6 +164,16 @@ let mapleader = "\<Space>"
 let maplocalleader = ";"
 "}}}
 " Plugin settings and mappings {{{
+" FZF {{{
+map <C-f>f :Files<CR>
+map <C-f>g :GitFiles?<CR>
+map <C-f>b :Buffers<CR>
+map <C-f>a :Ag<CR>
+map <C-f>m :Marks<CR>
+map <C-f>c :BCommits<CR>
+map <C-f>l :BLines<CR>
+" }}}
+
 " Ctrlp-plugin {{{
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlPMixed'
@@ -170,7 +182,7 @@ nnoremap <leader>p :CtrlPBuffer<CR>
 let g:ctrlp_show_hidden = 1
 
 " CtrlP intagration with Ag
-let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+"let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 "}}}
 
 " Vaffle Mappings & Settings {{{
@@ -413,11 +425,11 @@ nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
 map <tab> zR
 map <s-tab> zM
 map Q @q
-map E $
-map B 0
+map <C-e> $
+map <C-b> 0
 map K zt
 map `m `mzt
-cnoremap <C-a> <home>
+cnoremap <C-b> <home>
 cnoremap <C-e> <end>
 
 " map leader bindings {{{
@@ -432,7 +444,7 @@ nnoremap <leader>c :checktime<CR>
 nnoremap <leader>y :echo expand('%:p')<CR>
 nnoremap <leader>yf :let @" = expand('%:p')<CR>
 nnoremap <leader>yc :let @" = expand('%')<CR>
-nnoremap <leader>a :Ag!<space>
+"nnoremap <leader>a :Ag!<space>
 nnoremap <leader>O :Limelight0.7<CR>
 nnoremap <leader>o :Limelight!<CR>
 nnoremap <leader>d <PageDown>
@@ -680,7 +692,7 @@ function! StatusLineMode()
     exe 'hi! mymodecolor cterm=bold ctermbg=20 ctermfg=00'
     exe 'hi! myinfocolor cterm=italic ctermbg=00 ctermfg=20'
     exe 'hi! mystatscolor cterm=italic ctermbg=00 ctermfg=20'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+    exe 'hi! StatusLine ctermfg=00 ctermbg=07'
   elseif cur_mode == "I"
     exe 'hi! myModeColor cterm=bold ctermbg=10 ctermfg=00'
     exe 'hi! myInfoColor ctermbg=00 ctermfg=10'
@@ -925,7 +937,7 @@ augroup ft_markdown
   autocmd WinEnter,FocusGained * setlocal nocursorline
   autocmd WinLeave,FocusLost   * setlocal nocursorline
   " Use <localleader>1/2/3 to add headings.
-  au Filetype markdown nnoremap <buffer> <localleader>; :Goyo 82<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE<CR>
+  au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 82<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE<CR>
   ":GitGutterEnable<CR>
   au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
   au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>
