@@ -14,7 +14,7 @@ Plug 'cocopon/iceberg.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'cocopon/colorswatch.vim'
-"Plug 'cocopon/shadeline.vim'
+Plug 'cocopon/shadeline.vim'
 Plug 'ajh17/Spacegray.vim'
 
 " Fuzzy finder
@@ -75,10 +75,12 @@ Plug 'dbmrq/vim-ditto'
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
 " Distraction-free writing
-Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
+Plug 'junegunn/goyo.vim'
+", { 'for': 'markdown' }
 "autocmd! User goyo.vim echom 'Goyo is now loaded!'<CR>
 
-Plug 'junegunn/limelight.vim', { 'for': 'markdown' }
+Plug 'junegunn/limelight.vim'
+", { 'for': 'markdown' }
 Plug 'thinca/vim-zenspace'
 
 " better terminal integration
@@ -158,6 +160,8 @@ if has('linebreak')
 		set breakindentopt=shift:2
 	endif
 endif
+
+set fillchars+=vert:│
 " }}}
 " leader mappings {{{
 let mapleader = "\<Space>"
@@ -425,12 +429,10 @@ nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
 map <tab> zR
 map <s-tab> zM
 map Q @q
-map <C-e> $
-map <C-b> 0
+map E $
+map B 0
 map K zt
 map `m `mzt
-cnoremap <C-b> <home>
-cnoremap <C-e> <end>
 
 " map leader bindings {{{
 nnoremap <leader><leader> <C-^>
@@ -465,10 +467,11 @@ noremap <leader>he :sp<space>
 
 " toggle spell check z= with
 function! FixLastSpellingError()
-  normal! mm[s1z=`m"
+  normal! ms[s1z=`s"
 endfunction
 
 map <leader>s :call FixLastSpellingError()<cr>
+inoremap <C-s> <esc>:call FixLastSpellingError()<cr>a
 " }}}
 " map local leader bindings {{{
 "inoremap <localleader>; <C-p>
@@ -645,8 +648,8 @@ endif
 " }}}
 
 " Only use cursorline for current window {{{
-autocmd WinEnter,FocusGained * setlocal cursorline
-autocmd WinLeave,FocusLost   * setlocal nocursorline
+"autocmd WinEnter,FocusGained * setlocal cursorline
+"autocmd WinLeave,FocusLost   * setlocal nocursorline
 " }}}
 
 " italic comments {{{
@@ -660,130 +663,130 @@ highlight Comment term=italic cterm=italic gui=italic ctermfg=08
 "set background="dark"
 " }}}
 
-" Statusline {{{
-" based on https://github.com/fatih/dotfiles/blob/master/vimrc
-
-"hi! StatusLine ctermfg=00 ctermbg=14
-
-let s:modes = {
-      \ 'n': 'N', 
-      \ 'i': 'I', 
-      \ 'R': 'R', 
-      \ 'v': 'V', 
-      \ 'V': 'VL', 
-      \ "\<C-v>": 'VB',
-      \ 'c': 'C',
-      \ 's': 'select', 
-      \ 'S': 's-line', 
-      \ "\<C-s>": 's-block', 
-      \ 't': 'T'
-      \}
-
-let s:prev_mode = ""
-function! StatusLineMode()
-  let cur_mode = get(s:modes, mode(), '')
-
-  " do not update higlight if the mode is the same
-  if cur_mode == s:prev_mode
-    return cur_mode
-  endif
-
-  if cur_mode == "N"
-    exe 'hi! mymodecolor cterm=bold ctermbg=20 ctermfg=00'
-    exe 'hi! myinfocolor cterm=italic ctermbg=00 ctermfg=20'
-    exe 'hi! mystatscolor cterm=italic ctermbg=00 ctermfg=20'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=07'
-  elseif cur_mode == "I"
-    exe 'hi! myModeColor cterm=bold ctermbg=10 ctermfg=00'
-    exe 'hi! myInfoColor ctermbg=00 ctermfg=10'
-    exe 'hi! myStatsColor ctermbg=00 ctermfg=10'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-  elseif cur_mode == "R"
-    exe 'hi! myModeColor cterm=bold ctermbg=12 ctermfg=00'
-    exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
-    exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-  elseif cur_mode == "T"
-    exe 'hi! myModeColor cterm=bold ctermbg=15 ctermfg=00'
-    exe 'hi! myInfoColor ctermbg=00 ctermfg=15'
-    exe 'hi! myStatsColor ctermbg=00 ctermfg=15'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-  elseif cur_mode == "V" || cur_mode == "VL" || cur_mode == "VB"
-    exe 'hi! myModeColor cterm=bold ctermbg=18 ctermfg=00'
-    exe 'hi! myInfoColor ctermbg=00 ctermfg=18'
-    exe 'hi! myStatsColor ctermbg=00 ctermfg=18'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-  endif
-
-  let s:prev_mode = cur_mode
-  return cur_mode
-endfunction
-
-function! StatusLineFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no file') : ''
-endfunction
-
-function! StatusLinePercent()
-  return (100 * line('.') / line('$')) . '%'
-endfunction
-
-function! StatusLineLeftInfo()
- let branch = fugitive#head()
- let filename = '' != expand('%:t') ? expand('%:t') : '{no name}'
- if branch !=# ''
-   return printf("\ %s\/%s", branch, filename)
- endif
- return filename
-endfunction
-
-function! Rbenv()
-	return system("rbenv version | awk '{printf $1}'")
-endfunction
-
-" More colors
-exe 'hi! myFileColor cterm=italic ctermbg=00 ctermfg=08'
-exe 'hi! myBufferColor ctermbg=00 ctermfg=08'
-exe 'hi! myGlyphsColor ctermbg=00 ctermfg=08'
-
-" start building our statusline
-set statusline=
-
-" mode with custom colors
-set statusline+=%#myModeColor#\ 
-set statusline+=%{StatusLineMode()}\ 
-set statusline+=%*
-
-" left information bar (after mode)
-set statusline+=%#myInfoColor#
-set statusline+=\ %{StatusLineLeftInfo()}\ %r\ %{PencilMode()}\ 
-set statusline+=%*
-
-" filetype
-"set statusline+=%#myFileColor#
-"set statusline+=\ \[%{StatusLineFiletype()}%R\]
+"" Statusline {{{
+"" based on https://github.com/fatih/dotfiles/blob/master/vimrc
+"
+""hi! StatusLine ctermfg=00 ctermbg=14
+"
+"let s:modes = {
+"      \ 'n': 'N', 
+"      \ 'i': 'I', 
+"      \ 'R': 'R', 
+"      \ 'v': 'V', 
+"      \ 'V': 'VL', 
+"      \ "\<C-v>": 'VB',
+"      \ 'c': 'C',
+"      \ 's': 'select', 
+"      \ 'S': 's-line', 
+"      \ "\<C-s>": 's-block', 
+"      \ 't': 'T'
+"      \}
+"
+"let s:prev_mode = ""
+"function! StatusLineMode()
+"  let cur_mode = get(s:modes, mode(), '')
+"
+"  " do not update higlight if the mode is the same
+"  if cur_mode == s:prev_mode
+"    return cur_mode
+"  endif
+"
+"  if cur_mode == "N"
+"    exe 'hi! mymodecolor cterm=bold ctermbg=20 ctermfg=00'
+"    exe 'hi! myinfocolor cterm=italic ctermbg=00 ctermfg=20'
+"    exe 'hi! mystatscolor cterm=italic ctermbg=00 ctermfg=20'
+"    exe 'hi! StatusLine ctermfg=00 ctermbg=07'
+"  elseif cur_mode == "I"
+"    exe 'hi! myModeColor cterm=bold ctermbg=10 ctermfg=00'
+"    exe 'hi! myInfoColor ctermbg=00 ctermfg=10'
+"    exe 'hi! myStatsColor ctermbg=00 ctermfg=10'
+"    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+"  elseif cur_mode == "R"
+"    exe 'hi! myModeColor cterm=bold ctermbg=12 ctermfg=00'
+"    exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
+"    exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
+"    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+"  elseif cur_mode == "T"
+"    exe 'hi! myModeColor cterm=bold ctermbg=15 ctermfg=00'
+"    exe 'hi! myInfoColor ctermbg=00 ctermfg=15'
+"    exe 'hi! myStatsColor ctermbg=00 ctermfg=15'
+"    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+"  elseif cur_mode == "V" || cur_mode == "VL" || cur_mode == "VB"
+"    exe 'hi! myModeColor cterm=bold ctermbg=18 ctermfg=00'
+"    exe 'hi! myInfoColor ctermbg=00 ctermfg=18'
+"    exe 'hi! myStatsColor ctermbg=00 ctermfg=18'
+"    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+"  endif
+"
+"  let s:prev_mode = cur_mode
+"  return cur_mode
+"endfunction
+"
+"function! StatusLineFiletype()
+"  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no file') : ''
+"endfunction
+"
+"function! StatusLinePercent()
+"  return (100 * line('.') / line('$')) . '%'
+"endfunction
+"
+"function! StatusLineLeftInfo()
+" let branch = fugitive#head()
+" let filename = '' != expand('%:t') ? expand('%:t') : '{no name}'
+" if branch !=# ''
+"   return printf("\ %s\/%s", branch, filename)
+" endif
+" return filename
+"endfunction
+"
+"function! Rbenv()
+"	return system("rbenv version | awk '{printf $1}'")
+"endfunction
+"
+"" More colors
+"exe 'hi! myFileColor cterm=italic ctermbg=00 ctermfg=08'
+"exe 'hi! myBufferColor ctermbg=00 ctermfg=08'
+"exe 'hi! myGlyphsColor ctermbg=00 ctermfg=08'
+"
+"" start building our statusline
+"set statusline=
+"
+"" mode with custom colors
+"set statusline+=%#myModeColor#\ 
+"set statusline+=%{StatusLineMode()}\ 
+"set statusline+=%*
+"
+"" left information bar (after mode)
+"set statusline+=%#myInfoColor#
+"set statusline+=\ %{StatusLineLeftInfo()}\ %r\ %{PencilMode()}\ 
+"set statusline+=%*
+"
+"" filetype
+""set statusline+=%#myFileColor#
+""set statusline+=\ \[%{StatusLineFiletype()}%R\]
+""set statusline+=\ %*
+"
+"" right section seperator
+"set statusline+=%=
+"
+"" percentage, line number and column number
+"set statusline+=%#myStatsColor#
+"set statusline+=\ ℓ\ %l/%L\ 𝕔\ %v
+""set statusline+=\ %{StatusLinePercent()}
 "set statusline+=\ %*
-
-" right section seperator
-set statusline+=%=
-
-" percentage, line number and column number
-set statusline+=%#myStatsColor#
-set statusline+=\ ℓ\ %l/%L\ 𝕔\ %v
-"set statusline+=\ %{StatusLinePercent()}
-set statusline+=\ %*
-
-" filetype and current register
-set statusline+=%#myStatsColor#
-set statusline+=\"%{v:register}
-"set statusline+=\ ⟢\ %{Rbenv()} "get the rbenv version
-set statusline+=\ %*
-
-" buffers
-set statusline+=%#myModeColor#
-set statusline+=\ %M%n\             "buffer number
-set statusline+=%*
-"to show format options use %{&fo}
-"}}}
+"
+"" filetype and current register
+"set statusline+=%#myStatsColor#
+"set statusline+=\"%{v:register}
+""set statusline+=\ ⟢\ %{Rbenv()} "get the rbenv version
+"set statusline+=\ %*
+"
+"" buffers
+"set statusline+=%#myModeColor#
+"set statusline+=\ %M%n\             "buffer number
+"set statusline+=%*
+""to show format options use %{&fo}
+""}}}
 
 " Shadeline Statusline {{{
 "let g:shadeline = {}
@@ -796,38 +799,38 @@ set statusline+=%*
 "       \ }
 "}}}
 
-"" Focus {{{
-"" Dim inactive windows using 'colorcolumn' setting
-"" This tends to slow down redrawing, but is very useful.
-"" Based on https://groups.google.com/d/msg/vim_use/IJU-Vk-QLJE/xz4hjPjCRBUJ
-"" XXX: this will only work with lines containing text (i.e. not '~')
-"" from 
-"if exists('+colorcolumn')
-"  function! s:DimInactiveWindows()
-"    for i in range(1, tabpagewinnr(tabpagenr(), '$'))
-"      let l:range = ""
-"      if i != winnr()
-"        if &wrap
-"         " HACK: when wrapping lines is enabled, we use the maximum number
-"         " of columns getting highlighted. This might get calculated by
-"         " looking for the longest visible line and using a multiple of
-"         " winwidth().
-"         let l:width=256 " max
-"        else
-"         let l:width=winwidth(i)
-"        endif
-"        let l:range = join(range(1, l:width), ',')
-"      endif
-"      call setwinvar(i, '&colorcolumn', l:range)
-"    endfor
-"  endfunction
-"  augroup DimInactiveWindows
-"    au!
-"    au WinEnter * call s:DimInactiveWindows()
-"    au WinEnter * set cursorline
-"    au WinLeave * set nocursorline
-"  augroup END
-"endif
+" Focus {{{
+" Dim inactive windows using 'colorcolumn' setting
+" This tends to slow down redrawing, but is very useful.
+" Based on https://groups.google.com/d/msg/vim_use/IJU-Vk-QLJE/xz4hjPjCRBUJ
+" XXX: this will only work with lines containing text (i.e. not '~')
+" from 
+if exists('+colorcolumn')
+  function! s:DimInactiveWindows()
+    for i in range(1, tabpagewinnr(tabpagenr(), '$'))
+      let l:range = ""
+      if i != winnr()
+        if &wrap
+         " HACK: when wrapping lines is enabled, we use the maximum number
+         " of columns getting highlighted. This might get calculated by
+         " looking for the longest visible line and using a multiple of
+         " winwidth().
+         let l:width=256 " max
+        else
+         let l:width=winwidth(i)
+        endif
+        let l:range = join(range(1, l:width), ',')
+      endif
+      call setwinvar(i, '&colorcolumn', l:range)
+    endfor
+  endfunction
+  augroup DimInactiveWindows
+    au!
+    au WinEnter * call s:DimInactiveWindows()
+    au WinEnter * set cursorline
+    au WinLeave * set nocursorline
+  augroup END
+endif
 " }}}
 
 " Writing Themes and styling {{{
@@ -953,11 +956,11 @@ augroup END
 " }}}
 
 " Colorcolumn settings {{{
-if exists('+colorcolumn')
-  set colorcolumn=80
-else
-  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
-endif
+"if exists('+colorcolumn')
+"  set colorcolumn=80
+"else
+"  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+"endif
 " }}}
 " reversed highlights {{{
 "hi CursorLine term=bold cterm=reverse
@@ -969,4 +972,5 @@ set guicursor=n:blinkon0
 set guicursor=i-ci-o:ver50-icursor-blinkwait300-blinkon200-blinkoff150
 set guicursor=r-cr:hor20-blinkwait300-blinkon200-blinkoff150
 	"}}}
+hi VertSplit cterm=NONE ctermbg=NONE guibg=NONE
 "}}}

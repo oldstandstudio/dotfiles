@@ -207,16 +207,28 @@ bindkey "^p" code_dojo
 
 # uhsa
 	function tree_house() {
-		BUFFER="seoul && cd ~/uhsa && ./tmux.sh"
-		zle accept-line
+		if [[ ($(date +%H) -gt 19) || ($(date +%H) -lt 6) ]]
+		then
+			BUFFER="seoul && cd ~/uhsa && ./tmux.sh"
+			zle accept-line
+		else
+			BUFFER="lightseoul && cd ~/uhsa && ./tmux.sh"
+			zle accept-line
+		fi
 	}
 	zle -N tree_house
 bindkey "^t" tree_house
 
 # logs
 	function log_cabin() {
-		BUFFER="seoul && cd ~/log && ./tmux.sh"
-		zle accept-line
+		if [[ ($(date +%H) -gt 19) || ($(date +%H) -lt 5) ]]
+		then
+			BUFFER="seoul && cd ~/log && ./tmux.sh"
+			zle accept-line
+		else
+			BUFFER="lightseoul && cd ~/log && ./tmux.sh"
+			zle accept-line
+		fi
 	}
 	zle -N log_cabin
 bindkey "^l" log_cabin
@@ -273,6 +285,7 @@ alias mocha="base16_mocha"
 alias monokai="base16_monokai"
 alias iceberg="base16_iceberg"
 alias seoul="base16_seoul256-dark"
+alias lightseoul="base16_seoul256-light"
 
 # ruby
 export PATH="$HOME/.rbenv/bin:$PATH"
