@@ -1,5 +1,4 @@
 set nocompatible "sorry vi
-filetype off "needed by vundle
 
 " Plugins {{{
 " Using Vim-Plug
@@ -122,7 +121,6 @@ set autoindent " Match indents on new lines.
 set smartindent " Intelligently indent/un-indent new lines based on rules.
 set linebreak "better file wrapping
 set textwidth=80 "hardwrap at 80 columns
-set colorcolumn=80
 
 " Always display the status line
 set laststatus=2
@@ -648,8 +646,8 @@ endif
 " }}}
 
 " Only use cursorline for current window {{{
-"autocmd WinEnter,FocusGained * setlocal cursorline
-"autocmd WinLeave,FocusLost   * setlocal nocursorline
+autocmd WinEnter,FocusGained * setlocal cursorline
+autocmd WinLeave,FocusLost   * setlocal nocursorline
 " }}}
 
 " italic comments {{{
@@ -942,6 +940,7 @@ augroup ft_markdown
   " Use <localleader>1/2/3 to add headings.
   au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 82<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE<CR>
   ":GitGutterEnable<CR>
+  au Filetype markdown inoremap <buffer> <localleader>c [//]: # ()<esc>i
   au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
   au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>
   au Filetype markdown nnoremap <buffer> <localleader>3 I###<space><esc>
@@ -974,3 +973,9 @@ set guicursor=r-cr:hor20-blinkwait300-blinkon200-blinkoff150
 	"}}}
 hi VertSplit cterm=NONE ctermbg=NONE guibg=NONE
 "}}}
+
+inoremap <M-h> <left>
+inoremap <M-j> <down>
+inoremap <M-k> <up>
+inoremap <M-l> <right>
+
