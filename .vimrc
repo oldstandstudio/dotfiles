@@ -503,6 +503,7 @@ nnoremap <localleader>sp :TogglePencil<CR>
 nnoremap <localleader>wn :w!<bar>mks ~/.vim/sessions/
 nnoremap <localleader>ww :mks!<bar>wqa!<CR>
 nnoremap <localleader>wo :source ~/.vim/sessions/
+nnoremap <localleader>v :!love %:p:h<CR>
 
 "}}}
 
@@ -595,7 +596,7 @@ noremap <leader>ht :sp term://zsh<CR>i
 
 " Color theme settings {{{
 " seoul256 {{{
-let g:seoul256_srgb = 1
+"let g:seoul256_srgb = 1
 " seoul256 (dark):
 "   Range:   233 (darkest) ~ 239 (lightest)
 "   Default: 237
@@ -635,14 +636,22 @@ let g:gruvbox_background = 230
 " }}}
 
 " Base16 {{{
+" set Vim-specific sequences for RGB colors
+"let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+"let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+"
+"if has('termguicolors')
+"	set termguicolors
+"endif
+
 if filereadable(expand("~/.vimrc_background"))
   let base16colorspace=256
   source ~/.vimrc_background
 endif
 
-"if has('termguicolors')
-"	set termguicolors
-"endif
+" Make nvim bkg transparent
+"highlight Normal ctermbg=none guibg=none
+"highlight NonText ctermbg=none guibg=none
 " }}}
 
 " Only use cursorline for current window {{{
@@ -880,12 +889,11 @@ function UpdateWordCount()
 endfunction
 
 function! DistractionFreeWriting()
-  colorscheme seoul256
+    colorscheme seoul256
     let g:gitgutter_override_sign_column_highlight = 0
     "Change theme depending on the time of day
     let hr = (strftime('%H'))
     if hr >= 19
-    "colorscheme seoul256
     setlocal background=dark
     highlight SignColumn ctermbg=237
     highlight GitGutterAdd ctermbg=237
@@ -893,7 +901,6 @@ function! DistractionFreeWriting()
     highlight GitGutterDelete ctermbg=237
     highlight GitGutterChangeDelete ctermbg=237
     elseif hr >= 6
-    "colorscheme seoul256-light
     setlocal background=light
     highlight SignColumn ctermbg=253
     highlight GitGutterAdd ctermbg=253
@@ -901,7 +908,6 @@ function! DistractionFreeWriting()
     highlight GitGutterDelete ctermbg=253
     highlight GitGutterChangeDelete ctermbg=253
     elseif hr >= 0
-    "colorscheme seoul256
     setlocal background=dark
     highlight SignColumn ctermbg=237
     highlight GitGutterAdd ctermbg=237

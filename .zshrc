@@ -177,12 +177,12 @@ bindkey "^h" goto_home
 	function nighty_night() {
 		if [ -n "$BUFFER" ];
 			then
-				BUFFER="git add -A; git commit -m \"$BUFFER\" && git push && tmux detach && exit"
+				BUFFER="git add -A; git commit -m \"$BUFFER\" && git push && tmux detach"
 		fi
 
 		if [ -z "$BUFFER" ];
 			then
-				BUFFER="git add -A; git commit -v && git push && tmux detach && exit"
+				BUFFER="git add -A; git commit -v && git push && tmux detach"
 		fi
 		zle accept-line
 	}
@@ -221,7 +221,7 @@ bindkey "^t" tree_house
 
 # logs
 	function log_cabin() {
-		if [[ ($(date +%H) -gt 19) || ($(date +%H) -lt 5) ]]
+		if [[ ($(date +%H) -gt 19) || ($(date +%H) -lt 6) ]]
 		then
 			BUFFER="seoul && cd ~/log && ./tmux.sh"
 			zle accept-line
@@ -232,6 +232,15 @@ bindkey "^t" tree_house
 	}
 	zle -N log_cabin
 bindkey "^l" log_cabin
+
+# Pomodoro
+function pomodoro_timer() {
+	BUFFER="sleep 1500 && notify-send break; sleep 300 && notify-send work; sleep 1500 && notify-send break"
+	zle accept-line
+}
+zle -N pomodoro_timer
+bindkey "^[p" pomodoro_timer
+
 
 # file management
 alias vrc="nvim ~/.vimrc"
@@ -254,6 +263,7 @@ alias log="cd ~/log"
 alias blog="cd ~/log/blog"
 alias .dot="cd ~/Dropbox/.dotfiles"
 alias anim="cd ~/Dropbox/animation"
+alias love2d="cd ~/Dropbox/love2d"
 
 # tmux
 alias t="./tmux.sh"
@@ -286,6 +296,8 @@ alias monokai="base16_monokai"
 alias iceberg="base16_iceberg"
 alias seoul="base16_seoul256-dark"
 alias lightseoul="base16_seoul256-light"
+alias lightsol="base16_solarized-light"
+alias darksol="base16_solarized-dark"
 
 # ruby
 export PATH="$HOME/.rbenv/bin:$PATH"
