@@ -191,7 +191,7 @@ bindkey "^x" nighty_night
 
 # go to dotfiles
 	function elite_ninja() {
-		BUFFER="iceberg && cd ~/Dropbox/.dotfiles && ./tmux.sh"
+		BUFFER="cd ~/Dropbox/.dotfiles && ./tmux.sh"
 		zle accept-line
 	}
 	zle -N elite_ninja
@@ -199,7 +199,7 @@ bindkey "^n" elite_ninja
 
 # go to dev folder
 	function code_dojo() {
-		BUFFER="iceberg && cd ~/Dropbox/dev && ./tmux.sh"
+		BUFFER="cd ~/Dropbox/dev && ./tmux.sh"
 		zle accept-line
 	}
 	zle -N code_dojo
@@ -207,28 +207,16 @@ bindkey "^p" code_dojo
 
 # uhsa
 	function tree_house() {
-		if [[ ($(date +%H) -gt 19) || ($(date +%H) -lt 6) ]]
-		then
-			BUFFER="seoul && cd ~/uhsa && ./tmux.sh"
-			zle accept-line
-		else
-			BUFFER="lightseoul && cd ~/uhsa && ./tmux.sh"
-			zle accept-line
-		fi
+		BUFFER="cd ~/uhsa && ./tmux.sh"
+		zle accept-line
 	}
 	zle -N tree_house
 bindkey "^t" tree_house
 
 # logs
 	function log_cabin() {
-		if [[ ($(date +%H) -gt 19) || ($(date +%H) -lt 6) ]]
-		then
-			BUFFER="seoul && cd ~/log && ./tmux.sh"
-			zle accept-line
-		else
-			BUFFER="lightseoul && cd ~/log && ./tmux.sh"
-			zle accept-line
-		fi
+		BUFFER="cd ~/log && ./tmux.sh"
+		zle accept-line
 	}
 	zle -N log_cabin
 bindkey "^l" log_cabin
