@@ -600,52 +600,11 @@ noremap <leader>ht :sp term://zsh<CR>i
 " seoul256 (dark):
 "   Range:   233 (darkest) ~ 239 (lightest)
 "   Default: 237
-let g:seoul256_background = 237
+"let g:seoul256_background = 237
 " seoul256 (light):
 "   Range:   252 (darkest) ~ 256 (lightest)
 "   Default: 253
-let g:seoul256_light_background = 253
-
-" brighten/dim background - a'la macOS dim screen function keys
-" 233 (darkest) ~ 239 (lightest) 252 (darkest) ~ 256 (lightest)
-function! Seoul256Brighten()
-    if g:seoul256_background == 239
-        let g:seoul256_background = 252
-    elseif g:seoul256_background == 256
-        let  g:seoul256_background = 256
-    else
-        let g:seoul256_background += 1
-    endif
-    colo seoul256
-endfunction
-
-function! Seoul256Dim()
-    if g:seoul256_background == 252
-        let g:seoul256_background = 239
-    elseif g:seoul256_background == 233
-        let g:seoul256_background = 233
-    else
-        let g:seoul256_background -= 1
-    endif
-    colo seoul256
-endfunction
-
-nmap <M-d> :call Seoul256Dim()<CR>
-nmap <M-b> :call Seoul256Brighten()<CR>
-
-"colorscheme seoul256
-  "Change theme depending on the time of day
-  let hr = (strftime('%H'))
-  if hr >= 20
-  colorscheme seoul256
-  setlocal background=dark
-  elseif hr >= 6
-  colorscheme seoul256-light
-  setlocal background=light
-  elseif hr >= 0
-  colorscheme seoul256
-  setlocal background=dark
-  endif
+"let g:seoul256_light_background = 253
 
 "}}}
 " gruvbox {{{
@@ -671,10 +630,10 @@ let g:gruvbox_background = 230
 "  set termguicolors
 "endif
 
-"if filereadable(expand("~/.vimrc_background"))
-"  let base16colorspace=256
-"  source ~/.vimrc_background
-"endif
+if filereadable(expand("~/.vimrc_background"))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
 
 " Make nvim bkg transparent
 "highlight Normal ctermbg=none guibg=none
@@ -916,17 +875,17 @@ function UpdateWordCount()
 endfunction
 
 function! DistractionFreeWriting()
-    "colorscheme seoul256
-    "let g:gitgutter_override_sign_column_highlight = 0
-    ""Change theme depending on the time of day
-    "let hr = (strftime('%H'))
-    "if hr >= 19
-    "setlocal background=dark
-    "elseif hr >= 6
-    "setlocal background=light
-    "elseif hr >= 0
-    "setlocal background=dark
-    "endif
+    colorscheme seoul256
+    let g:gitgutter_override_sign_column_highlight = 0
+    "Change theme depending on the time of day
+    let hr = (strftime('%H'))
+    if hr >= 19
+    setlocal background=dark
+    elseif hr >= 6
+    setlocal background=light
+    elseif hr >= 0
+    setlocal background=dark
+    endif
     highlight SignColumn ctermbg=NONE
     highlight GitGutterAdd ctermbg=NONE
     highlight GitGutterChange ctermbg=NONE
@@ -961,8 +920,7 @@ augroup ft_markdown
   autocmd WinEnter,FocusGained * setlocal nocursorline
   autocmd WinLeave,FocusLost   * setlocal nocursorline
   " Use <localleader>1/2/3 to add headings.
-  au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 82<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=168 guifg=168 cterm=NONE gui=NONE<CR>
-  ":GitGutterEnable<CR>
+  au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 82<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE<CR>
   au Filetype markdown inoremap <buffer> <localleader>c [//]: # ()<esc>i
   au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
   au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>
