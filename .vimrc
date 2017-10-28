@@ -13,7 +13,7 @@ Plug 'cocopon/iceberg.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'cocopon/colorswatch.vim'
-Plug 'cocopon/shadeline.vim'
+"Plug 'cocopon/shadeline.vim'
 Plug 'ajh17/Spacegray.vim'
 
 " Fuzzy finder
@@ -626,9 +626,9 @@ let g:gruvbox_background = 230
 "let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 "let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 "
-"if has('termguicolors')
-"  set termguicolors
-"endif
+if has('termguicolors')
+  set termguicolors
+endif
 
 if filereadable(expand("~/.vimrc_background"))
   let base16colorspace=256
@@ -636,8 +636,8 @@ if filereadable(expand("~/.vimrc_background"))
 endif
 
 " Make nvim bkg transparent
-"highlight Normal ctermbg=none guibg=none
-"highlight NonText ctermbg=none guibg=none
+highlight Normal ctermbg=none guibg=none
+highlight NonText ctermbg=none guibg=none
 " }}}
 
 " Only use cursorline for current window {{{
@@ -648,7 +648,8 @@ autocmd WinLeave,FocusLost   * setlocal nocursorline
 " italic comments {{{
 set t_ZH=[3m   "  character is created by ctrl-v <esc>
 set t_ZR=[23m
-highlight Comment term=italic cterm=italic gui=italic ctermfg=08
+highlight Comment term=italic cterm=italic gui=italic 
+"ctermfg=08
 " }}}
 
 " For use with iceberg color theme {{{
@@ -875,34 +876,36 @@ function UpdateWordCount()
 endfunction
 
 function! DistractionFreeWriting()
-    colorscheme seoul256
-    let g:gitgutter_override_sign_column_highlight = 0
-    "Change theme depending on the time of day
-    let hr = (strftime('%H'))
-    if hr >= 19
-    setlocal background=dark
-    elseif hr >= 6
-    setlocal background=light
-    elseif hr >= 0
-    setlocal background=dark
-    endif
-    highlight SignColumn ctermbg=NONE
-    highlight GitGutterAdd ctermbg=NONE
-    highlight GitGutterChange ctermbg=NONE
-    highlight GitGutterDelete ctermbg=NONE
-    highlight GitGutterChangeDelete ctermbg=NONE
+    "colorscheme seoul256
+    "let g:gitgutter_override_sign_column_highlight = 0
+    ""Change theme depending on the time of day
+    "let hr = (strftime('%H'))
+    "if hr >= 19
+    "setlocal background=dark
+    "elseif hr >= 6
+    "setlocal background=light
+    "elseif hr >= 0
+    "setlocal background=dark
+    "endif
+    highlight FoldColumn ctermbg=NONE guibg=NONE
+    highlight SignColumn ctermbg=NONE guibg=NONE
+    highlight GitGutterAdd ctermbg=NONE guibg=NONE
+    highlight GitGutterChange ctermbg=NONE guibg=NONE
+    highlight GitGutterDelete ctermbg=NONE guibg=NONE
+    highlight GitGutterChangeDelete ctermbg=NONE guibg=NONE
     setlocal filetype=markdown
     setlocal textwidth=0
     setlocal showbreak=
-    setlocal statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ 𝑤\ %{WordCount()}\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
+    setlocal statusline=%M%=%{WordCount()}
+    hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE guibg=NONE
     setlocal spell
     set spellsuggest=15
-    let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+    "let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
     let g:markdown_fenced_languages = ['html', 'css', 'bash=sh']
     setlocal nonumber
     setlocal norelativenumber
     setlocal nocursorline
-    setlocal colorcolumn=80
+    "setlocal colorcolumn=80
     setlocal foldmethod=expr
     setlocal foldexpr=MarkdownFolds()
     "setlocal foldtext=MarkdownFoldText()
@@ -910,26 +913,27 @@ function! DistractionFreeWriting()
     setlocal foldlevel=2
     setlocal foldcolumn=4
     setlocal cpo+=J
-    Goyo 82
+    "Goyo 82
 endfunction
 
 augroup ft_markdown
     au!
     au BufNewFile,BufRead *.md setlocal filetype=markdown
-  au BufNewFile,BufRead *.md call DistractionFreeWriting()
-  autocmd WinEnter,FocusGained * setlocal nocursorline
-  autocmd WinLeave,FocusLost   * setlocal nocursorline
-  " Use <localleader>1/2/3 to add headings.
-  au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 82<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE<CR>
-  au Filetype markdown inoremap <buffer> <localleader>c [//]: # ()<esc>i
-  au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
-  au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>
-  au Filetype markdown nnoremap <buffer> <localleader>3 I###<space><esc>
-  au Filetype markdown nnoremap <buffer> <localleader>4 I####<space><esc>
-  au Filetype markdown nnoremap <buffer> <localleader>5 I#####<space><esc>
-  au Filetype markdown nnoremap <buffer> <localleader>6 I######<space><esc>
-  au Filetype markdown nnoremap <buffer> <localleader>` I*<space>*<space>*<space><esc>
-  au Filetype markdown inoremap <buffer> <localleader>` * * *
+    au BufNewFile,BufRead *.md call DistractionFreeWriting()
+    autocmd WinEnter,FocusGained * setlocal nocursorline
+    autocmd WinLeave,FocusLost   * setlocal nocursorline
+    " Use <localleader>1/2/3 to add headings.
+    au Filetype markdown nnoremap <buffer> <silent> <localleader>; :set nonumber<CR>:set norelativenumber<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=blue guifg=blue cterm=bold gui=NONE<CR>
+    "au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 82<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE<CR>
+    au Filetype markdown inoremap <buffer> <localleader>c [//]: # ()<esc>i
+    au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
+    au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>
+    au Filetype markdown nnoremap <buffer> <localleader>3 I###<space><esc>
+    au Filetype markdown nnoremap <buffer> <localleader>4 I####<space><esc>
+    au Filetype markdown nnoremap <buffer> <localleader>5 I#####<space><esc>
+    au Filetype markdown nnoremap <buffer> <localleader>6 I######<space><esc>
+    au Filetype markdown nnoremap <buffer> <localleader>` I*<space>*<space>*<space><esc>
+    au Filetype markdown inoremap <buffer> <localleader>` * * *
 augroup END
 
 "}}}
