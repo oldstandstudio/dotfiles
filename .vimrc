@@ -657,130 +657,130 @@ highlight Comment term=italic cterm=italic gui=italic
 "set background="dark"
 " }}}
 
-"" Statusline {{{
-"" based on https://github.com/fatih/dotfiles/blob/master/vimrc
-"
-""hi! StatusLine ctermfg=00 ctermbg=14
-"
-"let s:modes = {
-"      \ 'n': 'N', 
-"      \ 'i': 'I', 
-"      \ 'R': 'R', 
-"      \ 'v': 'V', 
-"      \ 'V': 'VL', 
-"      \ "\<C-v>": 'VB',
-"      \ 'c': 'C',
-"      \ 's': 'select', 
-"      \ 'S': 's-line', 
-"      \ "\<C-s>": 's-block', 
-"      \ 't': 'T'
-"      \}
-"
-"let s:prev_mode = ""
-"function! StatusLineMode()
-"  let cur_mode = get(s:modes, mode(), '')
-"
-"  " do not update higlight if the mode is the same
-"  if cur_mode == s:prev_mode
-"    return cur_mode
-"  endif
-"
-"  if cur_mode == "N"
-"    exe 'hi! mymodecolor cterm=bold ctermbg=20 ctermfg=00'
-"    exe 'hi! myinfocolor cterm=italic ctermbg=00 ctermfg=20'
-"    exe 'hi! mystatscolor cterm=italic ctermbg=00 ctermfg=20'
-"    exe 'hi! StatusLine ctermfg=00 ctermbg=07'
-"  elseif cur_mode == "I"
-"    exe 'hi! myModeColor cterm=bold ctermbg=10 ctermfg=00'
-"    exe 'hi! myInfoColor ctermbg=00 ctermfg=10'
-"    exe 'hi! myStatsColor ctermbg=00 ctermfg=10'
-"    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-"  elseif cur_mode == "R"
-"    exe 'hi! myModeColor cterm=bold ctermbg=12 ctermfg=00'
-"    exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
-"    exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
-"    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-"  elseif cur_mode == "T"
-"    exe 'hi! myModeColor cterm=bold ctermbg=15 ctermfg=00'
-"    exe 'hi! myInfoColor ctermbg=00 ctermfg=15'
-"    exe 'hi! myStatsColor ctermbg=00 ctermfg=15'
-"    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-"  elseif cur_mode == "V" || cur_mode == "VL" || cur_mode == "VB"
-"    exe 'hi! myModeColor cterm=bold ctermbg=18 ctermfg=00'
-"    exe 'hi! myInfoColor ctermbg=00 ctermfg=18'
-"    exe 'hi! myStatsColor ctermbg=00 ctermfg=18'
-"    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-"  endif
-"
-"  let s:prev_mode = cur_mode
-"  return cur_mode
-"endfunction
-"
-"function! StatusLineFiletype()
-"  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no file') : ''
-"endfunction
-"
-"function! StatusLinePercent()
-"  return (100 * line('.') / line('$')) . '%'
-"endfunction
-"
-"function! StatusLineLeftInfo()
-" let branch = fugitive#head()
-" let filename = '' != expand('%:t') ? expand('%:t') : '{no name}'
-" if branch !=# ''
-"   return printf("\ %s\/%s", branch, filename)
-" endif
-" return filename
-"endfunction
-"
-"function! Rbenv()
-"	return system("rbenv version | awk '{printf $1}'")
-"endfunction
-"
-"" More colors
-"exe 'hi! myFileColor cterm=italic ctermbg=00 ctermfg=08'
-"exe 'hi! myBufferColor ctermbg=00 ctermfg=08'
-"exe 'hi! myGlyphsColor ctermbg=00 ctermfg=08'
-"
-"" start building our statusline
-"set statusline=
-"
-"" mode with custom colors
-"set statusline+=%#myModeColor#\ 
-"set statusline+=%{StatusLineMode()}\ 
-"set statusline+=%*
-"
-"" left information bar (after mode)
-"set statusline+=%#myInfoColor#
-"set statusline+=\ %{StatusLineLeftInfo()}\ %r\ %{PencilMode()}\ 
-"set statusline+=%*
-"
-"" filetype
-""set statusline+=%#myFileColor#
-""set statusline+=\ \[%{StatusLineFiletype()}%R\]
-""set statusline+=\ %*
-"
-"" right section seperator
-"set statusline+=%=
-"
-"" percentage, line number and column number
-"set statusline+=%#myStatsColor#
-"set statusline+=\ ℓ\ %l/%L\ 𝕔\ %v
-""set statusline+=\ %{StatusLinePercent()}
+" Statusline {{{
+" based on https://github.com/fatih/dotfiles/blob/master/vimrc
+
+"hi! StatusLine ctermfg=00 ctermbg=14
+
+let s:modes = {
+      \ 'n': 'N', 
+      \ 'i': 'I', 
+      \ 'R': 'R', 
+      \ 'v': 'V', 
+      \ 'V': 'VL', 
+      \ "\<C-v>": 'VB',
+      \ 'c': 'C',
+      \ 's': 'select', 
+      \ 'S': 's-line', 
+      \ "\<C-s>": 's-block', 
+      \ 't': 'T'
+      \}
+
+let s:prev_mode = ""
+function! StatusLineMode()
+  let cur_mode = get(s:modes, mode(), '')
+
+  " do not update higlight if the mode is the same
+  if cur_mode == s:prev_mode
+    return cur_mode
+  endif
+
+  if cur_mode == "N"
+    exe 'hi! mymodecolor cterm=bold ctermbg=20 ctermfg=00'
+    exe 'hi! myinfocolor cterm=italic ctermbg=00 ctermfg=20'
+    exe 'hi! mystatscolor cterm=italic ctermbg=00 ctermfg=20'
+    exe 'hi! StatusLine ctermfg=00 ctermbg=07'
+  elseif cur_mode == "I"
+    exe 'hi! myModeColor cterm=bold ctermbg=10 ctermfg=00'
+    exe 'hi! myInfoColor ctermbg=00 ctermfg=10'
+    exe 'hi! myStatsColor ctermbg=00 ctermfg=10'
+    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+  elseif cur_mode == "R"
+    exe 'hi! myModeColor cterm=bold ctermbg=12 ctermfg=00'
+    exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
+    exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
+    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+  elseif cur_mode == "T"
+    exe 'hi! myModeColor cterm=bold ctermbg=15 ctermfg=00'
+    exe 'hi! myInfoColor ctermbg=00 ctermfg=15'
+    exe 'hi! myStatsColor ctermbg=00 ctermfg=15'
+    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+  elseif cur_mode == "V" || cur_mode == "VL" || cur_mode == "VB"
+    exe 'hi! myModeColor cterm=bold ctermbg=18 ctermfg=00'
+    exe 'hi! myInfoColor ctermbg=00 ctermfg=18'
+    exe 'hi! myStatsColor ctermbg=00 ctermfg=18'
+    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+  endif
+
+  let s:prev_mode = cur_mode
+  return cur_mode
+endfunction
+
+function! StatusLineFiletype()
+  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no file') : ''
+endfunction
+
+function! StatusLinePercent()
+  return (100 * line('.') / line('$')) . '%'
+endfunction
+
+function! StatusLineLeftInfo()
+ let branch = fugitive#head()
+ let filename = '' != expand('%:t') ? expand('%:t') : '{no name}'
+ if branch !=# ''
+   return printf("\ %s\/%s", branch, filename)
+ endif
+ return filename
+endfunction
+
+function! Rbenv()
+	return system("rbenv version | awk '{printf $1}'")
+endfunction
+
+" More colors
+exe 'hi! myFileColor cterm=italic ctermbg=00 ctermfg=08'
+exe 'hi! myBufferColor ctermbg=00 ctermfg=08'
+exe 'hi! myGlyphsColor ctermbg=00 ctermfg=08'
+
+" start building our statusline
+set statusline=
+
+" mode with custom colors
+set statusline+=%#myModeColor#\ 
+set statusline+=%{StatusLineMode()}\ 
+set statusline+=%*
+
+" left information bar (after mode)
+set statusline+=%#myInfoColor#
+set statusline+=\ %{StatusLineLeftInfo()}\ %r\ %{PencilMode()}\ 
+set statusline+=%*
+
+" filetype
+"set statusline+=%#myFileColor#
+"set statusline+=\ \[%{StatusLineFiletype()}%R\]
 "set statusline+=\ %*
-"
-"" filetype and current register
-"set statusline+=%#myStatsColor#
-"set statusline+=\"%{v:register}
-""set statusline+=\ ⟢\ %{Rbenv()} "get the rbenv version
-"set statusline+=\ %*
-"
-"" buffers
-"set statusline+=%#myModeColor#
-"set statusline+=\ %M%n\             "buffer number
-"set statusline+=%*
-""to show format options use %{&fo}
-""}}}
+
+" right section seperator
+set statusline+=%=
+
+" percentage, line number and column number
+set statusline+=%#myStatsColor#
+set statusline+=\ ℓ\ %l/%L\ 𝕔\ %v
+"set statusline+=\ %{StatusLinePercent()}
+set statusline+=\ %*
+
+" filetype and current register
+set statusline+=%#myStatsColor#
+set statusline+=\"%{v:register}
+"set statusline+=\ ⟢\ %{Rbenv()} "get the rbenv version
+set statusline+=\ %*
+
+" buffers
+set statusline+=%#myModeColor#
+set statusline+=\ %M%n\             "buffer number
+set statusline+=%*
+"to show format options use %{&fo}
+"}}}
 
 " Shadeline Statusline {{{
 "let g:shadeline = {}
