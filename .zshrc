@@ -242,6 +242,7 @@ alias init="nvim ~/.config/nvim/init.vim"
 #i3
 alias gcf="cd ~/.config"
 alias gi3="cd ~/.config/i3"
+alias gt="cd ~/.config/termite"
 
 # projects
 alias gd="cd ~/Dropbox"
@@ -286,6 +287,7 @@ alias seoul="base16_seoul256-dark"
 alias lightseoul="base16_seoul256-light"
 alias lightsol="base16_solarized-light"
 alias darksol="base16_solarized-dark"
+alias gdp="base16_gruvbox-dark-pale"
 
 # ruby
 export PATH="$HOME/.rbenv/bin:$PATH"

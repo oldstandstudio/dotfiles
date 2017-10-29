@@ -13,7 +13,7 @@ Plug 'cocopon/iceberg.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'cocopon/colorswatch.vim'
-"Plug 'cocopon/shadeline.vim'
+Plug 'cocopon/shadeline.vim'
 Plug 'ajh17/Spacegray.vim'
 
 " Fuzzy finder
@@ -247,12 +247,12 @@ function! s:goyo_enter()
 	" set linespace=7
 	set textwidth=0
 	set statusline=\ \ \ \ %M%=%{WordCount()}\ 
-	hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE
+	hi StatusLine ctermfg=blue guifg=blue cterm=NONE gui=NONE
 	set showbreak=
 	set noshowmode
 	set noshowcmd
 	set scrolloff=999
-	Limelight
+	Limelight0.7
 	"GitGutterEnable
 	" ...
 endfunction
@@ -260,7 +260,6 @@ endfunction
 function! s:goyo_leave()
 	silent !tmux set status on
 	silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-	set statusline=%<\ %{StatusLineMode()}\ \|\ %t\ %r%{PencilMode()}\ %=%(\ ℓ\ %l/%L\ 𝕔\ %v\ \"%{v:register}\ \|\ %M%n\ %)
 	set showmode
 	set showcmd
 	set scrolloff=5
@@ -293,7 +292,7 @@ function! g:GoyoAfter()
 endfunction
 
 let g:goyo_callbacks = [function('g:GoyoBefore'), function('g:GoyoAfter')]
-let g:goyo_width = 82
+let g:goyo_width = 85
 "let g:goyo_linenr=1
 
 "Limelight settings for unsupported themes
@@ -600,11 +599,38 @@ noremap <leader>ht :sp term://zsh<CR>i
 " seoul256 (dark):
 "   Range:   233 (darkest) ~ 239 (lightest)
 "   Default: 237
-"let g:seoul256_background = 237
+let g:seoul256_background = 237
 " seoul256 (light):
 "   Range:   252 (darkest) ~ 256 (lightest)
 "   Default: 253
-"let g:seoul256_light_background = 253
+let g:seoul256_light_background = 253
+
+" brighten/dim background - a'la macOS dim screen function keys
+" 233 (darkest) ~ 239 (lightest) 252 (darkest) ~ 256 (lightest)
+function! Seoul256Brighten()
+    if g:seoul256_background == 239
+        let g:seoul256_background = 252
+    elseif g:seoul256_background == 256
+        let  g:seoul256_background = 256
+    else
+        let g:seoul256_background += 1
+    endif
+    colo seoul256
+endfunction
+"
+function! Seoul256Dim()
+    if g:seoul256_background == 252
+        let g:seoul256_background = 239
+    elseif g:seoul256_background == 233
+        let g:seoul256_background = 233
+    else
+        let g:seoul256_background -= 1
+    endif
+    colo seoul256
+endfunction
+"
+nmap <M--> :call Seoul256Dim()<CR>
+nmap <M-=> :call Seoul256Brighten()<CR>
 
 "}}}
 " gruvbox {{{
@@ -613,19 +639,19 @@ let g:gruvbox_italic=1
 " gruvbox dark:
 "  Range: 234 (hardest) ~ 236 (softest)
 "  Default: 235
-let g:gruvbox_background = 236
+let g:gruvbox_background = 235
 " gruvbox light:
 "  Range: 228 (softest) ~ 230 (hardest)
 "  Default: 229
-let g:gruvbox_background = 230
+let g:gruvbox_background = 229
 "}}}
 " }}}
 
 " Base16 {{{
 " set Vim-specific sequences for RGB colors
-"let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-"let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-"
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+
 if has('termguicolors')
   set termguicolors
 endif
@@ -657,130 +683,130 @@ highlight Comment term=italic cterm=italic gui=italic
 "set background="dark"
 " }}}
 
-" Statusline {{{
-" based on https://github.com/fatih/dotfiles/blob/master/vimrc
-
-"hi! StatusLine ctermfg=00 ctermbg=14
-
-let s:modes = {
-      \ 'n': 'N', 
-      \ 'i': 'I', 
-      \ 'R': 'R', 
-      \ 'v': 'V', 
-      \ 'V': 'VL', 
-      \ "\<C-v>": 'VB',
-      \ 'c': 'C',
-      \ 's': 'select', 
-      \ 'S': 's-line', 
-      \ "\<C-s>": 's-block', 
-      \ 't': 'T'
-      \}
-
-let s:prev_mode = ""
-function! StatusLineMode()
-  let cur_mode = get(s:modes, mode(), '')
-
-  " do not update higlight if the mode is the same
-  if cur_mode == s:prev_mode
-    return cur_mode
-  endif
-
-  if cur_mode == "N"
-    exe 'hi! mymodecolor cterm=bold ctermbg=20 ctermfg=00'
-    exe 'hi! myinfocolor cterm=italic ctermbg=00 ctermfg=20'
-    exe 'hi! mystatscolor cterm=italic ctermbg=00 ctermfg=20'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=07'
-  elseif cur_mode == "I"
-    exe 'hi! myModeColor cterm=bold ctermbg=10 ctermfg=00'
-    exe 'hi! myInfoColor ctermbg=00 ctermfg=10'
-    exe 'hi! myStatsColor ctermbg=00 ctermfg=10'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-  elseif cur_mode == "R"
-    exe 'hi! myModeColor cterm=bold ctermbg=12 ctermfg=00'
-    exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
-    exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-  elseif cur_mode == "T"
-    exe 'hi! myModeColor cterm=bold ctermbg=15 ctermfg=00'
-    exe 'hi! myInfoColor ctermbg=00 ctermfg=15'
-    exe 'hi! myStatsColor ctermbg=00 ctermfg=15'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-  elseif cur_mode == "V" || cur_mode == "VL" || cur_mode == "VB"
-    exe 'hi! myModeColor cterm=bold ctermbg=18 ctermfg=00'
-    exe 'hi! myInfoColor ctermbg=00 ctermfg=18'
-    exe 'hi! myStatsColor ctermbg=00 ctermfg=18'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-  endif
-
-  let s:prev_mode = cur_mode
-  return cur_mode
-endfunction
-
-function! StatusLineFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no file') : ''
-endfunction
-
-function! StatusLinePercent()
-  return (100 * line('.') / line('$')) . '%'
-endfunction
-
-function! StatusLineLeftInfo()
- let branch = fugitive#head()
- let filename = '' != expand('%:t') ? expand('%:t') : '{no name}'
- if branch !=# ''
-   return printf("\ %s\/%s", branch, filename)
- endif
- return filename
-endfunction
-
-function! Rbenv()
-	return system("rbenv version | awk '{printf $1}'")
-endfunction
-
-" More colors
-exe 'hi! myFileColor cterm=italic ctermbg=00 ctermfg=08'
-exe 'hi! myBufferColor ctermbg=00 ctermfg=08'
-exe 'hi! myGlyphsColor ctermbg=00 ctermfg=08'
-
-" start building our statusline
-set statusline=
-
-" mode with custom colors
-set statusline+=%#myModeColor#\ 
-set statusline+=%{StatusLineMode()}\ 
-set statusline+=%*
-
-" left information bar (after mode)
-set statusline+=%#myInfoColor#
-set statusline+=\ %{StatusLineLeftInfo()}\ %r\ %{PencilMode()}\ 
-set statusline+=%*
-
-" filetype
-"set statusline+=%#myFileColor#
-"set statusline+=\ \[%{StatusLineFiletype()}%R\]
+"" Statusline {{{
+"" based on https://github.com/fatih/dotfiles/blob/master/vimrc
+"
+""hi! StatusLine ctermfg=00 ctermbg=14
+"
+"let s:modes = {
+"      \ 'n': 'N', 
+"      \ 'i': 'I', 
+"      \ 'R': 'R', 
+"      \ 'v': 'V', 
+"      \ 'V': 'VL', 
+"      \ "\<C-v>": 'VB',
+"      \ 'c': 'C',
+"      \ 's': 'select', 
+"      \ 'S': 's-line', 
+"      \ "\<C-s>": 's-block', 
+"      \ 't': 'T'
+"      \}
+"
+"let s:prev_mode = ""
+"function! StatusLineMode()
+"  let cur_mode = get(s:modes, mode(), '')
+"
+"  " do not update higlight if the mode is the same
+"  if cur_mode == s:prev_mode
+"    return cur_mode
+"  endif
+"
+"  if cur_mode == "N"
+"    exe 'hi! mymodecolor cterm=bold ctermbg=20 ctermfg=00'
+"    exe 'hi! myinfocolor cterm=italic ctermbg=00 ctermfg=20'
+"    exe 'hi! mystatscolor cterm=italic ctermbg=00 ctermfg=20'
+"    exe 'hi! StatusLine ctermfg=00 ctermbg=20'
+"  elseif cur_mode == "I"
+"    exe 'hi! myModeColor cterm=bold ctermbg=10 ctermfg=00'
+"    exe 'hi! myInfoColor ctermbg=00 ctermfg=10'
+"    exe 'hi! myStatsColor ctermbg=00 ctermfg=10'
+"    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+"  elseif cur_mode == "R"
+"    exe 'hi! myModeColor cterm=bold ctermbg=12 ctermfg=00'
+"    exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
+"    exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
+"    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+"  elseif cur_mode == "T"
+"    exe 'hi! myModeColor cterm=bold ctermbg=15 ctermfg=00'
+"    exe 'hi! myInfoColor ctermbg=00 ctermfg=15'
+"    exe 'hi! myStatsColor ctermbg=00 ctermfg=15'
+"    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+"  elseif cur_mode == "V" || cur_mode == "VL" || cur_mode == "VB"
+"    exe 'hi! myModeColor cterm=bold ctermbg=18 ctermfg=00'
+"    exe 'hi! myInfoColor ctermbg=00 ctermfg=18'
+"    exe 'hi! myStatsColor ctermbg=00 ctermfg=18'
+"    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
+"  endif
+"
+"  let s:prev_mode = cur_mode
+"  return cur_mode
+"endfunction
+"
+"function! StatusLineFiletype()
+"  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no file') : ''
+"endfunction
+"
+"function! StatusLinePercent()
+"  return (100 * line('.') / line('$')) . '%'
+"endfunction
+"
+"function! StatusLineLeftInfo()
+" let branch = fugitive#head()
+" let filename = '' != expand('%:t') ? expand('%:t') : '{no name}'
+" if branch !=# ''
+"   return printf("\ %s\/%s", branch, filename)
+" endif
+" return filename
+"endfunction
+"
+"function! Rbenv()
+"	return system("rbenv version | awk '{printf $1}'")
+"endfunction
+"
+"" More colors
+"exe 'hi! myFileColor cterm=italic ctermbg=00 ctermfg=08'
+"exe 'hi! myBufferColor ctermbg=00 ctermfg=08'
+"exe 'hi! myGlyphsColor ctermbg=00 ctermfg=08'
+"
+"" start building our statusline
+"set statusline=
+"
+"" mode with custom colors
+"set statusline+=%#myModeColor#\ 
+"set statusline+=%{StatusLineMode()}\ 
+"set statusline+=%*
+"
+"" left information bar (after mode)
+"set statusline+=%#myInfoColor#
+"set statusline+=\ %{StatusLineLeftInfo()}\ %r\ %{PencilMode()}\ 
+"set statusline+=%*
+"
+"" filetype
+""set statusline+=%#myFileColor#
+""set statusline+=\ \[%{StatusLineFiletype()}%R\]
+""set statusline+=\ %*
+"
+"" right section seperator
+"set statusline+=%=
+"
+"" percentage, line number and column number
+"set statusline+=%#myStatsColor#
+"set statusline+=\ ℓ\ %l/%L\ 𝕔\ %v
+""set statusline+=\ %{StatusLinePercent()}
 "set statusline+=\ %*
-
-" right section seperator
-set statusline+=%=
-
-" percentage, line number and column number
-set statusline+=%#myStatsColor#
-set statusline+=\ ℓ\ %l/%L\ 𝕔\ %v
-"set statusline+=\ %{StatusLinePercent()}
-set statusline+=\ %*
-
-" filetype and current register
-set statusline+=%#myStatsColor#
-set statusline+=\"%{v:register}
-"set statusline+=\ ⟢\ %{Rbenv()} "get the rbenv version
-set statusline+=\ %*
-
-" buffers
-set statusline+=%#myModeColor#
-set statusline+=\ %M%n\             "buffer number
-set statusline+=%*
-"to show format options use %{&fo}
-"}}}
+"
+"" filetype and current register
+"set statusline+=%#myStatsColor#
+"set statusline+=\"%{v:register}
+""set statusline+=\ ⟢\ %{Rbenv()} "get the rbenv version
+"set statusline+=\ %*
+"
+"" buffers
+"set statusline+=%#myModeColor#
+"set statusline+=\ %M%n\             "buffer number
+"set statusline+=%*
+""to show format options use %{&fo}
+""}}}
 
 " Shadeline Statusline {{{
 "let g:shadeline = {}
@@ -876,9 +902,9 @@ function UpdateWordCount()
 endfunction
 
 function! DistractionFreeWriting()
-    "colorscheme seoul256
+    colorscheme seoul256
     "let g:gitgutter_override_sign_column_highlight = 0
-    ""Change theme depending on the time of day
+    "Change theme depending on the time of day
     "let hr = (strftime('%H'))
     "if hr >= 19
     "setlocal background=dark
@@ -887,17 +913,15 @@ function! DistractionFreeWriting()
     "elseif hr >= 0
     "setlocal background=dark
     "endif
-    highlight FoldColumn ctermbg=NONE guibg=NONE
-    highlight SignColumn ctermbg=NONE guibg=NONE
-    highlight GitGutterAdd ctermbg=NONE guibg=NONE
-    highlight GitGutterChange ctermbg=NONE guibg=NONE
-    highlight GitGutterDelete ctermbg=NONE guibg=NONE
-    highlight GitGutterChangeDelete ctermbg=NONE guibg=NONE
+    "highlight FoldColumn ctermbg=NONE guibg=NONE
+    "highlight SignColumn ctermbg=NONE guibg=NONE
+    "highlight GitGutterAdd ctermbg=NONE guibg=NONE
+    "highlight GitGutterChange ctermbg=NONE guibg=NONE
+    "highlight GitGutterDelete ctermbg=NONE guibg=NONE
+    "highlight GitGutterChangeDelete ctermbg=NONE guibg=NONE
     setlocal filetype=markdown
     setlocal textwidth=0
     setlocal showbreak=
-    setlocal statusline=%M%=%{WordCount()}
-    hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE guibg=NONE
     setlocal spell
     set spellsuggest=15
     "let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
@@ -905,7 +929,6 @@ function! DistractionFreeWriting()
     setlocal nonumber
     setlocal norelativenumber
     setlocal nocursorline
-    "setlocal colorcolumn=80
     setlocal foldmethod=expr
     setlocal foldexpr=MarkdownFolds()
     "setlocal foldtext=MarkdownFoldText()
@@ -913,7 +936,7 @@ function! DistractionFreeWriting()
     setlocal foldlevel=2
     setlocal foldcolumn=4
     setlocal cpo+=J
-    "Goyo 82
+    Goyo 85
 endfunction
 
 augroup ft_markdown
@@ -923,8 +946,9 @@ augroup ft_markdown
     autocmd WinEnter,FocusGained * setlocal nocursorline
     autocmd WinLeave,FocusLost   * setlocal nocursorline
     " Use <localleader>1/2/3 to add headings.
-    au Filetype markdown nnoremap <buffer> <silent> <localleader>; :set nonumber<CR>:set norelativenumber<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=blue guifg=blue cterm=bold gui=NONE<CR>
-    "au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 82<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE<CR>
+    "au Filetype markdown nnoremap <buffer> <silent> <localleader>; :set nonumber<CR>:set norelativenumber<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=blue guifg=blue cterm=bold gui=NONE<CR>
+    au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 85<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=blue guifg=blue cterm=italic gui=italic<CR>:set filetype=markdown<CR>
+    "au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 85<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=blue guifg=blue cterm=italic gui=italic<CR>:set filetype=markdown<CR>
     au Filetype markdown inoremap <buffer> <localleader>c [//]: # ()<esc>i
     au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
     au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>
