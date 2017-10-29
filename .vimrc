@@ -461,6 +461,12 @@ noremap <leader>hh :sp<CR>
 noremap <leader>hf :sf<space>
 noremap <leader>hb :sb<space>
 noremap <leader>he :sp<space>
+" tabs
+noremap <leader>tt :tab split<CR>
+noremap <leader>tf :tabf<space>
+noremap <leader>tb :tabs<CR>
+noremap <leader>te :tabe<space>
+noremap <leader>th :tab help<space>
 
 " toggle spell check z= with
 function! FixLastSpellingError()
@@ -987,4 +993,5 @@ inoremap <M-h> <left>
 inoremap <M-j> <down>
 inoremap <M-k> <up>
 inoremap <M-l> <right>
-
+nnoremap <M-h> gT
+nnoremap <M-l> gt
