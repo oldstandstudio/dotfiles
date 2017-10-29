@@ -658,9 +658,9 @@ let g:gruvbox_background = 229
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
-if has('termguicolors')
-  set termguicolors
-endif
+"if has('termguicolors')
+"  set termguicolors
+"endif
 
 if filereadable(expand("~/.vimrc_background"))
   let base16colorspace=256
@@ -942,7 +942,7 @@ function! DistractionFreeWriting()
     setlocal foldlevel=2
     setlocal foldcolumn=4
     setlocal cpo+=J
-    Goyo 85
+    "Goyo 85
 endfunction
 
 augroup ft_markdown
@@ -952,7 +952,7 @@ augroup ft_markdown
     autocmd WinEnter,FocusGained * setlocal nocursorline
     autocmd WinLeave,FocusLost   * setlocal nocursorline
     " Use <localleader>1/2/3 to add headings.
-    "au Filetype markdown nnoremap <buffer> <silent> <localleader>; :set nonumber<CR>:set norelativenumber<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=blue guifg=blue cterm=bold gui=NONE<CR>
+    au Filetype markdown nnoremap <buffer> <silent> <localleader>/ :set nonumber<CR>:set norelativenumber<CR>:set filetype=markdown<CR>
     au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 85<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=blue guifg=blue cterm=italic gui=italic<CR>:set filetype=markdown<CR>
     "au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 85<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=blue guifg=blue cterm=italic gui=italic<CR>:set filetype=markdown<CR>
     au Filetype markdown inoremap <buffer> <localleader>c [//]: # ()<esc>i
@@ -986,7 +986,9 @@ set guicursor=n:blinkon0
 set guicursor=i-ci-o:ver50-icursor-blinkwait300-blinkon200-blinkoff150
 set guicursor=r-cr:hor20-blinkwait300-blinkon200-blinkoff150
 	"}}}
-hi VertSplit cterm=NONE ctermbg=NONE guibg=NONE
+hi VertSplit cterm=NONE gui=NONE ctermbg=NONE guibg=NONE
+hi TabLine cterm=italic gui=italic ctermbg=NONE guibg=NONE
+hi TabLineSel cterm=bold gui=bold
 "}}}
 
 inoremap <M-h> <left>
@@ -995,3 +997,32 @@ inoremap <M-k> <up>
 inoremap <M-l> <right>
 nnoremap <M-h> gT
 nnoremap <M-l> gt
+
+" Workspace Setup
+" ----------------
+function! DefaultWorkspace()
+    " Rough num columns to decide between laptop and big monitor screens
+    let numcol = 2
+    if winwidth(0) >= 220
+        let numcol = 3
+    endif
+
+    if numcol == 3
+        e term://zsh
+        file Shell\ Two
+        vnew
+    endif
+
+    vsp term://git log --oneline
+    file Log
+    sp term://zsh
+    file Status
+    wincmd k
+    resize 6
+    vertical-resize 75
+    wincmd h
+endfunction
+command! -register DefaultWorkspace call DefaultWorkspace()
+
+highlight TermCursor ctermfg=red guifg=red
+:au BufEnter * if &buftype == 'terminal' | :startinsert | endif
