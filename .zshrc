@@ -96,6 +96,7 @@ source $ZSH/oh-my-zsh.sh
 	alias cd="c"
 
 # Make CTRL-Z toggle suspending things. Thanks to Wincent dotfiles for this little gem
+# This is giving me issues with ctrl-j inside nvim
 function fg-bg() {
 	if [[ $#BUFFER -eq 0 ]]; then
 		fg
@@ -104,7 +105,7 @@ function fg-bg() {
 	fi
 }
 zle -N fg-bg
-bindkey '^Z' fg-bg
+bindkey '^z' fg-bg
 
 # git (git_prepare() from https://github.com/Parth/dotfiles/blob/master/zsh/keybindings.sh)
 	function git_prepare() {
@@ -132,7 +133,7 @@ bindkey "^g" git_prepare
 		zle accept-line
 	}
 	zle -N git_pull
-bindkey "^y" git_pull
+bindkey "^p" git_pull
 
 	function git_log() {
 		if [ -z "$BUFFER" ];
@@ -173,41 +174,10 @@ bindkey "^s" git_status
 	zle -N goto_home
 bindkey "^h" goto_home
 
-# do a git push and kill tmux-session
-	function nighty_night() {
-		if [ -n "$BUFFER" ];
-			then
-				BUFFER="git add -A; git commit -m \"$BUFFER\" && git push && tmux detach"
-		fi
-
-		if [ -z "$BUFFER" ];
-			then
-				BUFFER="git add -A; git commit -v && git push && tmux detach"
-		fi
-		zle accept-line
-	}
-	zle -N nighty_night
-bindkey "^x" nighty_night
-
-# go to dotfiles
-	function elite_ninja() {
-		BUFFER="cd ~/Dropbox/.dotfiles && ./tmux.sh"
-		zle accept-line
-	}
-	zle -N elite_ninja
-bindkey "^n" elite_ninja
-
-# go to dev folder
-	function code_dojo() {
-		BUFFER="cd ~/Dropbox/dev && ./tmux.sh"
-		zle accept-line
-	}
-	zle -N code_dojo
-bindkey "^p" code_dojo
-
 # uhsa
 	function tree_house() {
-		BUFFER="cd ~/uhsa && ./tmux.sh"
+		#BUFFER="cd ~/uhsa && ./tmux.sh"
+		BUFFER="cd ~/uhsa && tn treehouse"
 		zle accept-line
 	}
 	zle -N tree_house
@@ -215,7 +185,8 @@ bindkey "^t" tree_house
 
 # logs
 	function log_cabin() {
-		BUFFER="cd ~/log && ./tmux.sh"
+		#BUFFER="cd ~/log && ./tmux.sh"
+		BUFFER="cd ~/log && tn Today"
 		zle accept-line
 	}
 	zle -N log_cabin
@@ -229,6 +200,13 @@ function pomodoro_timer() {
 zle -N pomodoro_timer
 bindkey "^[p" pomodoro_timer
 
+# nvim workspace
+	function default_workspace() {
+		BUFFER="n -c DefaultWorkspace"
+		zle accept-line
+	}
+	zle -N default_workspace
+bindkey "^[ " default_workspace
 
 # file management
 alias vrc="nvim ~/.vimrc"
@@ -262,7 +240,6 @@ alias tl="tmux ls"
 alias ta="tmux a"
 alias tt="tmux attach -t"
 alias tk="tmux kill-server"
-alias hello="~/log/./tmux.sh"
 alias tsys="~/./tmux.sh"
 
 # other

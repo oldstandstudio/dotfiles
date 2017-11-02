@@ -2,9 +2,6 @@ set nocompatible "sorry vi
 
 " Plugins {{{
 " Using Vim-Plug
-" Specify a directory for plugins
-" - For Neovim: ~/.local/share/nvim/plugged
-" - Avoid using standard Vim directory names like 'plugin'
 call plug#begin('~/.vim/plugged')
 
 " color themes
@@ -14,15 +11,11 @@ Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'cocopon/colorswatch.vim'
 Plug 'cocopon/shadeline.vim'
-Plug 'ajh17/Spacegray.vim'
+Plug 'lifepillar/vim-solarized8'
 
 " Fuzzy finder
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-
-" Ag - Silver Searcher
-"Plug 'rking/ag.vim'
 
 " File Managers
 Plug 'tpope/vim-vinegar'
@@ -34,7 +27,6 @@ Plug 'mattn/emmet-vim'
 
 " For better html indenting 
 Plug 'othree/html5.vim'
-Plug 'tpope/vim-sleuth'
 
 " for haml, sass, and scss support
 Plug 'tpope/vim-haml', { 'for': ['haml', 'sass', 'scss'] }
@@ -68,19 +60,13 @@ Plug 'reedes/vim-pencil'
 Plug 'tpope/vim-markdown'
 Plug 'reedes/vim-wordy'
 Plug 'beloglazov/vim-online-thesaurus'
-"Plug 'dpelle/vim-LanguageTool'
-"Plug 'rhysd/vim-grammarous'
 Plug 'dbmrq/vim-ditto'
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
 " Distraction-free writing
 Plug 'junegunn/goyo.vim'
-", { 'for': 'markdown' }
-"autocmd! User goyo.vim echom 'Goyo is now loaded!'<CR>
 
 Plug 'junegunn/limelight.vim'
-", { 'for': 'markdown' }
-Plug 'thinca/vim-zenspace'
 
 " better terminal integration
 Plug 'wincent/terminus'
@@ -101,7 +87,7 @@ set lazyredraw          " redraw only when we need to.
 " for tab completion and whole system searches using vim's built in search
 set path+=**
 set wildmenu
-set wildmode=full
+set wildmode=list:full
 
 " Show linenumbers
 set ruler
@@ -142,6 +128,7 @@ set smartcase " If there are uppercase letters, become case-sensitive.
 set incsearch " live incremental searching
 set showmatch " live match highlighting
 set gdefault " use the `g` flag by default.
+set wildignorecase
 
 " allow the cursor to go anywhere in visual block mode.
 set virtualedit+=block
@@ -175,17 +162,6 @@ map <C-f>m :Marks<CR>
 map <C-f>c :BCommits<CR>
 map <C-f>l :BLines<CR>
 " }}}
-
-" Ctrlp-plugin {{{
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlPMixed'
-nnoremap <leader>p :CtrlPBuffer<CR>
-"nnoremap <leader>k :CtrlPClearCache<CR>
-let g:ctrlp_show_hidden = 1
-
-" CtrlP intagration with Ag
-"let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-"}}}
 
 " Vaffle Mappings & Settings {{{
 function! s:customize_vaffle_mappings() abort
@@ -430,25 +406,34 @@ map E $
 map B 0
 map K zt
 map `m `mzt
+nnoremap <C-Space> :bN<CR>
+nnoremap <Left> :vertical resize +1<CR>
+nnoremap <Right> :vertical resize -1<CR>
+nnoremap <Up> :resize +1<CR>
+nnoremap <Down> :resize -1<CR>
+" Disable arrow keys completely in Insert Mode
+imap <up> <nop>
+imap <down> <nop>
+imap <left> <nop>
+imap <right> <nop>
+
 
 " map leader bindings {{{
 nnoremap <leader><leader> <C-^>
 nnoremap <leader>q :quit<CR>
+nnoremap <leader>a :qa<CR>
 nnoremap <leader>w :write<CR>
 nnoremap <leader>x :xit<CR>
 nnoremap <leader>f :find<space>
 nnoremap <leader>b :b<space>
 nnoremap <leader>e :edit <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <leader>c :checktime<CR>
-nnoremap <leader>y :echo expand('%:p')<CR>
-nnoremap <leader>yf :let @" = expand('%:p')<CR>
-nnoremap <leader>yc :let @" = expand('%')<CR>
-"nnoremap <leader>a :Ag!<space>
 nnoremap <leader>O :Limelight0.7<CR>
 nnoremap <leader>o :Limelight!<CR>
 nnoremap <leader>d <PageDown>
 nnoremap <leader>u <PageUp>
-nnoremap <leader>l :!love<CR>
+"nnoremap <leader>l :!love<CR>
+nnoremap <leader>l :ls<CR>:b<Space>
 
 " create splits
 " vertical splits
@@ -473,7 +458,7 @@ function! FixLastSpellingError()
   normal! ms[s1z=`s"
 endfunction
 
-map <leader>s :call FixLastSpellingError()<cr>
+map <C-s> :call FixLastSpellingError()<cr>
 inoremap <C-s> <esc>:call FixLastSpellingError()<cr>a
 " }}}
 " map local leader bindings {{{
@@ -481,11 +466,9 @@ inoremap <C-s> <esc>:call FixLastSpellingError()<cr>a
 inoremap <localleader>c <C-x><C-o>
 inoremap <localleader>t <C-x><C-]>
 inoremap <localleader>a <C-x><C-l>
-inoremap <localleader>d <C-x><C-l>
 inoremap <localleader>f <C-x><C-f>
 inoremap <localleader>u <C-w>
 inoremap <localleader>U <C-u>
-nnoremap <localleader>e :e<space>
 nnoremap <localleader>nh :nohl<CR>
 nnoremap <localleader>l >>
 nnoremap <localleader>h <<
@@ -498,7 +481,6 @@ vnoremap <localleader>h <gv
 nnoremap <localleader>sr :%s/
 vnoremap <localleader>sr :%s/
 nnoremap <localleader>ss :setlocal spell! spelllang=en_us<cr>
-nnoremap <localleader>sq Vgq
 nnoremap <localleader>sg gqap
 nnoremap <localleader>sf z=
 nnoremap <localleader>sa zg
@@ -532,6 +514,27 @@ nnoremap <C-H> <C-W><C-H>
 "nnoremap <C-y> 3<C-y>
 "}}}
 
+" Alt Keybindings {{{
+inoremap <M-h> <left>
+inoremap <M-j> <down>
+inoremap <M-k> <up>
+inoremap <M-l> <right>
+nnoremap <M-h> gT
+nnoremap <M-l> gt
+nnoremap <M-Space> :DefaultWorkspace<CR>
+" Tab navigation in with alt-#
+noremap <A-1> :tabnext 1<CR>
+noremap <A-2> :tabnext 2<CR>
+noremap <A-3> :tabnext 3<CR>
+noremap <A-4> :tabnext 4<CR>
+noremap <A-5> :tabnext 5<CR>
+noremap <A-6> :tabnext 6<CR>
+noremap <A-7> :tabnext 7<CR>
+noremap <A-8> :tabnext 8<CR>
+noremap <A-9> :tabnext 9<CR>
+noremap <A-0> :tabnext 0<CR>
+" }}}
+
 " rename current file, via Gary Bernhardt {{{
 function! RenameFile()
   let old_name = expand('%')
@@ -550,29 +553,11 @@ map <leader>r :call RenameFile()<cr>
 nnoremap <localleader>ih5 :-1read ~/Dropbox/.dotfiles/vim/html/.skeleton.html<CR>4jwf<i
 "}}}
 
-" CSS {{{
-"inoremap <localleader>icid <esc>I#<esc>A {<enter><enter>}<esc>kI<tab>
-"inoremap <localleader>iccl <esc>I.<esc>A {<enter><enter>}<esc>kI<tab>
-"}}}
-
 " Ruby {{{
 inoremap <localleader>rdf <esc>Idef <esc>A<enter><enter>end<esc>kI<tab>
 inoremap <localleader>rh <ekc>I<%=  =><esc>F=hi
 "}}}
 
-" Markdown {{{
-
-" nnoremap <localleader>mt :Toc<CR>
-
-"		au Filetype markdown nnoremap <localleader>I ciw**<esc>P
-"		au Filetype markdown nnoremap <localleader>B ciw****<esc>hP
-"		au Filetype markdown nnoremap <localleader>mwf ciw******<esc>hhP
-"		au Filetype markdown nnoremap <localleader>mws ciw~~~~<esc>hP
-"		au Filetype markdown nnoremap <localleader>m'i ca"**<esc>P
-"		au Filetype markdown nnoremap <localleader>m'b ca"****<esc>hP
-"		au Filetype markdown nnoremap <localleader>m'f ca"******<esc>hhP
-"		au Filetype markdown nnoremap <localleader>m's ca"~~~~<esc>hP
-"}}}
 "}}}
 " NeoVim Specific {{{
 tnoremap <localleader>; <C-\><C-n>
@@ -651,6 +636,25 @@ let g:gruvbox_background = 235
 "  Default: 229
 let g:gruvbox_background = 229
 "}}}
+" solarized {{{{
+let g:solarized_term_italics = 1
+
+"set background=light
+"colorscheme solarized8_light
+
+"nnoremap  <M-b> :<c-u>exe "colors" (g:colors_name =~# "dark"
+"    \ ? substitute(g:colors_name, 'dark', 'light', '')
+"    \ : substitute(g:colors_name, 'light', 'dark', '')
+"    \ )<cr>
+
+fun! Solarized8Contrast(delta)
+  let l:schemes = map(["_low", "_flat", "", "_high"], '"solarized8_".(&background).v:val')
+  exe "colors" l:schemes[((a:delta+index(l:schemes, g:colors_name)) % 4 + 4) % 4]
+endf
+
+"nmap <localleader>- :<c-u>call Solarized8Contrast(-v:count1)<cr>
+"nmap <localleader>= :<c-u>call Solarized8Contrast(+v:count1)<cr>
+" }}}
 " }}}
 
 " Base16 {{{
@@ -673,8 +677,8 @@ highlight NonText ctermbg=none guibg=none
 " }}}
 
 " Only use cursorline for current window {{{
-autocmd WinEnter,FocusGained * setlocal cursorline
-autocmd WinLeave,FocusLost   * setlocal nocursorline
+autocmd BufEnter,WinEnter,FocusGained * setlocal cursorline
+autocmd BufLeave,WinLeave,FocusLost   * setlocal nocursorline
 " }}}
 
 " italic comments {{{
@@ -815,48 +819,95 @@ highlight Comment term=italic cterm=italic gui=italic
 ""}}}
 
 " Shadeline Statusline {{{
-"let g:shadeline = {}
-" let g:shadeline.active = {
-"       \   'left':  ['fname', 'flags'],
-"       \   'right': ['ruler']
-"       \ }
-" let g:shadeline.inactive = {
-"       \   'left':  ['fname', 'flags']
-"       \ }
+function! MyItem_Fugitive()
+      let name = exists('*fugitive#head')
+            \ ? fugitive#head()
+            \ : ''
+      return empty(name) ? '' : printf('%s', name)
+endfunction
+
+let g:shadeline = {}
+ let g:shadeline.active = {
+       \   'left':  ['fname', 'flags'],
+       \   'right': ['MyItem_Fugitive', 'ruler']
+       \ }
+ let g:shadeline.inactive = {
+       \   'left':  ['fname', 'flags']
+       \ }
 "}}}
 
-" Focus {{{
-" Dim inactive windows using 'colorcolumn' setting
-" This tends to slow down redrawing, but is very useful.
-" Based on https://groups.google.com/d/msg/vim_use/IJU-Vk-QLJE/xz4hjPjCRBUJ
-" XXX: this will only work with lines containing text (i.e. not '~')
-" from 
-if exists('+colorcolumn')
-  function! s:DimInactiveWindows()
-    for i in range(1, tabpagewinnr(tabpagenr(), '$'))
-      let l:range = ""
-      if i != winnr()
-        if &wrap
-         " HACK: when wrapping lines is enabled, we use the maximum number
-         " of columns getting highlighted. This might get calculated by
-         " looking for the longest visible line and using a multiple of
-         " winwidth().
-         let l:width=256 " max
-        else
-         let l:width=winwidth(i)
+" Tabline {{{
+set tabline=%!MyTabLine()  " custom tab pages line
+function MyTabLine()
+        let s = '' " complete tabline goes here
+        " loop through each tab page
+        for t in range(tabpagenr('$'))
+                " set highlight
+                if t + 1 == tabpagenr()
+                        let s .= '%#TabLineSel#'
+                else
+                        let s .= '%#TabLine#'
+                endif
+                " set the tab page number (for mouse clicks)
+                let s .= '%' . (t + 1) . 'T'
+                let s .= ' '
+                " set page number string
+                let s .= t + 1 . ' '
+                " get buffer names and statuses
+                let n = ''      "temp string for buffer names while we loop and check buftype
+                let m = 0       " &modified counter
+                let bc = len(tabpagebuflist(t + 1))     "counter to avoid last ' '
+                " loop through each buffer in a tab
+                for b in tabpagebuflist(t + 1)
+                        " buffer types: quickfix gets a [Q], help gets [H]{base fname}
+                        " others get 1dir/2dir/3dir/fname shortened to 1/2/3/fname
+                        if getbufvar( b, "&buftype" ) == 'help'
+                                let n .= '[H]' . fnamemodify( bufname(b), ':t:s/.txt$//' )
+                        elseif getbufvar( b, "&buftype" ) == 'quickfix'
+                                let n .= '[Q]'
+                        else
+                                let n .= pathshorten(bufname(b))
+                        endif
+                        " check and ++ tab's &modified count
+                        if getbufvar( b, "&modified" )
+                                let m += 1
+                        endif
+                        " no final ' ' added...formatting looks better done later
+                        if bc > 1
+                                let n .= ' '
+                        endif
+                        let bc -= 1
+                endfor
+                " add modified label [n+] where n pages in tab are modified
+                if m > 0
+                        let s .= '[' . m . '+]'
+                endif
+                " select the highlighting for the buffer names
+                " my default highlighting only underlines the active tab
+                " buffer names.
+                if t + 1 == tabpagenr()
+                        let s .= '%#TabLineSel#'
+                else
+                        let s .= '%#TabLine#'
+                endif
+                " add buffer names
+                if n == ''
+                        let s.= '[New]'
+                else
+                        let s .= n
+                endif
+                " switch to no underlining and add final space to buffer list
+                let s .= ' '
+        endfor
+        " after the last tab fill with TabLineFill and reset tab page nr
+        let s .= '%#TabLineFill#%T'
+        " right-align the label to close the current tab page
+        if tabpagenr('$') > 1
+                let s .= '%=%#TabLineFill#%999Xclose'
         endif
-        let l:range = join(range(1, l:width), ',')
-      endif
-      call setwinvar(i, '&colorcolumn', l:range)
-    endfor
-  endfunction
-  augroup DimInactiveWindows
-    au!
-    au WinEnter * call s:DimInactiveWindows()
-    au WinEnter * set cursorline
-    au WinLeave * set nocursorline
-  augroup END
-endif
+        return s
+endfunction
+
 " }}}
 
 " Writing Themes and styling {{{
@@ -883,11 +934,6 @@ function! MarkdownFolds()
   endif
 endfunction
 
-function! MarkdownFoldText()
-  let foldsize = (v:foldend-v:foldstart)
-  return getline(v:foldstart).' ('.foldsize.' lines)'
-endfunction
-
 let g:word_count="<unknown>"
 set updatetime=1000
 augroup WordCounter
@@ -908,8 +954,8 @@ function UpdateWordCount()
 endfunction
 
 function! DistractionFreeWriting()
-    colorscheme seoul256
-    "let g:gitgutter_override_sign_column_highlight = 0
+    "colorscheme seoul256
+    let g:gitgutter_override_sign_column_highlight = 0
     "Change theme depending on the time of day
     "let hr = (strftime('%H'))
     "if hr >= 19
@@ -919,12 +965,12 @@ function! DistractionFreeWriting()
     "elseif hr >= 0
     "setlocal background=dark
     "endif
-    "highlight FoldColumn ctermbg=NONE guibg=NONE
-    "highlight SignColumn ctermbg=NONE guibg=NONE
-    "highlight GitGutterAdd ctermbg=NONE guibg=NONE
-    "highlight GitGutterChange ctermbg=NONE guibg=NONE
-    "highlight GitGutterDelete ctermbg=NONE guibg=NONE
-    "highlight GitGutterChangeDelete ctermbg=NONE guibg=NONE
+    highlight FoldColumn ctermbg=NONE guibg=NONE
+    highlight SignColumn ctermbg=NONE guibg=NONE
+    highlight GitGutterAdd ctermbg=NONE guibg=NONE
+    highlight GitGutterChange ctermbg=NONE guibg=NONE
+    highlight GitGutterDelete ctermbg=NONE guibg=NONE
+    highlight GitGutterChangeDelete ctermbg=NONE guibg=NONE
     setlocal filetype=markdown
     setlocal textwidth=0
     setlocal showbreak=
@@ -937,11 +983,12 @@ function! DistractionFreeWriting()
     setlocal nocursorline
     setlocal foldmethod=expr
     setlocal foldexpr=MarkdownFolds()
-    "setlocal foldtext=MarkdownFoldText()
     setlocal foldtext=getline(v:foldstart).'\ \[\~'.v:foldlevel.'\:\+'.(v:foldend-v:foldstart).'\]'
     setlocal foldlevel=2
     setlocal foldcolumn=4
     setlocal cpo+=J
+    setlocal statusline=\ %M%=%{WordCount()}\ 
+    highlight StatusLine ctermbg=NONE guibg=NONE ctermfg=blue guifg=blue cterm=italic gui=italic
     "Goyo 85
 endfunction
 
@@ -949,21 +996,14 @@ augroup ft_markdown
     au!
     au BufNewFile,BufRead *.md setlocal filetype=markdown
     au BufNewFile,BufRead *.md call DistractionFreeWriting()
-    autocmd WinEnter,FocusGained * setlocal nocursorline
-    autocmd WinLeave,FocusLost   * setlocal nocursorline
-    " Use <localleader>1/2/3 to add headings.
-    au Filetype markdown nnoremap <buffer> <silent> <localleader>/ :set nonumber<CR>:set norelativenumber<CR>:set filetype=markdown<CR>
-    au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 85<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=blue guifg=blue cterm=italic gui=italic<CR>:set filetype=markdown<CR>
-    "au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 85<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=blue guifg=blue cterm=italic gui=italic<CR>:set filetype=markdown<CR>
+    autocmd BufNewFile,BufRead,WinEnter,FocusGained * setlocal nocursorline
+    autocmd BufNewFile,BufRead,WinLeave,FocusLost * setlocal nocursorline
+    autocmd Filetype markdown nnoremap <buffer> <silent> <localleader>/ :call DistractionFreeWriting()<CR>
+    au Filetype markdown nnoremap <buffer> <silent> <localleader>; :colorscheme seoul256<CR>:Goyo 85<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=blue guifg=blue cterm=italic gui=italic<CR>:set filetype=markdown<CR>
     au Filetype markdown inoremap <buffer> <localleader>c [//]: # ()<esc>i
     au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
     au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>
     au Filetype markdown nnoremap <buffer> <localleader>3 I###<space><esc>
-    au Filetype markdown nnoremap <buffer> <localleader>4 I####<space><esc>
-    au Filetype markdown nnoremap <buffer> <localleader>5 I#####<space><esc>
-    au Filetype markdown nnoremap <buffer> <localleader>6 I######<space><esc>
-    au Filetype markdown nnoremap <buffer> <localleader>` I*<space>*<space>*<space><esc>
-    au Filetype markdown inoremap <buffer> <localleader>` * * *
 augroup END
 
 "}}}
@@ -977,7 +1017,7 @@ augroup END
 "endif
 " }}}
 " reversed highlights {{{
-"hi CursorLine term=bold cterm=reverse
+"hi CursorLine cterm=bold
 "hi CursorColumn term=NONE cterm=reverse
 "hi Visual term=reverse cterm=reverse
 " }}}
@@ -988,17 +1028,9 @@ set guicursor=r-cr:hor20-blinkwait300-blinkon200-blinkoff150
 	"}}}
 hi VertSplit cterm=NONE gui=NONE ctermbg=NONE guibg=NONE
 hi TabLine cterm=italic gui=italic ctermbg=NONE guibg=NONE
-hi TabLineSel cterm=bold gui=bold
+hi TabLineSel cterm=underline gui=underline ctermbg=NONE guibg=NONE ctermfg=cyan guifg=cyan
 "}}}
-
-inoremap <M-h> <left>
-inoremap <M-j> <down>
-inoremap <M-k> <up>
-inoremap <M-l> <right>
-nnoremap <M-h> gT
-nnoremap <M-l> gt
-
-" Workspace Setup
+" Workspace Setup {{{
 " ----------------
 function! DefaultWorkspace()
     " Rough num columns to decide between laptop and big monitor screens
@@ -1013,7 +1045,7 @@ function! DefaultWorkspace()
         vnew
     endif
 
-    vsp term://git log --oneline
+    vsp term://zsh
     file Log
     sp term://zsh
     file Status
@@ -1025,4 +1057,5 @@ endfunction
 command! -register DefaultWorkspace call DefaultWorkspace()
 
 highlight TermCursor ctermfg=red guifg=red
-:au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+":au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+" }}}
