@@ -110,6 +110,7 @@ set textwidth=80 "hardwrap at 80 columns
 
 " Always display the status line
 set laststatus=2
+set showtabline=2
 set showcmd
 
 set nobackup
@@ -487,7 +488,7 @@ nnoremap <localleader>sa zg
 noremap <silent> <localleader>sw :<C-u>NextWordy<cr>
 noremap <silent> <localleader>SW :NoWordy<cr>
 nnoremap <localleader>sp :TogglePencil<CR>
-nnoremap <localleader>wn :w!<bar>mks ~/.vim/sessions/
+nnoremap <localleader>wn :w!<bar>mks! ~/.vim/sessions/
 nnoremap <localleader>ww :mks!<bar>wqa!<CR>
 nnoremap <localleader>wo :source ~/.vim/sessions/
 nnoremap <localleader>v :!love %:p:h<CR>
@@ -521,7 +522,6 @@ inoremap <M-k> <up>
 inoremap <M-l> <right>
 nnoremap <M-h> gT
 nnoremap <M-l> gt
-nnoremap <M-Space> :DefaultWorkspace<CR>
 " Tab navigation in with alt-#
 noremap <A-1> :tabnext 1<CR>
 noremap <A-2> :tabnext 2<CR>
@@ -590,39 +590,48 @@ noremap <leader>ht :sp term://zsh<CR>i
 " seoul256 (dark):
 "   Range:   233 (darkest) ~ 239 (lightest)
 "   Default: 237
-let g:seoul256_background = 237
+"let g:seoul256_background = 237
 " seoul256 (light):
 "   Range:   252 (darkest) ~ 256 (lightest)
 "   Default: 253
-let g:seoul256_light_background = 253
+"let g:seoul256_light_background = 253
 
 " brighten/dim background - a'la macOS dim screen function keys
 " 233 (darkest) ~ 239 (lightest) 252 (darkest) ~ 256 (lightest)
-function! Seoul256Brighten()
-    if g:seoul256_background == 239
-        let g:seoul256_background = 252
-    elseif g:seoul256_background == 256
-        let  g:seoul256_background = 256
-    else
-        let g:seoul256_background += 1
-    endif
-    colo seoul256
-endfunction
+"function! Seoul256Brighten()
+"    if g:seoul256_background == 239
+"        let g:seoul256_background = 252
+"    elseif g:seoul256_background == 256
+"        let  g:seoul256_background = 256
+"    else
+"        let g:seoul256_background += 1
+"    endif
+"    colo seoul256
+"endfunction
+""
+"function! Seoul256Dim()
+"    if g:seoul256_background == 252
+"        let g:seoul256_background = 239
+"    elseif g:seoul256_background == 233
+"        let g:seoul256_background = 233
+"    else
+"        let g:seoul256_background -= 1
+"    endif
+"    colo seoul256
+"endfunction
 "
-function! Seoul256Dim()
-    if g:seoul256_background == 252
-        let g:seoul256_background = 239
-    elseif g:seoul256_background == 233
-        let g:seoul256_background = 233
-    else
-        let g:seoul256_background -= 1
-    endif
-    colo seoul256
-endfunction
-"
-nmap <M--> :call Seoul256Dim()<CR>
-nmap <M-=> :call Seoul256Brighten()<CR>
-
+"nmap <M--> :call Seoul256Dim()<CR>
+"nmap <M-=> :call Seoul256Brighten()<CR>
+colorscheme seoul256
+"Change theme depending on the time of day
+let hr = (strftime('%H'))
+if hr >= 19
+setlocal background=dark
+elseif hr >= 6
+setlocal background=light
+elseif hr >= 0
+setlocal background=dark
+endif
 "}}}
 " gruvbox {{{
 let g:gruvbox_termguicolors=256
@@ -666,14 +675,14 @@ let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 "  set termguicolors
 "endif
 
-if filereadable(expand("~/.vimrc_background"))
-  let base16colorspace=256
-  source ~/.vimrc_background
-endif
+"if filereadable(expand("~/.vimrc_background"))
+"  let base16colorspace=256
+"  source ~/.vimrc_background
+"endif
 
 " Make nvim bkg transparent
-highlight Normal ctermbg=none guibg=none
-highlight NonText ctermbg=none guibg=none
+"highlight Normal ctermbg=none guibg=none
+"highlight NonText ctermbg=none guibg=none
 " }}}
 
 " Only use cursorline for current window {{{
@@ -837,75 +846,70 @@ let g:shadeline = {}
 "}}}
 
 " Tabline {{{
+" from https://stackoverflow.com/a/33765365
 set tabline=%!MyTabLine()  " custom tab pages line
-function MyTabLine()
-        let s = '' " complete tabline goes here
-        " loop through each tab page
-        for t in range(tabpagenr('$'))
-                " set highlight
-                if t + 1 == tabpagenr()
-                        let s .= '%#TabLineSel#'
-                else
-                        let s .= '%#TabLine#'
-                endif
-                " set the tab page number (for mouse clicks)
-                let s .= '%' . (t + 1) . 'T'
-                let s .= ' '
-                " set page number string
-                let s .= t + 1 . ' '
-                " get buffer names and statuses
-                let n = ''      "temp string for buffer names while we loop and check buftype
-                let m = 0       " &modified counter
-                let bc = len(tabpagebuflist(t + 1))     "counter to avoid last ' '
-                " loop through each buffer in a tab
-                for b in tabpagebuflist(t + 1)
-                        " buffer types: quickfix gets a [Q], help gets [H]{base fname}
-                        " others get 1dir/2dir/3dir/fname shortened to 1/2/3/fname
-                        if getbufvar( b, "&buftype" ) == 'help'
-                                let n .= '[H]' . fnamemodify( bufname(b), ':t:s/.txt$//' )
-                        elseif getbufvar( b, "&buftype" ) == 'quickfix'
-                                let n .= '[Q]'
-                        else
-                                let n .= pathshorten(bufname(b))
-                        endif
-                        " check and ++ tab's &modified count
-                        if getbufvar( b, "&modified" )
-                                let m += 1
-                        endif
-                        " no final ' ' added...formatting looks better done later
-                        if bc > 1
-                                let n .= ' '
-                        endif
-                        let bc -= 1
-                endfor
-                " add modified label [n+] where n pages in tab are modified
-                if m > 0
-                        let s .= '[' . m . '+]'
-                endif
-                " select the highlighting for the buffer names
-                " my default highlighting only underlines the active tab
-                " buffer names.
-                if t + 1 == tabpagenr()
-                        let s .= '%#TabLineSel#'
-                else
-                        let s .= '%#TabLine#'
-                endif
-                " add buffer names
-                if n == ''
-                        let s.= '[New]'
-                else
-                        let s .= n
-                endif
-                " switch to no underlining and add final space to buffer list
-                let s .= ' '
-        endfor
-        " after the last tab fill with TabLineFill and reset tab page nr
-        let s .= '%#TabLineFill#%T'
-        " right-align the label to close the current tab page
-        if tabpagenr('$') > 1
-                let s .= '%=%#TabLineFill#%999Xclose'
-        endif
-        return s
+function! MyTabLine()
+  let s = ''
+  " loop through each tab page
+  for i in range(tabpagenr('$'))
+    if i + 1 == tabpagenr()
+      let s .= '%#TabLineSel#'
+    else
+      let s .= '%#TabLine#'
+    endif
+    if i + 1 == tabpagenr()
+      let s .= '%#TabLineSel#' " WildMenu
+    else
+      let s .= '%#Title#'
+    endif
+    " set the tab page number (for mouse clicks)
+    let s .= '%' . (i + 1) . 'T '
+    " set page number string
+    let s .= i + 1 . ''
+    " get buffer names and statuses
+    let n = ''  " temp str for buf names
+    let m = 0   " &modified counter
+    let buflist = tabpagebuflist(i + 1)
+    " loop through each buffer in a tab
+    for b in buflist
+      if getbufvar(b, "&buftype") == 'help'
+        " let n .= '[H]' . fnamemodify(bufname(b), ':t:s/.txt$//')
+      elseif getbufvar(b, "&buftype") == 'quickfix'
+        " let n .= '[Q]'
+      elseif getbufvar(b, "&modifiable")
+        let n .= fnamemodify(bufname(b), ':t') . ', ' " pathshorten(bufname(b))
+      endif
+      if getbufvar(b, "&modified")
+        let m += 1
+      endif
+    endfor
+    " let n .= fnamemodify(bufname(buflist[tabpagewinnr(i + 1) - 1]), ':t')
+    let n = substitute(n, ', $', '', '')
+    " add modified label
+    if m > 0
+      let s .= '+'
+      " let s .= '[' . m . '+]'
+    endif
+    if i + 1 == tabpagenr()
+      let s .= ' %#TabLineSel#'
+    else
+      let s .= ' %#TabLine#'
+    endif
+    " add buffer names
+    if n == ''
+      let s.= '[New]'
+    else
+      let s .= n
+    endif
+    " switch to no underlining and add final space
+    let s .= ' '
+  endfor
+  let s .= '%#TabLineFill#%T'
+  " right-aligned close button
+  " if tabpagenr('$') > 1
+  "   let s .= '%=%#TabLineFill#%999Xclose'
+  " endif
+  return s
 endfunction
 
 " }}}
@@ -1028,7 +1032,7 @@ set guicursor=r-cr:hor20-blinkwait300-blinkon200-blinkoff150
 	"}}}
 hi VertSplit cterm=NONE gui=NONE ctermbg=NONE guibg=NONE
 hi TabLine cterm=italic gui=italic ctermbg=NONE guibg=NONE
-hi TabLineSel cterm=underline gui=underline ctermbg=NONE guibg=NONE ctermfg=cyan guifg=cyan
+hi TabLineSel cterm=underline gui=underline ctermbg=NONE guibg=NONE ctermfg=016 guifg=016
 "}}}
 " Workspace Setup {{{
 " ----------------
@@ -1045,9 +1049,9 @@ function! DefaultWorkspace()
         vnew
     endif
 
-    vsp term://zsh
+    vsp term://git log --oneline
     file Log
-    sp term://zsh
+    sp term://git status
     file Status
     wincmd k
     resize 6
@@ -1058,4 +1062,7 @@ command! -register DefaultWorkspace call DefaultWorkspace()
 
 highlight TermCursor ctermfg=red guifg=red
 ":au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+
+nnoremap <M-Space> :DefaultWorkspace<CR>
+
 " }}}
