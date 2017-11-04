@@ -174,6 +174,14 @@ bindkey "^s" git_status
 	zle -N goto_home
 bindkey "^h" goto_home
 
+# clear
+	function wipe_screen() {
+		BUFFER="clear"
+		zle accept-line
+	}
+	zle -N wipe_screen
+	bindkey "^w" wipe_screen
+
 # uhsa
 	function tree_house() {
 		#BUFFER="cd ~/uhsa && ./tmux.sh"
@@ -270,3 +278,17 @@ alias gdp="base16_gruvbox-dark-pale"
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
+
+
+function switch_colors() {
+  if [[ ($(date +%H) -gt 19) || ($(date +%H) -lt 6) ]]
+  then
+		BUFFER="seoul && clear"
+		zle accept-line
+  else
+    BUFFER="lightseoul && clear"
+		zle accept-line
+  fi
+}
+zle -N switch_colors
+bindkey "^[	" switch_colors

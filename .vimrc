@@ -110,7 +110,7 @@ set textwidth=80 "hardwrap at 80 columns
 
 " Always display the status line
 set laststatus=2
-set showtabline=2
+"set showtabline=2
 set showcmd
 
 set nobackup
@@ -398,7 +398,6 @@ set complete+=kspell
 " key bindings {{{
 " @@ remapped to enter key while in normal buffer. Thanks to wincent aka Greg Hurrel for this one.
 nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
-"nnoremap <cr> o<esc>
 
 map <tab> zR
 map <s-tab> zM
@@ -406,18 +405,31 @@ map Q @q
 map E $
 map B 0
 map K zt
-map `m `mzt
+map ' `
+map 'm 'mzt
+map ` <C-^>
+
 nnoremap <C-Space> :bN<CR>
+
 nnoremap <Left> :vertical resize +1<CR>
 nnoremap <Right> :vertical resize -1<CR>
 nnoremap <Up> :resize +1<CR>
 nnoremap <Down> :resize -1<CR>
+nnoremap <S-Left> :vertical resize +10<CR>
+nnoremap <S-Right> :vertical resize -10<CR>
+nnoremap <S-Up> :resize +10<CR>
+nnoremap <S-Down> :resize -10<CR>
+
 " Disable arrow keys completely in Insert Mode
 imap <up> <nop>
 imap <down> <nop>
 imap <left> <nop>
 imap <right> <nop>
 
+inoremap <C-c> <C-x><C-o>
+inoremap <C-t> <C-x><C-]>
+inoremap <C-l> <C-x><C-l>
+inoremap <C-f> <C-x><C-f>
 
 " map leader bindings {{{
 nnoremap <leader><leader> <C-^>
@@ -426,15 +438,17 @@ nnoremap <leader>a :qa<CR>
 nnoremap <leader>w :write<CR>
 nnoremap <leader>x :xit<CR>
 nnoremap <leader>f :find<space>
-nnoremap <leader>b :b<space>
+nnoremap <leader>b :ls<CR>:b<Space>
 nnoremap <leader>e :edit <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <leader>c :checktime<CR>
-nnoremap <leader>O :Limelight0.7<CR>
-nnoremap <leader>o :Limelight!<CR>
 nnoremap <leader>d <PageDown>
 nnoremap <leader>u <PageUp>
 "nnoremap <leader>l :!love<CR>
-nnoremap <leader>l :ls<CR>:b<Space>
+nnoremap <leader>l :Limelight!<CR>
+nnoremap <leader>L :Limelight0.7<CR>
+nnoremap <leader>s :mks!<CR>:xa!<CR>
+"nnoremap <localleader>ww :mks!<CR>
+nnoremap <leader>o :source Session.vim<CR>
 
 " create splits
 " vertical splits
@@ -462,14 +476,8 @@ endfunction
 map <C-s> :call FixLastSpellingError()<cr>
 inoremap <C-s> <esc>:call FixLastSpellingError()<cr>a
 " }}}
+
 " map local leader bindings {{{
-"inoremap <localleader>; <C-p>
-inoremap <localleader>c <C-x><C-o>
-inoremap <localleader>t <C-x><C-]>
-inoremap <localleader>a <C-x><C-l>
-inoremap <localleader>f <C-x><C-f>
-inoremap <localleader>u <C-w>
-inoremap <localleader>U <C-u>
 nnoremap <localleader>nh :nohl<CR>
 nnoremap <localleader>l >>
 nnoremap <localleader>h <<
@@ -488,9 +496,9 @@ nnoremap <localleader>sa zg
 noremap <silent> <localleader>sw :<C-u>NextWordy<cr>
 noremap <silent> <localleader>SW :NoWordy<cr>
 nnoremap <localleader>sp :TogglePencil<CR>
-nnoremap <localleader>wn :w!<bar>mks! ~/.vim/sessions/
-nnoremap <localleader>ww :mks!<bar>wqa!<CR>
-nnoremap <localleader>wo :source ~/.vim/sessions/
+nnoremap <localleader>wn :w!<bar>mks!<space>
+"nnoremap <localleader>ww :mks!<CR>
+nnoremap <localleader>wo :source<space>
 nnoremap <localleader>v :!love %:p:h<CR>
 
 "}}}
