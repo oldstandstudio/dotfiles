@@ -106,6 +106,7 @@ set autoindent " Match indents on new lines.
 set smartindent " Intelligently indent/un-indent new lines based on rules.
 set linebreak "better file wrapping
 set textwidth=78 "hardwrap at 78 columns
+set cursorline
 set colorcolumn=80
 
 " Always display the status line
@@ -379,7 +380,6 @@ au BufWinLeave *.* mkview
 " reload folds when you open a file
 au BufWinEnter *.* silent loadview
 "highlight Folded ctermbg=grey ctermfg=blue
-"highlight FoldColumn guibg=darkgrey guifg=white
 "}}}
 
 " Tags {{{
@@ -436,7 +436,7 @@ nnoremap <leader><leader> <C-^>
 nnoremap <leader>q :quit<CR>
 nnoremap <leader>a :qa<CR>
 nnoremap <leader>w :write<CR>
-nnoremap <leader>x :xit<CR>
+nnoremap <leader>x :xa<CR>
 nnoremap <leader>f :find<space>
 nnoremap <leader>b :ls<CR>:b<Space>
 nnoremap <leader>e :edit <C-R>=expand('%:p:h') . '/'<CR>
@@ -713,7 +713,8 @@ highlight Comment term=italic cterm=italic gui=italic
 " Statusline {{{
 " based on https://github.com/fatih/dotfiles/blob/master/vimrc
 
-"hi! StatusLine ctermfg=00 ctermbg=14
+hi! StatusLine cterm=NONE ctermbg=black ctermfg=white
+hi! StatusLineNC term=italic cterm=italic gui=italic ctermfg=gray guifg=gray ctermbg=NONE guibg=NONE
 
 let s:modes = {
       \ 'n': 'N', 
@@ -738,32 +739,27 @@ function! StatusLineMode()
     return cur_mode
   endif
 
-  if cur_mode == "N"
-    exe 'hi! mymodecolor cterm=bold ctermbg=020 ctermfg=000'
-    exe 'hi! myinfocolor cterm=italic ctermbg=000 ctermfg=020'
-    exe 'hi! mystatscolor cterm=italic ctermbg=000 ctermfg=020'
-    exe 'hi! StatusLine ctermfg=black ctermbg=020'
-  elseif cur_mode == "I"
-    exe 'hi! myModeColor cterm=bold ctermbg=10 ctermfg=00'
-    exe 'hi! myInfoColor ctermbg=00 ctermfg=10'
-    exe 'hi! myStatsColor ctermbg=00 ctermfg=10'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-  elseif cur_mode == "R"
-    exe 'hi! myModeColor cterm=bold ctermbg=12 ctermfg=00'
-    exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
-    exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-  elseif cur_mode == "T"
-    exe 'hi! myModeColor cterm=bold ctermbg=15 ctermfg=00'
-    exe 'hi! myInfoColor ctermbg=00 ctermfg=15'
-    exe 'hi! myStatsColor ctermbg=00 ctermfg=15'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-  elseif cur_mode == "V" || cur_mode == "VL" || cur_mode == "VB"
-    exe 'hi! myModeColor cterm=bold ctermbg=18 ctermfg=00'
-    exe 'hi! myInfoColor ctermbg=00 ctermfg=18'
-    exe 'hi! myStatsColor ctermbg=00 ctermfg=18'
-    exe 'hi! StatusLine ctermfg=00 ctermbg=08'
-  endif
+  "if cur_mode == "N"
+  "  "exe 'hi! mymodecolor cterm=bold ctermbg=magenta ctermfg=black'
+  "  "exe 'hi! myinfocolor cterm=italic ctermbg=black ctermfg=magenta'
+  "  "exe 'hi! mystatscolor cterm=italic ctermbg=black ctermfg=magenta'
+  "elseif cur_mode == "I"
+  "  "exe 'hi! myModeColor cterm=bold ctermbg=green ctermfg=black'
+  "  "exe 'hi! myInfoColor ctermbg=black ctermfg=green'
+  "  "exe 'hi! myStatsColor ctermbg=black ctermfg=green'
+  "elseif cur_mode == "R"
+  "  "exe 'hi! myModeColor cterm=bold ctermbg=12 ctermfg=00'
+  "  "exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
+  "  "exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
+  "elseif cur_mode == "T"
+  "  "exe 'hi! myModeColor cterm=bold ctermbg=15 ctermfg=00'
+  "  "exe 'hi! myInfoColor ctermbg=00 ctermfg=15'
+  "  "exe 'hi! myStatsColor ctermbg=00 ctermfg=15'
+  "elseif cur_mode == "V" || cur_mode == "VL" || cur_mode == "VB"
+  "  "exe 'hi! myModeColor cterm=bold ctermbg=18 ctermfg=00'
+  "  "exe 'hi! myInfoColor ctermbg=00 ctermfg=18'
+  "  "exe 'hi! myStatsColor ctermbg=00 ctermfg=18'
+  "endif
 
   let s:prev_mode = cur_mode
   return cur_mode
@@ -782,6 +778,7 @@ function! StatusLineLeftInfo()
  let filename = '' != expand('%:t') ? expand('%:t') : '{no name}'
  if branch !=# ''
    return printf("\ %s\/%s", branch, filename)
+	 "⎇
  endif
  return filename
 endfunction
@@ -790,55 +787,51 @@ function! Rbenv()
 	return system("rbenv version | awk '{printf $1}'")
 endfunction
 
-" More colors
-exe 'hi! myFileColor cterm=italic ctermbg=00 ctermfg=08'
-exe 'hi! myBufferColor ctermbg=00 ctermfg=08'
-exe 'hi! myGlyphsColor ctermbg=00 ctermfg=08'
+function! S_gitgutter()
+  if exists('b:gitgutter')
+    let l:summary = b:gitgutter.summary
+    if l:summary[0] != 0 || l:summary[1] != 0 || l:summary[2] != 0
+      return '+'.l:summary[0].'~'.l:summary[1].'-'.l:summary[2].''
+    endif
+  endif
+  return ''
+endfunction
+
+exe 'hi! mymodecolor cterm=bold term=reverse'
 
 " start building our statusline
 set statusline=
 
 " mode with custom colors
-set statusline+=%#myModeColor#\ 
-set statusline+=%{StatusLineMode()}\ 
+set statusline+=%#myModeColor#
+set statusline+=\ %{StatusLineMode()}\ 
 set statusline+=%*
 
 " left information bar (after mode)
-set statusline+=%#myInfoColor#
-set statusline+=\ %{StatusLineLeftInfo()}\ %r\ %{PencilMode()}\ 
-set statusline+=%*
-
-" filetype
-"set statusline+=%#myFileColor#
-"set statusline+=\ \[%{StatusLineFiletype()}%R\]
-"set statusline+=\ %*
+set statusline+=\ %{StatusLineLeftInfo()}%r%{PencilMode()}\ 
+set statusline+=\[%{S_gitgutter()}\]
 
 " right section seperator
 set statusline+=%=
 
 " symbol
-"set statusline+=%#myInfoColor#
-"set statusline+=\ ∡\ 
+set statusline+=\ ∡
 
-" percentage, line number and column number
+" percentage, line number, column number and active register
 set statusline+=%<
-set statusline+=%#myStatsColor#
-set statusline+=\ %-14.(ℓ\ %l/%L\ 𝕔\ %v/78%)
-set statusline+=\ ⌗\ %{WordCount()}
+set statusline+=\ %l/%L\ \"%{v:register}\ 
 "set statusline+=\ %{StatusLinePercent()}
-set statusline+=\ %*
-
-" filetype and current register
-set statusline+=%#myStatsColor#
-set statusline+=\"%{v:register}
-"set statusline+=\ ⟢\ %{Rbenv()} "get the rbenv version
-set statusline+=\ %*
 
 " buffers
 set statusline+=%#myModeColor#
-set statusline+=\ %M%n\             "buffer number
+set statusline+=\ %M%n\ 
 set statusline+=%*
-"to show format options use %{&fo}
+
+if version >= 700
+  au InsertEnter * hi StatusLine cterm=NONE ctermbg=cyan ctermfg=white
+  au InsertLeave * hi StatusLine cterm=NONE ctermfg=white ctermbg=black
+endif
+
 "}}}
 
 " Tabline {{{
@@ -910,6 +903,9 @@ function! MyTabLine()
   return s
 endfunction
 
+hi TabLine cterm=italic gui=italic ctermbg=NONE guibg=NONE ctermfg=gray guifg=gray
+hi TabLineSel cterm=NONE gui=NONE ctermbg=black guibg=black ctermfg=white guifg=white
+hi TabLineTitle cterm=bold gui=bold ctermbg=white guibg=white ctermfg=black guifg=black
 " }}}
 
 " Writing Themes and styling {{{
@@ -1027,10 +1023,33 @@ set guicursor=n:blinkon0
 set guicursor=i-ci-o:ver50-icursor-blinkwait300-blinkon200-blinkoff150
 set guicursor=r-cr:hor20-blinkwait300-blinkon200-blinkoff150
 	"}}}
+
 hi VertSplit cterm=NONE gui=NONE ctermbg=NONE guibg=NONE
-hi TabLine cterm=NONE gui=NONE ctermbg=NONE guibg=NONE ctermfg=008 guifg=008
-hi TabLineSel cterm=italic gui=italic ctermbg=NONE guibg=NONE ctermfg=020 guifg=020
-hi TabLineTitle cterm=bold gui=bold ctermbg=020 guibg=020 ctermfg=000 guifg=000
+
+" Focus {{{
+" Thanks to
+" https://www.reddit.com/r/neovim/comments/4dyaqt/how_i_can_dim_inactive_windows/d2684me/
+" for this solution
+
+hi def Dim cterm=none ctermbg=none ctermfg=242
+
+function! s:DimInactiveWindow()
+    syntax region Dim start='' end='$$$end$$$'
+    set nocursorline
+		set colorcolumn=
+endfunction
+
+function! s:UndimActiveWindow()
+    ownsyntax
+		set cursorline
+		set colorcolumn=80
+endfunction
+
+autocmd WinEnter * call s:UndimActiveWindow()
+autocmd BufEnter * call s:UndimActiveWindow()
+autocmd WinLeave * call s:DimInactiveWindow()
+" }}}
+
 "}}}
 " Workspace Setup {{{
 " ----------------
@@ -1048,9 +1067,9 @@ function! DefaultWorkspace()
     endif
 
     vsp term://git log --oneline
-    file Log
+		file Log
     sp term://git status
-    file Status
+		file Status
     wincmd k
     resize 6
     vertical-resize 75
@@ -1059,7 +1078,8 @@ endfunction
 command! -register DefaultWorkspace call DefaultWorkspace()
 
 highlight TermCursor ctermfg=red guifg=red
-":au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+":au TermOpen * if &buftype == 'terminal' | :startinsert | endif
+:autocmd TermOpen * setlocal statusline=\»\ %<%{b:term_title}
 
 nnoremap <M-Space> :DefaultWorkspace<CR>
 
