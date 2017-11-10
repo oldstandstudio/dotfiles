@@ -255,11 +255,10 @@ alias v="vim"
 alias n="nvim"
 alias lua="lua5.3"
 alias rbt="robotfindskitten"
-alias cl="clear"
 alias x="exit"
 alias frec="ffmpeg -f x11grab -s 1920x1080 -i :0.0 "
 alias swatch="sass --watch scss:css"
-alias jadehtml="jade -w -P "
+alias jadehtml="jade -w -P"
 
 # color
 alias dark="base16_grayscale-dark"
@@ -273,6 +272,7 @@ alias lightseoul="base16_seoul256-light"
 alias lightsol="base16_solarized-light"
 alias darksol="base16_solarized-dark"
 alias gdp="base16_gruvbox-dark-pale"
+alias zen="base16_zenburn"
 
 # ruby
 export PATH="$HOME/.rbenv/bin:$PATH"
@@ -281,7 +281,7 @@ export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
 
 
 function switch_colors() {
-  if [[ ($(date +%H) -gt 19) || ($(date +%H) -lt 6) ]]
+  if [[ ($(date +%H) -gt 17) || ($(date +%H) -lt 6) ]]
   then
 		BUFFER="seoul && clear"
 		zle accept-line

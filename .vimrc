@@ -11,6 +11,8 @@ Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'cocopon/colorswatch.vim'
 Plug 'lifepillar/vim-solarized8'
+Plug 'sjl/badwolf'
+Plug 'ajmwagar/vim-deus'
 
 " Fuzzy finder
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -20,31 +22,32 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-vinegar'
 Plug 'cocopon/vaffle.vim'
 Plug 'sjl/gundo.vim'
+Plug 'scrooloose/nerdtree'
 
 " Emmet for Vim
 Plug 'mattn/emmet-vim'
 
 " For better html indenting 
-Plug 'othree/html5.vim'
+"Plug 'othree/html5.vim'
 
 " for haml, sass, and scss support
-Plug 'tpope/vim-haml', { 'for': ['haml', 'sass', 'scss'] }
+"Plug 'tpope/vim-haml', { 'for': ['haml', 'sass', 'scss'] }
 
 " Support for jade syntax highlighting and indenting
-Plug 'digitaltoad/vim-jade', { 'for': ['jade', 'pug'] }
-au BufNewFile,BufReadPost *.jade set filetype=pug
+"Plug 'digitaltoad/vim-jade', { 'for': ['jade', 'pug'] }
+"au BufNewFile,BufReadPost *.jade set filetype=pug
 
-Plug 'dNitro/vim-pug-complete', { 'for': ['pug', 'jade'] }
+"Plug 'dNitro/vim-pug-complete', { 'for': ['pug', 'jade'] }
 
 " Javascript and jQuery
-Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
+"Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 
 " Ruby on Rails Plugins
 Plug 'tpope/vim-rails', { 'for': ['ruby', 'rails'] }
 Plug 'tpope/vim-rbenv'
 
 " Lua & Love2d
-Plug 'sheerun/vim-polyglot', { 'for': ['lua'] }
+Plug 'sheerun/vim-polyglot' ", { 'for': ['lua'] }
 
 " Syntastic
 Plug 'vim-syntastic/syntastic'
@@ -56,7 +59,7 @@ Plug 'airblade/vim-gitgutter'
 
 " Markdown / Writting
 Plug 'reedes/vim-pencil'
-Plug 'tpope/vim-markdown'
+"Plug 'tpope/vim-markdown'
 Plug 'reedes/vim-wordy'
 Plug 'beloglazov/vim-online-thesaurus'
 Plug 'dbmrq/vim-ditto'
@@ -79,7 +82,7 @@ call plug#end()
 " Set all the things! {{{
 filetype plugin indent on
 syntax on
-set syntax=whitespace "don't even know if I need this. I'll google/search vim help regarding it at some point
+"set syntax=whitespace "don't even know if I need this. I'll google/search vim help regarding it at some point
 set encoding=utf8
 set lazyredraw          " redraw only when we need to.
 
@@ -150,6 +153,27 @@ endif
 
 set fillchars+=vert:│
 " }}}
+" Backups {{{
+
+set backup                        " enable backups
+set noswapfile                    " it's 2013, Vim.
+
+set undodir=~/.vim/tmp/undo//     " undo files
+set backupdir=~/.vim/tmp/backup// " backups
+set directory=~/.vim/tmp/swap//   " swap files
+
+" Make those folders automatically if they don't already exist.
+if !isdirectory(expand(&undodir))
+    call mkdir(expand(&undodir), "p")
+endif
+if !isdirectory(expand(&backupdir))
+    call mkdir(expand(&backupdir), "p")
+endif
+if !isdirectory(expand(&directory))
+    call mkdir(expand(&directory), "p")
+endif
+
+" }}}
 " leader mappings {{{
 let mapleader = "\<Space>"
 let maplocalleader = ";"
@@ -219,36 +243,36 @@ nnoremap <leader>gr :Gremove<cr>
 " Start distraction-free mode with ctrl+g
 map <C-g> :Goyo<CR>
 
-function! s:goyo_enter()
-	silent !tmux set status off
-  silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
-	" set linespace=7
-	set textwidth=0
-	set statusline=\ \ \ \ %M%=%{WordCount()}\ 
-	hi StatusLine ctermfg=blue guifg=blue cterm=NONE gui=NONE
-	set showbreak=
-	set noshowmode
-	set noshowcmd
-	set scrolloff=999
-	Limelight0.7
-	"GitGutterEnable
-	" ...
-endfunction
+"function! s:goyo_enter()
+"	silent !tmux set status off
+"  silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+"	" set linespace=7
+"	set textwidth=0
+"	set statusline=\ \ \ \ %M%=%{WordCount()}\ 
+"	highlight! StatusLine ctermfg=blue guifg=blue cterm=italic gui=italic ctermbg=NONE guibg=NONE
+"	set showbreak=
+"	set noshowmode
+"	set noshowcmd
+"	set scrolloff=999
+"	Limelight0.7
+"	"GitGutterEnable
+"	" ...
+"endfunction
 
-function! s:goyo_leave()
-	silent !tmux set status on
-	silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-	set showmode
-	set showcmd
-	set scrolloff=5
-	set textwidth=0
-	set colorcolumn=80
-	Limelight!
-	" ...
-endfunction
+"function! s:goyo_leave()
+"	silent !tmux set status on
+"	silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+"	set showmode
+"	set showcmd
+"	set scrolloff=5
+"	set textwidth=0
+"	set colorcolumn=80
+"	Limelight!
+"	" ...
+"endfunction
 
-autocmd! User GoyoEnter nested call <SID>goyo_enter()
-autocmd! User GoyoLeave nested call <SID>goyo_leave()
+"autocmd! User GoyoEnter nested call <SID>goyo_enter()
+"autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
 " with :q and :q! quit Goyo and the buffer
 function! g:GoyoBefore()
@@ -295,7 +319,7 @@ let g:goyo_width = 85
 "let g:limelight_priority = 10
 
 " Limelight and Goyo integration
-autocmd! User GoyoEnter Limelight0.7
+autocmd! User GoyoEnter Limelight0.6
 autocmd! User GoyoLeave Limelight!
 "}}}
 
@@ -394,6 +418,25 @@ set complete+=kspell
 " Thesaurus {{{
 "set+=thesaurus
 "}}}
+
+" Shell Commands {{{
+
+function! s:ExecuteInShell(command)
+  let command = join(map(split(a:command), 'expand(v:val)'))
+  let winnr = bufwinnr('^' . command . '$')
+  silent! execute  winnr < 0 ? 'botright vnew ' . fnameescape(command) : winnr . 'wincmd w'
+  setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number relativenumber
+  echo 'Execute ' . command . '...'
+  silent! execute 'silent %!'. command
+  silent! execute 'resize '
+  silent! redraw
+  silent! execute 'au BufUnload <buffer> execute bufwinnr(' . bufnr('#') . ') . ''wincmd w'''
+  silent! execute 'nnoremap <silent> <buffer> <LocalLeader>r :call <SID>ExecuteInShell(''' . command . ''')<CR>'
+  echo 'Shell command ' . command . ' executed.'
+endfunction
+command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
+
+" }}}
 "}}}
 " key bindings {{{
 " @@ remapped to enter key while in normal buffer. Thanks to wincent aka Greg Hurrel for this one.
@@ -445,7 +488,7 @@ nnoremap <leader>d <PageDown>
 nnoremap <leader>u <PageUp>
 "nnoremap <leader>l :!love<CR>
 nnoremap <leader>l :Limelight!<CR>
-nnoremap <leader>L :Limelight0.7<CR>
+nnoremap <leader>L :Limelight0.6<CR>
 nnoremap <leader>s :mks!<CR>:xa!<CR>
 "nnoremap <localleader>ww :mks!<CR>
 nnoremap <leader>o :source Session.vim<CR>
@@ -541,6 +584,8 @@ noremap <A-7> :tabnext 7<CR>
 noremap <A-8> :tabnext 8<CR>
 noremap <A-9> :tabnext 9<CR>
 noremap <A-0> :tabnext 0<CR>
+
+nnoremap <M-tab> :set background=dark<CR>:colorscheme iceberg<CR>
 " }}}
 
 " rename current file, via Gary Bernhardt {{{
@@ -589,6 +634,7 @@ tnoremap <Esc> <C-\><C-n>
 
 noremap <leader>vt :vsp term://zsh<CR>i
 noremap <leader>ht :sp term://zsh<CR>i
+noremap \ :vsp term://tree .<CR>
 "}}}
 " Theme and Styling {{{
 
@@ -598,48 +644,51 @@ noremap <leader>ht :sp term://zsh<CR>i
 " seoul256 (dark):
 "   Range:   233 (darkest) ~ 239 (lightest)
 "   Default: 237
-"let g:seoul256_background = 237
+let g:seoul256_background = 237
 " seoul256 (light):
 "   Range:   252 (darkest) ~ 256 (lightest)
 "   Default: 253
-"let g:seoul256_light_background = 253
+let g:seoul256_light_background = 253
 
 " brighten/dim background - a'la macOS dim screen function keys
 " 233 (darkest) ~ 239 (lightest) 252 (darkest) ~ 256 (lightest)
-"function! Seoul256Brighten()
-"    if g:seoul256_background == 239
-"        let g:seoul256_background = 252
-"    elseif g:seoul256_background == 256
-"        let  g:seoul256_background = 256
-"    else
-"        let g:seoul256_background += 1
-"    endif
-"    colo seoul256
-"endfunction
-""
-"function! Seoul256Dim()
-"    if g:seoul256_background == 252
-"        let g:seoul256_background = 239
-"    elseif g:seoul256_background == 233
-"        let g:seoul256_background = 233
-"    else
-"        let g:seoul256_background -= 1
-"    endif
-"    colo seoul256
-"endfunction
+function! Seoul256Brighten()
+    if g:seoul256_background == 239
+        let g:seoul256_background = 252
+    elseif g:seoul256_background == 256
+        let  g:seoul256_background = 256
+    else
+        let g:seoul256_background += 1
+    endif
+    colo seoul256
+endfunction
 "
-"nmap <M--> :call Seoul256Dim()<CR>
-"nmap <M-=> :call Seoul256Brighten()<CR>
-colorscheme seoul256
-"Change theme depending on the time of day
-let hr = (strftime('%H'))
-if hr >= 19
-setlocal background=dark
-elseif hr >= 6
-setlocal background=light
-elseif hr >= 0
-setlocal background=dark
-endif
+function! Seoul256Dim()
+    if g:seoul256_background == 252
+        let g:seoul256_background = 239
+    elseif g:seoul256_background == 233
+        let g:seoul256_background = 233
+    else
+        let g:seoul256_background -= 1
+    endif
+    colo seoul256
+endfunction
+
+nmap <M--> :call Seoul256Dim()<CR>
+nmap <M-=> :call Seoul256Brighten()<CR>
+
+"colorscheme seoul256
+"
+""Change theme depending on the time of day
+"let hr = (strftime('%H'))
+"if hr >= 18
+"setlocal background=dark
+"elseif hr >= 6
+"setlocal background=light
+"elseif hr >= 0
+"setlocal background=dark
+"endif
+
 "}}}
 " gruvbox {{{
 let g:gruvbox_termguicolors=256
@@ -672,6 +721,9 @@ endf
 "nmap <localleader>- :<c-u>call Solarized8Contrast(-v:count1)<cr>
 "nmap <localleader>= :<c-u>call Solarized8Contrast(+v:count1)<cr>
 " }}}
+" deus {{{
+let g:deus_termcolors=256
+"		}}}
 " }}}
 
 " Base16 {{{
@@ -683,26 +735,20 @@ let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 "  set termguicolors
 "endif
 
-"if filereadable(expand("~/.vimrc_background"))
-"  let base16colorspace=256
-"  source ~/.vimrc_background
-"endif
+if filereadable(expand("~/.vimrc_background"))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
 
 " Make nvim bkg transparent
-"highlight Normal ctermbg=none guibg=none
-"highlight NonText ctermbg=none guibg=none
-" }}}
-
-" Only use cursorline for current window {{{
-autocmd BufEnter,WinEnter,FocusGained * setlocal cursorline
-autocmd BufLeave,WinLeave,FocusLost   * setlocal nocursorline
+highlight Normal ctermbg=none guibg=none
+highlight NonText ctermbg=none guibg=none
 " }}}
 
 " italic comments {{{
 set t_ZH=[3m   "  character is created by ctrl-v <esc>
 set t_ZR=[23m
 highlight Comment term=italic cterm=italic gui=italic 
-"ctermfg=08
 " }}}
 
 " For use with iceberg color theme {{{
@@ -710,64 +756,21 @@ highlight Comment term=italic cterm=italic gui=italic
 "set background="dark"
 " }}}
 
-" Statusline {{{
-" based on https://github.com/fatih/dotfiles/blob/master/vimrc
+"" Statusline {{{
 
-hi! StatusLine cterm=NONE ctermbg=black ctermfg=white
-hi! StatusLineNC term=italic cterm=italic gui=italic ctermfg=gray guifg=gray ctermbg=NONE guibg=NONE
-
-let s:modes = {
-      \ 'n': 'N', 
-      \ 'i': 'I', 
-      \ 'R': 'R', 
-      \ 'v': 'V', 
-      \ 'V': 'VL', 
-      \ "\<C-v>": 'VB',
-      \ 'c': 'C',
-      \ 's': 'select', 
-      \ 'S': 's-line', 
-      \ "\<C-s>": 's-block', 
-      \ 't': 'T'
-      \}
-
-let s:prev_mode = ""
-function! StatusLineMode()
-  let cur_mode = get(s:modes, mode(), '')
-
-  " do not update higlight if the mode is the same
-  if cur_mode == s:prev_mode
-    return cur_mode
-  endif
-
-  "if cur_mode == "N"
-  "  "exe 'hi! mymodecolor cterm=bold ctermbg=magenta ctermfg=black'
-  "  "exe 'hi! myinfocolor cterm=italic ctermbg=black ctermfg=magenta'
-  "  "exe 'hi! mystatscolor cterm=italic ctermbg=black ctermfg=magenta'
-  "elseif cur_mode == "I"
-  "  "exe 'hi! myModeColor cterm=bold ctermbg=green ctermfg=black'
-  "  "exe 'hi! myInfoColor ctermbg=black ctermfg=green'
-  "  "exe 'hi! myStatsColor ctermbg=black ctermfg=green'
-  "elseif cur_mode == "R"
-  "  "exe 'hi! myModeColor cterm=bold ctermbg=12 ctermfg=00'
-  "  "exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
-  "  "exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
-  "elseif cur_mode == "T"
-  "  "exe 'hi! myModeColor cterm=bold ctermbg=15 ctermfg=00'
-  "  "exe 'hi! myInfoColor ctermbg=00 ctermfg=15'
-  "  "exe 'hi! myStatsColor ctermbg=00 ctermfg=15'
-  "elseif cur_mode == "V" || cur_mode == "VL" || cur_mode == "VB"
-  "  "exe 'hi! myModeColor cterm=bold ctermbg=18 ctermfg=00'
-  "  "exe 'hi! myInfoColor ctermbg=00 ctermfg=18'
-  "  "exe 'hi! myStatsColor ctermbg=00 ctermfg=18'
-  "endif
-
-  let s:prev_mode = cur_mode
-  return cur_mode
-endfunction
-
-function! StatusLineFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no file') : ''
-endfunction
+"let s:modes = {
+"      \ 'n': 'N', 
+"      \ 'i': 'I', 
+"      \ 'R': 'R', 
+"      \ 'v': 'V', 
+"      \ 'V': 'VL', 
+"      \ "\<C-v>": 'VB',
+"      \ 'c': 'C',
+"      \ 's': 'select', 
+"      \ 'S': 's-line', 
+"      \ "\<C-s>": 's-block', 
+"      \ 't': 'T'
+"      \}
 
 function! StatusLinePercent()
   return (100 * line('.') / line('$')) . '%'
@@ -783,56 +786,167 @@ function! StatusLineLeftInfo()
  return filename
 endfunction
 
-function! Rbenv()
-	return system("rbenv version | awk '{printf $1}'")
-endfunction
+"function! Rbenv()
+"	return system("rbenv version | awk '{printf $1}'")
+"endfunction
 
 function! S_gitgutter()
   if exists('b:gitgutter')
     let l:summary = b:gitgutter.summary
     if l:summary[0] != 0 || l:summary[1] != 0 || l:summary[2] != 0
-      return '+'.l:summary[0].'~'.l:summary[1].'-'.l:summary[2].''
+      return '['.'+'.l:summary[0].'~'.l:summary[1].'-'.l:summary[2].']'
     endif
   endif
   return ''
 endfunction
 
-exe 'hi! mymodecolor cterm=bold term=reverse'
-
 " start building our statusline
-set statusline=
+"set statusline=
+"
+"" mode with custom colors
+"set statusline+=%#myModeColor#
+"set statusline+=\ %{StatusLineMode()}\ 
+"set statusline+=%*
+"
+"" left information bar (after mode)
+"set statusline+=\ %{StatusLineLeftInfo()}%r%{PencilMode()}\ 
+"set statusline+=%{S_gitgutter()}
+"
+"" right section seperator
+"set statusline+=%=
+"set statusline+=%<
+""set statusline+=⧗\ %{strftime('%d\ %b\ %I:%M')}
+"
+"" symbol
+"set statusline+=\ ∡
+"
+"" percentage, line number, column number and active register
+"set statusline+=\ %l/%L\ \"%{v:register}\ 
+""set statusline+=\ %{StatusLinePercent()}
+"
+"" buffers
+"set statusline+=%#myModeColor#
+"set statusline+=\ %M%n\ 
+"set statusline+=%*
+"
+"if version >= 700
+"  au InsertEnter * hi StatusLine cterm=NONE ctermbg=cyan ctermfg=black
+"  au InsertLeave * hi StatusLine cterm=NONE ctermfg=white ctermbg=black
+"endif
+"
+""}}}
 
-" mode with custom colors
-set statusline+=%#myModeColor#
-set statusline+=\ %{StatusLineMode()}\ 
-set statusline+=%*
+" Statusline-ALT {{{
 
-" left information bar (after mode)
-set statusline+=\ %{StatusLineLeftInfo()}%r%{PencilMode()}\ 
-set statusline+=\[%{S_gitgutter()}\]
+hi! StatusLine cterm=NONE ctermbg=black ctermfg=white
+hi! StatusLineNC term=italic cterm=italic gui=italic ctermbg=NONE guibg=NONE ctermfg=gray guifg=gray
+hi! myModeColor cterm=bold term=reverse
+hi! myNotifyColor cterm=bold term=reverse ctermfg=red
 
-" right section seperator
-set statusline+=%=
+function! StatusLineMode()
+    let mode = mode()
 
-" symbol
-set statusline+=\ ∡
+    if mode == "n"
+				"exe 'hi! myModeColor cterm=bold ctermbg=white ctermfg=black'
+				"exe 'hi! myInfoColor cterm=italic ctermbg=black ctermfg=white'
+				"exe 'hi! myStatsColor cterm=NONE ctermbg=black ctermfg=white'
+        return "N"
+    elseif mode == "no"
+        return "OPERATOR"
+    elseif mode == "v" || mode == "V"
+				"exe 'hi! myModeColor cterm=bold ctermbg=white ctermfg=yellow'
+				"exe 'hi! myInfoColor ctermbg=yellow ctermfg=white'
+				"exe 'hi! myStatsColor ctermbg=yellow ctermfg=white'
+        return "V"
+		elseif mode == "\<C-v>"
+				"exe 'hi! myModeColor cterm=bold ctermbg=white ctermfg=yellow'
+				"exe 'hi! myInfoColor ctermbg=yellow ctermfg=white'
+				"exe 'hi! myStatsColor ctermbg=yellow ctermfg=white'
+				return "VB"
+    elseif mode == "s" || mode == "S" || mode == ""
+        return "S"
+    elseif mode == "i"
+				"exe 'hi! myModeColor cterm=bold ctermbg=white ctermfg=cyan'
+				"exe 'hi! myInfoColor ctermbg=cyan ctermfg=white'
+				"exe 'hi! myStatsColor ctermbg=cyan ctermfg=white'
+        return "I"
+    elseif mode == "r" || mode == "Rv"
+				"exe 'hi! myModeColor cterm=bold ctermbg=12 ctermfg=00'
+				"exe 'hi! myInfoColor ctermbg=00 ctermfg=12'
+				"exe 'hi! myStatsColor ctermbg=00 ctermfg=12'
+        return "R"
+    elseif mode == "t"
+				"exe 'hi! myModeColor cterm=bold ctermbg=white ctermfg=black'
+				"exe 'hi! myInfoColor ctermbg=black ctermfg=white'
+				"exe 'hi! myStatsColor ctermbg=black ctermfg=white'
+        return "T"
+    else
+        "call GoodWolfHL('GWStatusLineMode', 'coal', 'lime', 'bold')
+        "call GoodWolfHL('GWStatusLineModeX', 'lime', 'deepergravel')
+        "call GoodWolfHL('GWStatusLineModeY', 'lime', 'deepgravel')
+        return "OTHER"
+    endif
+endfunction
 
-" percentage, line number, column number and active register
-set statusline+=%<
-set statusline+=\ %l/%L\ \"%{v:register}\ 
-"set statusline+=\ %{StatusLinePercent()}
+function! SetStatusLine(winnr)
+    let s = ""
 
-" buffers
-set statusline+=%#myModeColor#
-set statusline+=\ %M%n\ 
-set statusline+=%*
+    if a:winnr == winnr()
+        let errors = SyntasticStatuslineFlag()
+
+        let s .= "%#myModeColor#"
+        let s .= " "
+        let s .= "%{StatusLineMode()}"
+        let s .= " "
+        let s .= "%*"
+        "let s .= "⮀ "
+
+        "let s .= "%#myInfoColor#"
+        let s .= " "
+        let s .= "%{StatusLineLeftInfo()}%r%{PencilMode()}"
+        "let s .= "%*"
+        "let s .= "%#myStatsColor#"
+        let s .= " %{S_gitgutter()}"
+        let s .= " "
+        "let s .= "%*"
+        let s .= "%="
+
+        let s .= "%<"
+        "let s .= "%#myInfoColor#"
+        let s .= " %l/%L\ \"%{v:register}\ "
+        "let s .= "%*"
+
+        let s .= "%#myNotifyColor#"
+				let s .= " %M"
+				let s .= "%*"
+        let s .= "%#myModeColor#"
+				let s .= "%n "
+				let s .= "%*"
+    else
+        let s .= "%#StatusLineNC#"
+        let s .= "%f"
+    endif
+
+    return s
+endfunction
+
+function! RefreshStatusLine()
+    for nr in range(1, winnr('$'))
+        call setwinvar(nr, '&statusline', '%!SetStatusLine(' . nr . ')')
+    endfor
+endfunction
+
+augroup statusline
+  autocmd!
+  autocmd VimEnter,WinEnter,BufWinEnter * call RefreshStatusLine()
+augroup END
 
 if version >= 700
   au InsertEnter * hi StatusLine cterm=NONE ctermbg=cyan ctermfg=white
   au InsertLeave * hi StatusLine cterm=NONE ctermfg=white ctermbg=black
 endif
 
-"}}}
+" }}}
 
 " Tabline {{{
 " from https://stackoverflow.com/a/33765365
@@ -953,16 +1067,17 @@ endfunction
 
 function! DistractionFreeWriting()
     "colorscheme seoul256
+		"colorscheme deus
     let g:gitgutter_override_sign_column_highlight = 0
     "Change theme depending on the time of day
-    "let hr = (strftime('%H'))
-    "if hr >= 19
-    "setlocal background=dark
-    "elseif hr >= 6
-    "setlocal background=light
-    "elseif hr >= 0
-    "setlocal background=dark
-    "endif
+    let hr = (strftime('%H'))
+    if hr >= 18
+    setlocal background=dark
+    elseif hr >= 6
+    setlocal background=light
+    elseif hr >= 0
+    setlocal background=dark
+    endif
     highlight FoldColumn ctermbg=NONE guibg=NONE
     highlight SignColumn ctermbg=NONE guibg=NONE
     highlight GitGutterAdd ctermbg=NONE guibg=NONE
@@ -978,15 +1093,15 @@ function! DistractionFreeWriting()
     let g:markdown_fenced_languages = ['html', 'css', 'bash=sh']
     setlocal nonumber
     setlocal norelativenumber
-		setlocal colorcolumn=80
-    setlocal nocursorline
     setlocal foldmethod=expr
     setlocal foldexpr=MarkdownFolds()
     setlocal foldtext=getline(v:foldstart).'\ \[\~'.v:foldlevel.'\:\+'.(v:foldend-v:foldstart).'\]'
     setlocal foldlevel=2
     setlocal foldcolumn=4
     setlocal cpo+=J
-    "Goyo 85
+		set statusline=\ \ \ \ %M%=%{WordCount()}\ 
+		highlight! StatusLine ctermfg=red guifg=red cterm=italic gui=italic ctermbg=NONE guibg=NONE
+    Goyo 85
 endfunction
 
 augroup ft_markdown
@@ -996,7 +1111,7 @@ augroup ft_markdown
     autocmd BufNewFile,BufRead,WinEnter,FocusGained * setlocal nocursorline
     autocmd WinLeave,FocusLost *.md setlocal nocursorline
     autocmd Filetype markdown nnoremap <buffer> <silent> <localleader>/ :call DistractionFreeWriting()<CR>:setlocal foldcolumn=12<CR>
-    au Filetype markdown nnoremap <buffer> <silent> <localleader>; :colorscheme seoul256<CR>:Goyo 85<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=blue guifg=blue cterm=italic gui=italic<CR>:set filetype=markdown<CR>
+    au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 85<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=italic gui=italic ctermbg=NONE guibg=NONE<CR>:set filetype=markdown<CR>
     au Filetype markdown inoremap <buffer> <localleader>c [//]: # ()<esc>i
     au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
     au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>
@@ -1079,7 +1194,7 @@ command! -register DefaultWorkspace call DefaultWorkspace()
 
 highlight TermCursor ctermfg=red guifg=red
 ":au TermOpen * if &buftype == 'terminal' | :startinsert | endif
-:autocmd TermOpen * setlocal statusline=\»\ %<%{b:term_title}
+:autocmd TermOpen * setlocal statusline=%#myModeColor#\ \»\ %*%<%{b:term_title}
 
 nnoremap <M-Space> :DefaultWorkspace<CR>
 
