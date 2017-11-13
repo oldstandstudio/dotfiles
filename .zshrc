@@ -9,8 +9,8 @@
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 #ZSH_THEME="excid3"
 
-BASE16_SHELL=$HOME/.config/base16-shell/
-[ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
+#BASE16_SHELL=$HOME/.config/base16-shell/
+#[ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -95,6 +95,14 @@ source $ZSH/oh-my-zsh.sh
 	}
 	alias cd="c"
 
+# LS
+	function ctrl_l() {
+		BUFFER="ls"
+		zle accept-line
+	}
+	zle -N ctrl_l
+bindkey "^l" ctrl_l
+
 # Make CTRL-Z toggle suspending things. Thanks to Wincent dotfiles for this little gem
 # This is giving me issues with ctrl-j inside nvim
 function fg-bg() {
@@ -106,6 +114,9 @@ function fg-bg() {
 }
 zle -N fg-bg
 bindkey '^z' fg-bg
+
+bindkey "^p" up-line-or-search
+bindkey "^n" down-line-or-search
 
 # git (git_prepare() from https://github.com/Parth/dotfiles/blob/master/zsh/keybindings.sh)
 	function git_prepare() {
@@ -133,7 +144,8 @@ bindkey "^g" git_prepare
 		zle accept-line
 	}
 	zle -N git_pull
-bindkey "^p" git_pull
+bindkey "^y" git_pull
+# y for yank
 
 	function git_log() {
 		if [ -z "$BUFFER" ];
@@ -174,6 +186,13 @@ bindkey "^s" git_status
 	zle -N goto_home
 bindkey "^h" goto_home
 
+# Enter
+	function enter_line() {
+		zle accept-line
+	}
+	zle -N enter_line
+bindkey "^ " enter_line
+
 # clear
 	function wipe_screen() {
 		BUFFER="clear"
@@ -182,23 +201,13 @@ bindkey "^h" goto_home
 	zle -N wipe_screen
 	bindkey "^w" wipe_screen
 
-# uhsa
-	function tree_house() {
-		#BUFFER="cd ~/uhsa && ./tmux.sh"
-		BUFFER="cd ~/uhsa && tn treehouse"
-		zle accept-line
+# Sudo
+	function add_sudo() {
+		BUFFER="sudo "$BUFFER
+		zle end-of-line
 	}
-	zle -N tree_house
-bindkey "^t" tree_house
-
-# logs
-	function log_cabin() {
-		#BUFFER="cd ~/log && ./tmux.sh"
-		BUFFER="cd ~/log && tn Today"
-		zle accept-line
-	}
-	zle -N log_cabin
-bindkey "^l" log_cabin
+	zle -N add_sudo
+bindkey "^x" add_sudo
 
 # Pomodoro
 function pomodoro_timer() {
@@ -235,10 +244,9 @@ alias gd="cd ~/Dropbox"
 alias uhsa="cd ~/uhsa"
 alias dev="cd ~/Dropbox/dev"
 alias log="cd ~/log"
-alias blog="cd ~/log/blog"
 alias .dot="cd ~/Dropbox/.dotfiles"
 alias anim="cd ~/Dropbox/animation"
-alias love2d="cd ~/Dropbox/love2d"
+alias love2d="cd ~/Dropbox/dev/love2d"
 
 # tmux
 alias t="./tmux.sh"
@@ -259,6 +267,7 @@ alias x="exit"
 alias frec="ffmpeg -f x11grab -s 1920x1080 -i :0.0 "
 alias swatch="sass --watch scss:css"
 alias jadehtml="jade -w -P"
+alias timer="sleep 1500 && notify-send break; sleep 300 && notify-send work; sleep 1500 && notify-send break"
 
 # color
 alias dark="base16_grayscale-dark"
@@ -279,16 +288,3 @@ export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
 
-
-function switch_colors() {
-  if [[ ($(date +%H) -gt 17) || ($(date +%H) -lt 6) ]]
-  then
-		BUFFER="seoul && clear"
-		zle accept-line
-  else
-    BUFFER="lightseoul && clear"
-		zle accept-line
-  fi
-}
-zle -N switch_colors
-bindkey "^[	" switch_colors

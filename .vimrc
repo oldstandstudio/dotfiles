@@ -11,8 +11,14 @@ Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'cocopon/colorswatch.vim'
 Plug 'lifepillar/vim-solarized8'
-Plug 'sjl/badwolf'
-Plug 'ajmwagar/vim-deus'
+Plug 'mhartington/oceanic-next'
+Plug 'mhallendal/spacedust-theme'
+Plug 'ajh17/Spacegray.vim'
+Plug 'reedes/vim-colors-pencil'
+Plug 'arcticicestudio/nord-vim'
+Plug 'tomasr/molokai'
+Plug 'pbrisbin/vim-colors-off'
+Plug 'owickstrom/vim-colors-paramount'
 
 " Fuzzy finder
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -22,32 +28,16 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-vinegar'
 Plug 'cocopon/vaffle.vim'
 Plug 'sjl/gundo.vim'
-Plug 'scrooloose/nerdtree'
 
 " Emmet for Vim
 Plug 'mattn/emmet-vim'
-
-" For better html indenting 
-"Plug 'othree/html5.vim'
-
-" for haml, sass, and scss support
-"Plug 'tpope/vim-haml', { 'for': ['haml', 'sass', 'scss'] }
-
-" Support for jade syntax highlighting and indenting
-"Plug 'digitaltoad/vim-jade', { 'for': ['jade', 'pug'] }
-"au BufNewFile,BufReadPost *.jade set filetype=pug
-
-"Plug 'dNitro/vim-pug-complete', { 'for': ['pug', 'jade'] }
-
-" Javascript and jQuery
-"Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 
 " Ruby on Rails Plugins
 Plug 'tpope/vim-rails', { 'for': ['ruby', 'rails'] }
 Plug 'tpope/vim-rbenv'
 
-" Lua & Love2d
-Plug 'sheerun/vim-polyglot' ", { 'for': ['lua'] }
+" CODE
+Plug 'sheerun/vim-polyglot'
 
 " Syntastic
 Plug 'vim-syntastic/syntastic'
@@ -59,7 +49,6 @@ Plug 'airblade/vim-gitgutter'
 
 " Markdown / Writting
 Plug 'reedes/vim-pencil'
-"Plug 'tpope/vim-markdown'
 Plug 'reedes/vim-wordy'
 Plug 'beloglazov/vim-online-thesaurus'
 Plug 'dbmrq/vim-ditto'
@@ -157,6 +146,7 @@ set fillchars+=vert:│
 
 set backup                        " enable backups
 set noswapfile                    " it's 2013, Vim.
+set undofile
 
 set undodir=~/.vim/tmp/undo//     " undo files
 set backupdir=~/.vim/tmp/backup// " backups
@@ -396,9 +386,6 @@ autocmd FileType html,jade,ruby,eruby,css,scss,sass,js set foldmethod=indent
 set foldlevelstart=99   " open folds by default
 set foldnestmax=10	"max number of nested folds
 
-" toggle a fold.
-nnoremap s za
-nnoremap S zA
 " save folds each time you save and exit a file
 au BufWinLeave *.* mkview
 " reload folds when you open a file
@@ -440,7 +427,7 @@ command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
 "}}}
 " key bindings {{{
 " @@ remapped to enter key while in normal buffer. Thanks to wincent aka Greg Hurrel for this one.
-nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
+"nnoremap <expr> <CR> empty(&buftype) ? '@@' : '<CR>'
 
 map <tab> zR
 map <s-tab> zM
@@ -448,9 +435,14 @@ map Q @q
 map E $
 map B 0
 map K zt
+map zh mmzt3<C-u>`m
+map \ <C-^>
 map ' `
-map 'm 'mzt
-map ` <C-^>
+nmap <silent> <BS>  :nohlsearch<CR>
+
+" toggle a fold.
+nnoremap s za
+nnoremap S zA
 
 nnoremap <C-Space> :bN<CR>
 
@@ -486,10 +478,9 @@ nnoremap <leader>e :edit <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <leader>c :checktime<CR>
 nnoremap <leader>d <PageDown>
 nnoremap <leader>u <PageUp>
-"nnoremap <leader>l :!love<CR>
 nnoremap <leader>l :Limelight!<CR>
 nnoremap <leader>L :Limelight0.6<CR>
-nnoremap <leader>s :mks!<CR>:xa!<CR>
+nnoremap <leader>s :mks!<CR>
 "nnoremap <localleader>ww :mks!<CR>
 nnoremap <leader>o :source Session.vim<CR>
 
@@ -521,7 +512,6 @@ inoremap <C-s> <esc>:call FixLastSpellingError()<cr>a
 " }}}
 
 " map local leader bindings {{{
-nnoremap <localleader>nh :nohl<CR>
 nnoremap <localleader>l >>
 nnoremap <localleader>h <<
 nnoremap <localleader>k O<esc>
@@ -542,16 +532,13 @@ nnoremap <localleader>sp :TogglePencil<CR>
 nnoremap <localleader>wn :w!<bar>mks!<space>
 "nnoremap <localleader>ww :mks!<CR>
 nnoremap <localleader>wo :source<space>
-nnoremap <localleader>v :!love %:p:h<CR>
 
 "}}}
 
 " map escape to pressing ;; at the same time {{{
-"inoremap jk <Esc>
-"inoremap kj <Esc>
-inoremap <localleader>; <Esc>
-vnoremap <localleader>; <Esc>gV
-cnoremap <localleader>; <Esc>
+"inoremap <localleader>; <Esc>
+"vnoremap <localleader>; <Esc>gV
+"cnoremap <localleader>; <Esc>
 "}}}
 
 " Better toggling between splits {{{
@@ -574,18 +561,72 @@ inoremap <M-l> <right>
 nnoremap <M-h> gT
 nnoremap <M-l> gt
 " Tab navigation in with alt-#
-noremap <A-1> :tabnext 1<CR>
-noremap <A-2> :tabnext 2<CR>
-noremap <A-3> :tabnext 3<CR>
-noremap <A-4> :tabnext 4<CR>
-noremap <A-5> :tabnext 5<CR>
-noremap <A-6> :tabnext 6<CR>
-noremap <A-7> :tabnext 7<CR>
-noremap <A-8> :tabnext 8<CR>
-noremap <A-9> :tabnext 9<CR>
-noremap <A-0> :tabnext 0<CR>
+"noremap <A-1> :tabnext 1<CR>
+"noremap <A-2> :tabnext 2<CR>
+"noremap <A-3> :tabnext 3<CR>
+"noremap <A-4> :tabnext 4<CR>
+"noremap <A-5> :tabnext 5<CR>
+"noremap <A-6> :tabnext 6<CR>
+"noremap <A-7> :tabnext 7<CR>
+"noremap <A-8> :tabnext 8<CR>
+"noremap <A-9> :tabnext 9<CR>
+"noremap <A-0> :tabnext 0<CR>
 
-nnoremap <M-tab> :set background=dark<CR>:colorscheme iceberg<CR>
+noremap <A-1>  :colorscheme seoul256<CR>:hi! Comment term=italic cterm=italic gui=italic<CR>:hi! myModeColor cterm=bold gui=bold term=reverse<CR>
+noremap <A-2>  :colorscheme pencil<CR>:hi! Comment term=italic cterm=italic gui=italic<CR>:hi! myModeColor cterm=bold gui=bold term=reverse<CR>
+noremap <A-3>  :colorscheme OceanicNextLight<CR>:hi! Comment term=italic cterm=italic gui=italic<CR>:hi! myModeColor cterm=bold gui=bold term=reverse<CR>
+noremap <A-4>  :colorscheme solarized8_light<CR>:hi! Comment term=italic cterm=italic gui=italic<CR>:hi! myModeColor cterm=bold gui=bold term=reverse<CR>
+noremap <A-5>  :colorscheme gruvbox<CR>:hi! Comment term=italic cterm=italic gui=italic<CR>:hi! myModeColor cterm=bold gui=bold term=reverse<CR>
+noremap <A-6>  :colorscheme OceanicNext<CR>:hi! Comment term=italic cterm=italic gui=italic<CR>:hi! myModeColor cterm=bold gui=bold term=reverse<CR>
+noremap <A-7>  :colorscheme molokai<CR>:hi! Comment term=italic cterm=italic gui=italic<CR>:hi! myModeColor cterm=bold gui=bold term=reverse<CR>
+noremap <A-8>  :colorscheme spacegray<CR>:hi! Comment term=italic cterm=italic gui=italic<CR>:hi! myModeColor cterm=bold gui=bold term=reverse<CR>
+noremap <A-9>  :colorscheme iceberg<CR>:hi! Comment term=italic cterm=italic gui=italic<CR>:hi! myModeColor cterm=bold gui=bold term=reverse<CR>
+noremap <A-0>  :colorscheme nord<CR>:hi! Comment term=italic cterm=italic gui=italic<CR>:hi! myModeColor cterm=bold gui=bold term=reverse<CR>
+" }}}
+
+" Incremental Yanking {{{
+" From http://howivim.com/2016/damian-conway/
+" Make v<motions>Y act like an incremental v<motion>y
+vnoremap <silent>       Y  <ESC>:silent let @y = @"<CR>gv"Yy:silent let @" = @y<CR>
+
+" Make Y<motion> act like an incremental y<motion>
+nnoremap <silent><expr> Y  Incremental_Y()
+
+function! Incremental_Y ()
+    " After the Y operator, read in the associated motion
+    let motion = nr2char(getchar())
+
+    " If it's a (slowly typed) YY, do the optimized version instead (see below)
+    if motion == 'Y'
+        call Incremental_YY()
+        return
+
+    " If it's a text object, read in the associated motion
+    elseif motion =~ '[ia]'
+        let motion .= nr2char(getchar())
+    endif
+
+    " If it's a search, read in the associated pattern
+    elseif motion =~ '[/?]'
+        let motion .= input(motion) . "\<CR>"
+    endif
+
+    " Copy the current contents of the default register into the 'y register
+    let @y = @"
+
+    " Return a command sequence that yanks into the 'Y register,
+    " then assigns that cumulative yank back to the default register
+    return '"Yy' . motion . ':let @" = @y' . "\<CR>"
+endfunction
+
+
+" Make YY act like an incremental yy
+nnoremap <silent>  YY  :call Incremental_YY()<CR>
+
+function! Incremental_YY () range
+    " Grab all specified lines and append them to the default register
+    let @" .= join(getline(a:firstline, a:lastline), "\n") . "\n"
+endfunction
 " }}}
 
 " rename current file, via Gary Bernhardt {{{
@@ -634,9 +675,20 @@ tnoremap <Esc> <C-\><C-n>
 
 noremap <leader>vt :vsp term://zsh<CR>i
 noremap <leader>ht :sp term://zsh<CR>i
-noremap \ :vsp term://tree .<CR>
 "}}}
 " Theme and Styling {{{
+
+"Change theme depending on the time of day {{{
+colorscheme seoul256
+let hr = (strftime('%H'))
+if hr >= 17
+setlocal background=dark
+elseif hr >= 6
+setlocal background=light
+elseif hr >= 0
+setlocal background=dark
+endif
+"}}}
 
 " Color theme settings {{{
 " seoul256 {{{
@@ -644,51 +696,41 @@ noremap \ :vsp term://tree .<CR>
 " seoul256 (dark):
 "   Range:   233 (darkest) ~ 239 (lightest)
 "   Default: 237
-let g:seoul256_background = 237
-" seoul256 (light):
-"   Range:   252 (darkest) ~ 256 (lightest)
-"   Default: 253
-let g:seoul256_light_background = 253
-
-" brighten/dim background - a'la macOS dim screen function keys
-" 233 (darkest) ~ 239 (lightest) 252 (darkest) ~ 256 (lightest)
-function! Seoul256Brighten()
-    if g:seoul256_background == 239
-        let g:seoul256_background = 252
-    elseif g:seoul256_background == 256
-        let  g:seoul256_background = 256
-    else
-        let g:seoul256_background += 1
-    endif
-    colo seoul256
-endfunction
+"let g:seoul256_background = 237
+"" seoul256 (light):
+""   Range:   252 (darkest) ~ 256 (lightest)
+""   Default: 253
+"let g:seoul256_light_background = 253
 "
-function! Seoul256Dim()
-    if g:seoul256_background == 252
-        let g:seoul256_background = 239
-    elseif g:seoul256_background == 233
-        let g:seoul256_background = 233
-    else
-        let g:seoul256_background -= 1
-    endif
-    colo seoul256
-endfunction
+"" brighten/dim background - a'la macOS dim screen function keys
+"" 233 (darkest) ~ 239 (lightest) 252 (darkest) ~ 256 (lightest)
+"function! Seoul256Brighten()
+"    if g:seoul256_background == 239
+"        let g:seoul256_background = 252
+"    elseif g:seoul256_background == 256
+"        let  g:seoul256_background = 256
+"    else
+"        let g:seoul256_background += 1
+"    endif
+"    colo seoul256
+"endfunction
+""
+"function! Seoul256Dim()
+"    if g:seoul256_background == 252
+"        let g:seoul256_background = 239
+"    elseif g:seoul256_background == 233
+"        let g:seoul256_background = 233
+"    else
+"        let g:seoul256_background -= 1
+"    endif
+"    colo seoul256
+"endfunction
 
-nmap <M--> :call Seoul256Dim()<CR>
-nmap <M-=> :call Seoul256Brighten()<CR>
+"nmap <M--> :call Seoul256Dim()<CR>
+"nmap <M-=> :call Seoul256Brighten()<CR>
 
 "colorscheme seoul256
 "
-""Change theme depending on the time of day
-"let hr = (strftime('%H'))
-"if hr >= 18
-"setlocal background=dark
-"elseif hr >= 6
-"setlocal background=light
-"elseif hr >= 0
-"setlocal background=dark
-"endif
-
 "}}}
 " gruvbox {{{
 let g:gruvbox_termguicolors=256
@@ -696,11 +738,11 @@ let g:gruvbox_italic=1
 " gruvbox dark:
 "  Range: 234 (hardest) ~ 236 (softest)
 "  Default: 235
-let g:gruvbox_background = 235
+"let g:gruvbox_background = 235
 " gruvbox light:
 "  Range: 228 (softest) ~ 230 (hardest)
 "  Default: 229
-let g:gruvbox_background = 229
+"let g:gruvbox_background = 229
 "}}}
 " solarized {{{{
 let g:solarized_term_italics = 1
@@ -721,9 +763,14 @@ endf
 "nmap <localleader>- :<c-u>call Solarized8Contrast(-v:count1)<cr>
 "nmap <localleader>= :<c-u>call Solarized8Contrast(+v:count1)<cr>
 " }}}
-" deus {{{
-let g:deus_termcolors=256
-"		}}}
+" molokai {{{
+"let g:rehash256 = 1
+let g:molokai_original = 1
+" }}}
+" spacegray {{{
+let g:spacegray_underline_search = 1
+let g:spacegray_italicize_comments = 1
+" }}}
 " }}}
 
 " Base16 {{{
@@ -731,29 +778,24 @@ let g:deus_termcolors=256
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
-"if has('termguicolors')
-"  set termguicolors
-"endif
-
-if filereadable(expand("~/.vimrc_background"))
-  let base16colorspace=256
-  source ~/.vimrc_background
+if has('termguicolors')
+  set termguicolors
 endif
 
-" Make nvim bkg transparent
-highlight Normal ctermbg=none guibg=none
-highlight NonText ctermbg=none guibg=none
+"if filereadable(expand("~/.vimrc_background"))
+"  let base16colorspace=256
+"  source ~/.vimrc_background
+"endif
+"
+"" Make nvim bkg transparent
+"highlight Normal ctermbg=none guibg=none
+"highlight NonText ctermbg=none guibg=none
 " }}}
 
 " italic comments {{{
 set t_ZH=[3m   "  character is created by ctrl-v <esc>
 set t_ZR=[23m
 highlight Comment term=italic cterm=italic gui=italic 
-" }}}
-
-" For use with iceberg color theme {{{
-"colorscheme iceberg
-"set background="dark"
 " }}}
 
 "" Statusline {{{
@@ -800,48 +842,22 @@ function! S_gitgutter()
   return ''
 endfunction
 
-" start building our statusline
-"set statusline=
-"
-"" mode with custom colors
-"set statusline+=%#myModeColor#
-"set statusline+=\ %{StatusLineMode()}\ 
-"set statusline+=%*
-"
-"" left information bar (after mode)
-"set statusline+=\ %{StatusLineLeftInfo()}%r%{PencilMode()}\ 
-"set statusline+=%{S_gitgutter()}
-"
-"" right section seperator
-"set statusline+=%=
-"set statusline+=%<
-""set statusline+=⧗\ %{strftime('%d\ %b\ %I:%M')}
-"
 "" symbol
 "set statusline+=\ ∡
-"
-"" percentage, line number, column number and active register
-"set statusline+=\ %l/%L\ \"%{v:register}\ 
-""set statusline+=\ %{StatusLinePercent()}
-"
-"" buffers
-"set statusline+=%#myModeColor#
-"set statusline+=\ %M%n\ 
-"set statusline+=%*
-"
+
 "if version >= 700
 "  au InsertEnter * hi StatusLine cterm=NONE ctermbg=cyan ctermfg=black
 "  au InsertLeave * hi StatusLine cterm=NONE ctermfg=white ctermbg=black
 "endif
-"
+
 ""}}}
 
 " Statusline-ALT {{{
 
-hi! StatusLine cterm=NONE ctermbg=black ctermfg=white
+hi! StatusLine cterm=NONE gui=NONE ctermbg=black ctermfg=white guibg=black guifg=white
 hi! StatusLineNC term=italic cterm=italic gui=italic ctermbg=NONE guibg=NONE ctermfg=gray guifg=gray
-hi! myModeColor cterm=bold term=reverse
-hi! myNotifyColor cterm=bold term=reverse ctermfg=red
+hi! myModeColor cterm=bold gui=bold term=reverse
+hi! myNotifyColor cterm=bold gui=bold term=reverse ctermfg=red guifg=red
 
 function! StatusLineMode()
     let mode = mode()
@@ -912,8 +928,11 @@ function! SetStatusLine(winnr)
         let s .= "%="
 
         let s .= "%<"
+        let s .= " ∆ %{strftime('%d\ %b\ %I:%M%P')}         "
+
         "let s .= "%#myInfoColor#"
-        let s .= " %l/%L\ \"%{v:register}\ "
+        let s .= " ≡ %l/%L\ "
+				"let s .= "⨳ \"%{v:register}\ "
         "let s .= "%*"
 
         let s .= "%#myNotifyColor#"
@@ -941,10 +960,10 @@ augroup statusline
   autocmd VimEnter,WinEnter,BufWinEnter * call RefreshStatusLine()
 augroup END
 
-if version >= 700
-  au InsertEnter * hi StatusLine cterm=NONE ctermbg=cyan ctermfg=white
-  au InsertLeave * hi StatusLine cterm=NONE ctermfg=white ctermbg=black
-endif
+"if version >= 700
+"  au InsertEnter * hi StatusLine cterm=NONE gui=NONE ctermbg=cyan ctermfg=white guibg=cyan guifg=white
+"  au InsertLeave * hi StatusLine cterm=NONE gui=NONE ctermfg=white ctermbg=black guifg=white guibg=black
+"endif
 
 " }}}
 
@@ -1067,17 +1086,17 @@ endfunction
 
 function! DistractionFreeWriting()
     "colorscheme seoul256
-		"colorscheme deus
+		"colorscheme pencil
     let g:gitgutter_override_sign_column_highlight = 0
     "Change theme depending on the time of day
-    let hr = (strftime('%H'))
-    if hr >= 18
-    setlocal background=dark
-    elseif hr >= 6
-    setlocal background=light
-    elseif hr >= 0
-    setlocal background=dark
-    endif
+    "let hr = (strftime('%H'))
+    "if hr >= 17
+    "setlocal background=dark
+    "elseif hr >= 6
+    "setlocal background=light
+    "elseif hr >= 0
+    "setlocal background=dark
+    "endif
     highlight FoldColumn ctermbg=NONE guibg=NONE
     highlight SignColumn ctermbg=NONE guibg=NONE
     highlight GitGutterAdd ctermbg=NONE guibg=NONE
@@ -1096,7 +1115,7 @@ function! DistractionFreeWriting()
     setlocal foldmethod=expr
     setlocal foldexpr=MarkdownFolds()
     setlocal foldtext=getline(v:foldstart).'\ \[\~'.v:foldlevel.'\:\+'.(v:foldend-v:foldstart).'\]'
-    setlocal foldlevel=2
+    setlocal foldlevel=6
     setlocal foldcolumn=4
     setlocal cpo+=J
 		set statusline=\ \ \ \ %M%=%{WordCount()}\ 
@@ -1108,14 +1127,24 @@ augroup ft_markdown
     au!
     au BufNewFile,BufRead *.md setlocal filetype=markdown
     au BufNewFile,BufRead *.md call DistractionFreeWriting()
-    autocmd BufNewFile,BufRead,WinEnter,FocusGained * setlocal nocursorline
-    autocmd WinLeave,FocusLost *.md setlocal nocursorline
-    autocmd Filetype markdown nnoremap <buffer> <silent> <localleader>/ :call DistractionFreeWriting()<CR>:setlocal foldcolumn=12<CR>
-    au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 85<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=italic gui=italic ctermbg=NONE guibg=NONE<CR>:set filetype=markdown<CR>
+    au Filetype markdown nnoremap <buffer> <silent> <localleader>; :Goyo 85<CR>:GitGutterEnable<CR>:set statusline=\ \ \ \ %M%=%{WordCount()}\ <CR>:hi StatusLine ctermfg=red guifg=red cterm=italic gui=italic ctermbg=NONE guibg=NONE<CR>:set filetype=markdown<CR>
     au Filetype markdown inoremap <buffer> <localleader>c [//]: # ()<esc>i
+    au Filetype markdown nnoremap <buffer> <localleader>c i[//]: # ()<esc>i
     au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
     au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-:redraw<cr>
     au Filetype markdown nnoremap <buffer> <localleader>3 I###<space><esc>
+    au Filetype markdown nnoremap <buffer> <leader>- :Limelight!<CR>
+    au Filetype markdown nnoremap <buffer> <leader>1 :Limelight0.1<CR>
+    au Filetype markdown nnoremap <buffer> <leader>2 :Limelight0.2<CR>
+		au Filetype markdown nnoremap <buffer> <leader>3 :Limelight0.3<CR>
+    au Filetype markdown nnoremap <buffer> <leader>4 :Limelight0.4<CR>
+    au Filetype markdown nnoremap <buffer> <leader>5 :Limelight0.5<CR>
+    au Filetype markdown nnoremap <buffer> <leader>6 :Limelight0.6<CR>
+    au Filetype markdown nnoremap <buffer> <leader>7 :Limelight0.7<CR>
+    au Filetype markdown nnoremap <buffer> <leader>8 :Limelight0.8<CR>
+    au Filetype markdown nnoremap <buffer> <leader>9 :Limelight0.9<CR>
+    au Filetype markdown nnoremap <buffer> <leader>0 :Limelight0.0<CR>
+    au Filetype markdown nnoremap <buffer> <leader>+ :Limelight1.0<CR>
 augroup END
 
 "}}}
@@ -1165,6 +1194,77 @@ autocmd BufEnter * call s:UndimActiveWindow()
 autocmd WinLeave * call s:DimInactiveWindow()
 " }}}
 
+" Coding enviornments {{{
+
+" Lua {{{
+
+function! LuaTheme()
+	let hr = (strftime('%H'))
+	if hr >= 17
+	setlocal background=dark
+	colorscheme OceanicNext
+	elseif hr >= 6
+	setlocal background=light
+	colorscheme OceanicNextLight
+	elseif hr >= 0
+	setlocal background=dark
+	colorscheme OceanicNext
+	endif
+endfunction
+
+augroup ft_lua
+    au!
+
+    au Filetype lua call LuaTheme()
+		au FileType lua hi! Comment term=italic cterm=italic gui=italic
+		au FileType lua hi! myModeColor term=reverse cterm=bold gui=bold
+    au Filetype lua inoremap <buffer> <localleader>c -- <esc>A
+    au Filetype lua nnoremap <buffer> <localleader>c i--<space><esc>A
+    au Filetype lua nnoremap <buffer> <CR> :!love %:p:h<CR>
+    au Filetype lua nnoremap <buffer> <M-tab> :Sedit ft=lua<CR>:vertical-resize 75<CR>
+		au Filetype lua nnoremap <buffer> <M-Space> :LuaWorkspace<CR>
+augroup END
+
+" }}}
+
+" Vim {{{
+
+augroup ft_vim
+    au!
+
+		au FileType vim colorscheme nord
+		au FileType vim hi! Comment term=italic cterm=italic gui=italic
+		au FileType vim hi! myModeColor term=reverse cterm=bold gui=bold
+    au FileType vim setlocal foldmethod=marker
+
+augroup END
+
+" }}}
+
+" zsh/conf {{{
+
+augroup ft_zsh
+    au!
+
+		au FileType zsh colorscheme pencil
+		au FileType zsh hi! Comment term=italic cterm=italic gui=italic
+		au FileType zsh hi! myModeColor term=reverse cterm=bold gui=bold
+    au FileType zsh setlocal foldmethod=marker
+
+augroup END
+
+augroup ft_conf
+    au!
+
+		au FileType conf colorscheme Spacedust
+		au FileType conf hi! Comment term=italic cterm=italic gui=italic
+		au FileType conf hi! myModeColor term=reverse cterm=bold gui=bold
+    au FileType conf setlocal foldmethod=marker
+
+augroup END
+
+" }}}
+" }}}
 "}}}
 " Workspace Setup {{{
 " ----------------
@@ -1181,10 +1281,10 @@ function! DefaultWorkspace()
         vnew
     endif
 
-    vsp term://git log --oneline
-		file Log
-    sp term://git status
-		file Status
+    vsp term://zsh
+		file scratch
+    sp term://zsh
+		file test
     wincmd k
     resize 6
     vertical-resize 75
@@ -1194,8 +1294,57 @@ command! -register DefaultWorkspace call DefaultWorkspace()
 
 highlight TermCursor ctermfg=red guifg=red
 ":au TermOpen * if &buftype == 'terminal' | :startinsert | endif
-:autocmd TermOpen * setlocal statusline=%#myModeColor#\ \»\ %*%<%{b:term_title}
+":autocmd TermOpen * setlocal statusline=%#myModeColor#\ \»\ %*%<%{b:term_title}
 
 nnoremap <M-Space> :DefaultWorkspace<CR>
 
+" }}}
+" Lua Workspace Setup {{{
+" ----------------
+function! LuaWorkspace()
+    " Rough num columns to decide between laptop and big monitor screens
+    let numcol = 3
+    if winwidth(0) >= 220
+        let numcol = 4
+    endif
+
+    if numcol == 4
+        e term://zsh
+        file shell2
+        vnew
+    endif
+
+		vsp
+    vsp term://zsh
+		file test
+    vertical-resize 55
+		wincmd h
+		wincmd h
+		sp term://zsh
+		file shell
+		resize 6
+		wincmd k
+    Sedit filetype=lua
+    vertical-resize 25
+    wincmd l
+endfunction
+command! -register LuaWorkspace call LuaWorkspace()
+
+highlight TermCursor ctermfg=red guifg=red
+":au TermOpen * if &buftype == 'terminal' | :startinsert | endif
+":autocmd TermOpen * setlocal statusline=%#myModeColor#\ \»\ %*%<%{b:term_title}
+
+" }}}
+" Scratch buffers {{{
+" Thanks to http://dhruvasagar.com/2014/03/11/creating-custom-scratch-buffers-in-vim
+function! ScratchEdit(cmd, options)
+	exe a:cmd tempname()
+	setl buftype=nofile bufhidden=wipe nobuflisted
+	if !empty(a:options) | exe 'setl' a:options | endif
+endfunction
+
+command! -bar -nargs=* Sedit call ScratchEdit('edit', <q-args>)
+command! -bar -nargs=* Ssp call ScratchEdit('split', <q-args>)
+command! -bar -nargs=* Svsp call ScratchEdit('vsplit', <q-args>)
+command! -bar -nargs=* Stab call ScratchEdit('tabe', <q-args>)
 " }}}
